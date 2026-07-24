@@ -423,9 +423,9 @@
     <div id="recentlyPlayedContainer" class="horizontal-scroll"></div>
   </div>
 
-  <!-- SECCIÓN: Artistas que grabaron en el estudio -->
+  <!-- SECCIÓN: Artistas que grabaron en el estudio (orden aleatorio) -->
   <div id="studioArtistsSection" class="home-section section-hidden">
-    <div class="home-section-title">Artistas que grabaron en el estudio <span></span></div>
+    <div class="home-section-title">Artistas que grabaron en el estudio <span>Portadas recientes</span></div>
     <div id="studioArtistsContainer" class="horizontal-scroll"></div>
   </div>
 
@@ -761,7 +761,6 @@
     function getRecentSongs(limit=6) {
       const ids = playHistory.slice(-limit).reverse();
       const songs = ids.map(id => masterSongs.find(s => s.id === id)).filter(Boolean);
-      // Eliminar duplicados (por si acaso)
       const seen = new Set();
       const unique = [];
       for(let s of songs) {
@@ -770,9 +769,9 @@
       return unique.slice(0, limit);
     }
 
-    // ---------- ARTISTAS QUE GRABARON EN EL ESTUDIO (última portada por artista) ----------
-    function getStudioArtists() {
-      // Ordenar canciones por ID descendente (más reciente primero)
+    // ---------- ARTISTAS QUE GRABARON EN EL ESTUDIO (orden aleatorio) ----------
+    function getStudioArtistsRandom() {
+      // Obtener la portada más reciente (mayor id) de cada artista
       const sorted = [...originalSongs].sort((a,b) => b.id - a.id);
       const map = new Map();
       for(let s of sorted) {
@@ -781,7 +780,9 @@
           map.set(artist, s);
         }
       }
-      return map;
+      // Convertir a array de objetos y barajar
+      const artists = Array.from(map.entries()).map(([name, song]) => ({ name, image: song.url }));
+      return shuffleArray(artists);
     }
 
     // ---------- ARTISTAS QUE SIGUES ----------
@@ -837,19 +838,19 @@
         section.classList.add('section-hidden');
         return;
       }
-      const map = getStudioArtists();
-      if(map.size === 0) {
+      const artists = getStudioArtistsRandom();
+      if(artists.length === 0) {
         section.classList.add('section-hidden');
         return;
       }
       section.classList.remove('section-hidden');
       let html = '';
-      for(let [artist, song] of map) {
-        html += `<div class="circle-artist-card" data-artist="${escapeHtml(artist)}">
-          <img class="circle-avatar" src="${song.url}" loading="lazy">
-          <div class="circle-artist-name">${escapeHtml(artist)}</div>
+      artists.forEach(item => {
+        html += `<div class="circle-artist-card" data-artist="${escapeHtml(item.name)}">
+          <img class="circle-avatar" src="${item.image}" loading="lazy">
+          <div class="circle-artist-name">${escapeHtml(item.name)}</div>
         </div>`;
-      }
+      });
       container.innerHTML = html;
       container.querySelectorAll('.circle-artist-card').forEach(card => {
         card.addEventListener('click', () => {
@@ -903,7 +904,6 @@
       let html = `<button class="back-button" id="backFromCatalogBtn">← Volver al inicio</button>`;
       html += `<div style="margin-bottom:1rem;font-size:1.2rem;font-weight:700;color:#c0cfff;">📀 Todo el catálogo</div>`;
       html += `<div class="catalog-grid">`;
-      // Ordenar por ID descendente (más reciente primero) para mostrar los nuevos primero
       const sorted = [...masterSongs].sort((a,b) => b.id - a.id);
       sorted.forEach(song => {
         const artist = extractArtistFromTitle(song.title);
@@ -931,7 +931,6 @@
         });
       });
 
-      // Ocultar secciones y top artists
       document.querySelectorAll('.home-section').forEach(el => el.classList.add('section-hidden'));
       document.getElementById('showAllCatalogBtn').classList.add('section-hidden');
       document.getElementById('topArtistsSection').classList.add('hidden-artists');
@@ -1103,7 +1102,7 @@
     function playSong(song, customQueue = null) {
       if(!song) return;
       currentSong = song;
-      addToHistory(song.id); // <-- Añadir al historial
+      addToHistory(song.id);
       incrementPlayCount(song.id);
       renderSuggestions();
       renderTopArtists();
@@ -1135,7 +1134,6 @@
       updatePlayPauseIcon();
       triggerBackgroundRefresh();
       renderPlayerSuggestions();
-      // Actualizar secciones después de reproducir (para refrescar historial)
       renderRecentlyPlayed();
     }
 
@@ -1185,7 +1183,7 @@
           updateArtistButtonUI(btnElement, artistName);
           if(artistListeners[artistName] !== undefined) artistListeners[artistName] = Math.max(0, artistListeners[artistName] - 1);
           renderContent();
-          renderFollowingArtists(); // actualizar sección
+          renderFollowingArtists();
         }
       } else {
         if(startListeningToArtist(artistName)) {
@@ -1195,7 +1193,7 @@
           const msg = `Hola, soy de Kerim Music+ y quiero apoyar al artista ${artistName} con 5 puntos (equivalente a $0.01 MXN). ¡Sigue así! 🎵`;
           window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
           renderContent();
-          renderFollowingArtists(); // actualizar sección
+          renderFollowingArtists();
         }
       }
     }
@@ -1227,7 +1225,7 @@
       });
     }
 
-    // ---------- RENDER DE PERFIL DE ARTISTA (existente, con pequeños ajustes) ----------
+    // ---------- RENDER DE PERFIL DE ARTISTA ----------
     function renderArtistProfile() {
       if(!currentArtist) {
         renderContentFallback();
@@ -1241,7 +1239,6 @@
         contentContainer.innerHTML = '<div class="no-results">No se encontraron canciones para este artista</div>';
         return;
       }
-      // Agrupar por álbum
       const albumsMap = new Map();
       const singles = [];
       songs.forEach(song => {
@@ -1270,7 +1267,6 @@
         </div>
       `;
 
-      // Álbumes (grid)
       if (albumsMap.size > 0) {
         html += `<div style="margin:1.5rem 0 1rem 0;font-weight:600;color:#c0cfff;font-size:1rem;">Álbumes</div>`;
         html += `<div class="gallery-grid">`;
@@ -1285,7 +1281,6 @@
         html += `</div>`;
       }
 
-      // Sencillos (individuales)
       if (singles.length > 0) {
         html += `<div style="margin:1.5rem 0 1rem 0;font-weight:600;color:#c0cfff;font-size:1rem;">Sencillos</div>`;
         html += `<div class="gallery-grid">`;
@@ -1298,7 +1293,6 @@
 
       contentContainer.innerHTML = html;
 
-      // Eventos para tarjetas de álbum
       document.querySelectorAll('.album-card').forEach(card => {
         card.addEventListener('click', () => {
           const albumName = card.getAttribute('data-album');
@@ -1310,7 +1304,6 @@
         });
       });
 
-      // Eventos para sencillos
       document.querySelectorAll('.image-card').forEach(card => {
         card.addEventListener('click', () => {
           const id = parseInt(card.dataset.id);
@@ -1322,7 +1315,6 @@
         });
       });
 
-      // Botón de artista
       document.querySelectorAll('.artist-whatsapp-btn').forEach(btn => {
         const name = btn.getAttribute('data-artist');
         if(name) {
@@ -1335,7 +1327,6 @@
       });
 
       updateArtistBackground(songs[0]?.url || null);
-      // Ocultar secciones de home
       document.querySelectorAll('.home-section').forEach(el => el.classList.add('section-hidden'));
       document.getElementById('showAllCatalogBtn').classList.add('section-hidden');
       document.getElementById('topArtistsSection').classList.add('hidden-artists');
@@ -1390,7 +1381,6 @@
         });
       });
       updateArtistBackground(currentAlbumSongs[0]?.url || null);
-      // Ocultar secciones de home
       document.querySelectorAll('.home-section').forEach(el => el.classList.add('section-hidden'));
       document.getElementById('showAllCatalogBtn').classList.add('section-hidden');
       document.getElementById('topArtistsSection').classList.add('hidden-artists');
@@ -1420,24 +1410,20 @@
 
     // ---------- FUNCIÓN PRINCIPAL renderContent ----------
     function renderContent() {
-      // Si estamos en catálogo, renderizamos vista de catálogo
       if (currentView === 'catalog') {
         renderCatalogView();
         return;
       }
 
-      // Si estamos en vista de álbum, renderizar álbum
       if (currentView === 'album') {
         renderAlbumView();
         return;
       }
-      // Si estamos en vista de artista, renderizar perfil
       if (currentView === 'artist' && currentArtist) {
         renderArtistProfile();
         return;
       }
 
-      // Modo normal (home o likes)
       const items = getActiveListForQueue();
       const isSearching = currentSearch.trim() !== '';
       if(isSearching) filterButtons.classList.add('hidden');
@@ -1449,7 +1435,6 @@
 
       if(!isSearching) updateArtistBackground(null);
 
-      // Mostrar/Ocultar secciones de home
       const showHomeSections = !isPlaylistsMode && !isSearching && currentView === 'home';
       document.querySelectorAll('.home-section').forEach(el => {
         if(showHomeSections) el.classList.remove('section-hidden');
@@ -1476,7 +1461,6 @@
         return;
       }
 
-      // Si hay búsqueda y coincide exactamente con un artista, mostramos perfil
       if(isSearching) {
         const searchLower = currentSearch.toLowerCase();
         let foundArtist = null;
@@ -1499,7 +1483,6 @@
         }
       }
 
-      // Si no es perfil de artista, mostrar lista normal
       let html = `<div class="gallery-grid">`;
       items.forEach(song => {
         const marker = isFav(song.id) ? ' ❤️' : '';
@@ -1561,7 +1544,6 @@
     searchButton.addEventListener('click', performSearch);
     searchInput.addEventListener('keyup', (e) => { if(e.key === 'Enter') performSearch(); });
 
-    // Mostrar toda la música
     showAllBtn.addEventListener('click', () => {
       currentView = 'catalog';
       renderContent();
