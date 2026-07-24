@@ -32,6 +32,29 @@
       flex-wrap: wrap;
       border-bottom: 1px solid #1a2a5e;
     }
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1 0 auto;
+    }
+    .menu-btn {
+      background: transparent;
+      border: none;
+      color: #5a7fc7;
+      font-size: 1.6rem;
+      cursor: pointer;
+      padding: 0.2rem 0.4rem;
+      transition: 0.2s;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .menu-btn:hover {
+      color: #e8ecf4;
+      transform: scale(1.05);
+    }
     .top-bar h1 {
       font-weight: 700;
       font-size: 1.5rem;
@@ -42,6 +65,7 @@
       letter-spacing: -0.5px;
       white-space: nowrap;
       text-shadow: 0 0 20px rgba(43, 109, 246, 0.3);
+      flex: 0 1 auto;
     }
     .search-container {
       display: flex;
@@ -84,6 +108,61 @@
       transition: 0.2s;
     }
     .search-container button:hover { color: #2b6df6; }
+
+    /* Dropdown menu */
+    .menu-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      background: #0d162b;
+      border: 1px solid #1a2a5e;
+      border-radius: 8px;
+      padding: 0.5rem 0;
+      min-width: 180px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      z-index: 200;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: all 0.25s ease;
+    }
+    .menu-dropdown.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .menu-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 1.2rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #e8ecf4;
+      cursor: pointer;
+      transition: 0.15s;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+    }
+    .menu-dropdown-item:hover {
+      background: #1a2a5e;
+    }
+    .menu-dropdown-item .icon {
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+    .menu-dropdown-item.active-item {
+      color: #2b6df6;
+      background: rgba(43, 109, 246, 0.08);
+    }
+    .menu-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
     .filter-buttons {
       display: flex;
       justify-content: center;
@@ -385,6 +464,8 @@
     @media (min-width: 1024px) {
       .portada-item { flex: 0 0 32%; max-width: 32%; }
     }
+
+    /* Galería */
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -413,6 +494,7 @@
       border-radius: 4px;
       aspect-ratio: 1/1;
       flex-shrink: 0;
+      object-fit: cover;
     }
     .gallery-grid.list-view .card-title {
       flex: 1;
@@ -425,6 +507,20 @@
       font-weight: 500;
       color: #e8ecf4;
     }
+    .gallery-grid.list-view .card-sub {
+      font-size: 0.7rem;
+      color: #5a7fc7;
+      display: block;
+      margin-top: 2px;
+    }
+    .gallery-grid.list-view .card-duration {
+      font-size: 0.7rem;
+      color: #5a7fc7;
+      margin-left: auto;
+      padding-left: 0.5rem;
+      white-space: nowrap;
+    }
+
     .suggestions-section {
       margin-bottom: 2rem;
       padding: 0;
@@ -597,11 +693,11 @@
       justify-content: center;
       position: relative;
     }
-    .player-cover img { 
-      width: 100%; 
-      aspect-ratio: 1/1; 
-      object-fit: cover; 
-      display: block; 
+    .player-cover img {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      display: block;
     }
     .player-cover .video-wrapper {
       width: 100%;
@@ -969,7 +1065,20 @@
 <div class="toast-notification" id="toastNotification">💎 Solo disponible en Kerim Music+</div>
 
 <header class="top-bar">
-  <h1>Kerim Music+ <span class="plan-badge" id="planBadge">FREE</span></h1>
+  <div class="top-bar-left">
+    <div class="menu-wrapper">
+      <button class="menu-btn" id="menuBtn" aria-label="Menú">☰</button>
+      <div class="menu-dropdown" id="menuDropdown">
+        <button class="menu-dropdown-item" data-view="grid">
+          <span class="icon">▦</span> Cuadrícula
+        </button>
+        <button class="menu-dropdown-item" data-view="list">
+          <span class="icon">☰</span> Lista
+        </button>
+      </div>
+    </div>
+    <h1>Kerim Music+ <span class="plan-badge" id="planBadge">FREE</span></h1>
+  </div>
   <div class="search-container" id="searchContainer">
     <input type="text" id="searchInput" placeholder="¿Qué quieres escuchar?">
     <button id="searchButton">🔍</button>
@@ -992,7 +1101,6 @@
       <script type='text/javascript' src='https://whomania.com/ctr?id=677fd47bb66a3ed113316776e88371c5c20d7229'></script>
     </div>
   </div>
-</main>
 
   <div class="upgrade-banner">
     <a href="index.html" class="upgrade-btn"> Mejorar plan</a>
@@ -1106,8 +1214,8 @@
     let adPlaylist = [];
     let currentAdIndex = 0;
     let adCallback = null;
-    let videoElement = null; // Para controlar el video
-    let isVideoAd = false; // Para saber si el anuncio actual es de video
+    let videoElement = null;
+    let isVideoAd = false;
     
     // ==================== CANCIONES ====================
     const originalSongs = [
@@ -1295,6 +1403,28 @@
     const savedSortMode = localStorage.getItem('kerim_playlists_sort_mode');
     if (savedSortMode && ['default', 'lastFirst', 'firstFirst'].includes(savedSortMode)) playlistsSortMode = savedSortMode;
     
+    // ==================== VISTA DE GALERÍA ====================
+    const VIEW_STORAGE_KEY = 'kerim_gallery_view';
+    let currentView = localStorage.getItem(VIEW_STORAGE_KEY) || 'grid'; // 'grid' o 'list'
+    
+    function setView(view) {
+      if (view !== 'grid' && view !== 'list') view = 'grid';
+      currentView = view;
+      localStorage.setItem(VIEW_STORAGE_KEY, view);
+      // Actualizar clase en el contenedor (se aplica en renderContent)
+      renderContent();
+      updateMenuActiveItem();
+    }
+    
+    function updateMenuActiveItem() {
+      document.querySelectorAll('.menu-dropdown-item').forEach(item => {
+        item.classList.remove('active-item');
+        if (item.dataset.view === currentView) {
+          item.classList.add('active-item');
+        }
+      });
+    }
+    
     // ==================== UI ====================
     function updateUIPlan() {
       const planBadge = document.getElementById('planBadge');
@@ -1359,6 +1489,38 @@
     const shuffleBtnPlayer = document.getElementById('shuffleBtnPlayer');
     const toggleSuggestionsBtnElem = document.getElementById('toggleSuggestionsBtn');
     const progressArea = document.getElementById('progressArea');
+    const menuBtn = document.getElementById('menuBtn');
+    const menuDropdown = document.getElementById('menuDropdown');
+    const menuItems = document.querySelectorAll('.menu-dropdown-item');
+    
+    // ==================== MENÚ HAMBURGUESA ====================
+    function toggleMenu(e) {
+      e.stopPropagation();
+      menuDropdown.classList.toggle('open');
+    }
+    
+    function closeMenu() {
+      menuDropdown.classList.remove('open');
+    }
+    
+    menuBtn.addEventListener('click', toggleMenu);
+    
+    document.addEventListener('click', function(e) {
+      if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
+        closeMenu();
+      }
+    });
+    
+    menuItems.forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const view = this.dataset.view;
+        if (view) {
+          setView(view);
+        }
+        closeMenu();
+      });
+    });
     
     // ==================== FONDO ====================
     const mattePalette = ['#0a0e1a', '#0d162b', '#111a33', '#0f1428', '#0b1222', '#0e1930', '#0c1528', '#09101e'];
@@ -1467,41 +1629,30 @@
     
     // ==================== FUNCIÓN PARA MOSTRAR VIDEO EN EL REPRODUCTOR ====================
     function showVideoInPlayer(videoHtml) {
-      // Ocultar imagen y mostrar contenedor de video
       fullCover.style.display = 'none';
       videoContainer.style.display = 'block';
       videoContainer.innerHTML = videoHtml;
-      
-      // Asegurar que el contenedor tenga el tamaño adecuado
       videoContainer.style.width = '100%';
       videoContainer.style.aspectRatio = '16/9';
       videoContainer.style.background = '#000';
       
-      // Obtener referencia al elemento de video o iframe
       const videoEl = videoContainer.querySelector('video');
       const iframeEl = videoContainer.querySelector('iframe');
       
       if (videoEl) {
         videoElement = videoEl;
         isVideoAd = true;
-        // Escuchar el evento 'ended' del video
         videoEl.addEventListener('ended', onVideoAdEnd);
-        // Intentar reproducir automáticamente
         videoEl.play().catch(e => console.log('Error al reproducir video:', e));
-        // Si el video tiene audio, ocultar los controles de audio
         fullPlayPause.style.display = 'none';
         miniPlayPause.style.display = 'none';
-        // Ocultar la barra de progreso
         if (progressArea) progressArea.style.display = 'none';
       } else if (iframeEl) {
-        // Para iframes (YouTube, Vimeo), no podemos controlar el final fácilmente
-        // Usaremos un temporizador con la duración del video (estimada)
         isVideoAd = true;
         fullPlayPause.style.display = 'none';
         miniPlayPause.style.display = 'none';
         if (progressArea) progressArea.style.display = 'none';
-        // Para YouTube, estimar duración de 30 segundos
-        const adDuration = 30000; // 30 segundos
+        const adDuration = 30000;
         if (window._adTimer) clearTimeout(window._adTimer);
         window._adTimer = setTimeout(() => {
           onVideoAdEnd();
@@ -1510,32 +1661,22 @@
         isVideoAd = false;
       }
       
-      // Ocultar la barra de progreso en todos los casos
       if (progressArea) progressArea.style.display = 'none';
-      
       console.log('🎬 Video mostrado en el reproductor');
     }
     
     function hideVideoFromPlayer() {
-      // Ocultar contenedor de video y mostrar imagen
       videoContainer.style.display = 'none';
       videoContainer.innerHTML = '';
       fullCover.style.display = 'block';
-      
-      // Restaurar la barra de progreso
       if (progressArea) progressArea.style.display = 'block';
-      
-      // Restaurar botones de reproducción
       fullPlayPause.style.display = 'flex';
       miniPlayPause.style.display = 'flex';
-      
-      // Limpiar referencias al video
       if (videoElement) {
         videoElement.removeEventListener('ended', onVideoAdEnd);
         videoElement = null;
       }
       isVideoAd = false;
-      
       if (window._adTimer) {
         clearTimeout(window._adTimer);
         window._adTimer = null;
@@ -1578,11 +1719,8 @@
       };
       currentSong = adSong;
       
-      // Mostrar imagen o video según corresponda
       if (ad.video) {
-        // Crear un elemento de video para reproducir el anuncio
         let videoHtml = '';
-        // Si es un enlace de Dropbox, convertirlo para que se pueda reproducir
         if (ad.video.includes('dropbox.com')) {
           const videoUrl = ad.video;
           videoHtml = `<video controls style="width:100%;height:100%;background:#000;object-fit:contain;">
@@ -1615,7 +1753,6 @@
       } else {
         hideVideoFromPlayer();
         fullCover.src = adSong.url;
-        // Para anuncios sin video, la barra de progreso se oculta igual
         if (progressArea) progressArea.style.display = 'none';
       }
       
@@ -1625,29 +1762,21 @@
       miniTitle.innerText = adSong.title;
       
       if (adSong.music && !ad.video) {
-        // Solo audio - reproducir con el elemento audio
         audio.src = adSong.music;
         audio.play().catch(e => console.log('Error al reproducir audio del anuncio:', e));
         isPlaying = true;
         audio.removeEventListener('ended', onAdEnd);
         audio.addEventListener('ended', onAdEnd);
-        // Ocultar botones de reproducción de video si estaban visibles
         fullPlayPause.style.display = 'flex';
         miniPlayPause.style.display = 'flex';
       } else if (ad.video) {
-        // Video - el video se reproduce con su propio audio
-        // Pausar el audio
         audio.pause();
         isPlaying = false;
-        // Ocultar botones de reproducción de audio
         fullPlayPause.style.display = 'none';
         miniPlayPause.style.display = 'none';
-        // El evento 'ended' del video manejará el cambio
       } else {
-        // Anuncio sin audio ni video (solo imagen)
         audio.pause();
         isPlaying = false;
-        // Auto-avanzar después de 5 segundos
         if (window._adTimer) clearTimeout(window._adTimer);
         window._adTimer = setTimeout(() => {
           onAdEnd();
@@ -1661,12 +1790,10 @@
     }
     
     function onVideoAdEnd() {
-      // El video terminó
       if (window._adTimer) {
         clearTimeout(window._adTimer);
         window._adTimer = null;
       }
-      // Avanzar al siguiente anuncio
       onAdEnd();
     }
     
@@ -1676,7 +1803,6 @@
         clearTimeout(window._adTimer);
         window._adTimer = null;
       }
-      // Limpiar el video si estaba mostrándose
       if (videoElement) {
         videoElement.removeEventListener('ended', onVideoAdEnd);
         videoElement = null;
@@ -1692,14 +1818,9 @@
       fullNext.classList.remove('hidden-nav');
       miniPrev.classList.remove('hidden-nav');
       miniNext.classList.remove('hidden-nav');
-      
-      // Ocultar video si estaba visible y restaurar UI
       hideVideoFromPlayer();
-      
-      // Restaurar controles de reproducción
       fullPlayPause.style.display = 'flex';
       miniPlayPause.style.display = 'flex';
-      
       if (progressArea) progressArea.style.display = 'block';
       
       if (previousSong && !previousSong.isAd) {
@@ -1747,10 +1868,7 @@
       if (!song) return;
       if (isAdPlaying) return;
       currentSong = song;
-      
-      // Asegurar que se muestre la imagen (ocultar video si estaba visible)
       hideVideoFromPlayer();
-      
       if (progressArea) progressArea.style.display = 'block';
       
       if (!song.isAd) {
@@ -1825,7 +1943,6 @@
     
     function updatePlayPauseIcon(){ 
       if (isVideoAd) {
-        // Durante anuncios de video, no mostramos el icono de play/pause
         fullPlayPause.style.display = 'none';
         miniPlayPause.style.display = 'none';
         return;
@@ -1855,7 +1972,6 @@
     
     function togglePlayPause(){ 
       if (isAdPlaying) {
-        // Si es un anuncio de video, intentar pausar/reproducir el video
         if (isVideoAd && videoElement) {
           if (videoElement.paused) {
             videoElement.play();
@@ -1981,12 +2097,27 @@
         return; 
       } 
       
-      let gridClass = 'gallery-grid' + (isSearching ? ' list-view' : ''); 
+      // Determinar clase según la vista guardada
+      let gridClass = 'gallery-grid';
+      if (currentView === 'list') gridClass += ' list-view';
+      
       let html = `<div class="${gridClass}">`; 
       items.forEach(song => { 
         const favMarker = isFav(song.id) ? ' ❤️' : ''; 
-        if(isSearching) html += `<div class="image-card" data-id="${song.id}"><img src="${song.url}" loading="lazy"><div class="card-title">${escapeHtml(song.title)}<span style="font-size:0.7rem; color:#5a7fc7;"> · ${song.category}${favMarker}</span></div></div>`; 
-        else html += `<div class="image-card" data-id="${song.id}"><img src="${song.url}" loading="lazy"><div class="card-title">${escapeHtml(song.title)}${isPlaylistsMode ? ' ❤️' : ''}</div></div>`; 
+        if(currentView === 'list') {
+          // Vista lista
+          html += `<div class="image-card" data-id="${song.id}">
+            <img src="${song.url}" loading="lazy">
+            <div class="card-title">
+              ${escapeHtml(song.title)}
+              <span class="card-sub">${song.category || 'Música'}${favMarker}</span>
+            </div>
+            <span class="card-duration">${song.duration || '--:--'}</span>
+          </div>`;
+        } else {
+          // Vista cuadrícula
+          html += `<div class="image-card" data-id="${song.id}"><img src="${song.url}" loading="lazy"><div class="card-title">${escapeHtml(song.title)}${isPlaylistsMode ? ' ❤️' : ''}</div></div>`;
+        }
       }); 
       html += `</div>`; 
       contentContainer.innerHTML = html; 
@@ -1998,6 +2129,7 @@
         }); 
       }); 
       triggerBackgroundRefresh(); 
+      updateMenuActiveItem();
     }
     
     // ==================== FILTROS Y ORDEN ====================
@@ -2148,6 +2280,9 @@
     currentSearch = '';
     updateSortChipsVisibility();
     initChipsSortEvents();
+    // Aplicar vista guardada
+    currentView = localStorage.getItem(VIEW_STORAGE_KEY) || 'grid';
+    updateMenuActiveItem();
     renderContent(); 
     renderSuggestions(); 
     updateQueueAndMode(); 
