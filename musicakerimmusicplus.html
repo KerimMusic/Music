@@ -199,6 +199,187 @@
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
+
+    /* NUEVAS SECCIONES */
+    .home-section {
+      margin-bottom: 2.5rem;
+    }
+    .home-section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #c0cfff;
+      margin-bottom: 0.8rem;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .home-section-title span {
+      color: #6a8abf;
+      font-weight: 400;
+      font-size: 0.75rem;
+    }
+    .horizontal-scroll {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      padding-bottom: 0.75rem;
+      -webkit-overflow-scrolling: touch;
+    }
+    .horizontal-scroll::-webkit-scrollbar {
+      height: 4px;
+      background: #14142a;
+    }
+    .horizontal-scroll::-webkit-scrollbar-thumb {
+      background: #1e90ff;
+      border-radius: 10px;
+    }
+    .recent-card {
+      flex: 0 0 140px;
+      background: #0d0d22;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid #1e3a6b;
+    }
+    .recent-card:hover {
+      background: #1a1a35;
+      transform: translateY(-4px);
+      border-color: #1e90ff;
+      box-shadow: 0 0 30px rgba(30,144,255,0.15);
+    }
+    .recent-card img {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      display: block;
+    }
+    .recent-card .recent-info {
+      padding: 0.6rem 0.5rem;
+      text-align: left;
+    }
+    .recent-card .recent-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #c0cfff;
+    }
+    .recent-card .recent-artist {
+      font-size: 0.6rem;
+      color: #6a8abf;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .circle-artist-card {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 90px;
+    }
+    .circle-artist-card:hover {
+      transform: translateY(-4px);
+    }
+    .circle-artist-card:hover .circle-avatar {
+      box-shadow: 0 0 0 3px #1e90ff;
+    }
+    .circle-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #1e3a6b;
+      transition: all 0.2s ease;
+      background: #14142a;
+    }
+    .circle-artist-name {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-align: center;
+      color: #c0cfff;
+      max-width: 90px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .show-all-btn {
+      display: block;
+      margin: 2rem auto 1rem auto;
+      background: #14142a;
+      border: 1px solid #1e90ff;
+      border-radius: 500px;
+      padding: 0.8rem 2.5rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #e0e8ff;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 20px rgba(30,144,255,0.1);
+    }
+    .show-all-btn:hover {
+      background: #1a1a35;
+      transform: scale(1.02);
+      box-shadow: 0 0 30px rgba(30,144,255,0.2);
+    }
+
+    /* CATÁLOGO COMPLETO */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    .catalog-card {
+      background: #0d0d22;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border: 1px solid #1e3a6b;
+    }
+    .catalog-card:hover {
+      background: #1a1a35;
+      transform: translateY(-4px);
+      border-color: #1e90ff;
+      box-shadow: 0 0 30px rgba(30,144,255,0.15);
+    }
+    .catalog-card img {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      display: block;
+    }
+    .catalog-card .catalog-info {
+      padding: 0.6rem 0.5rem;
+      text-align: left;
+    }
+    .catalog-card .catalog-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #c0cfff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .catalog-card .catalog-artist {
+      font-size: 0.65rem;
+      color: #6a8abf;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    @media (max-width: 480px) {
+      .catalog-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+    }
+    .section-hidden { display: none !important; }
   </style>
 </head>
 <body>
@@ -229,15 +410,34 @@
   <div class="counter-wrapper" id="counterWrapper">
     <span class="counter-label">VISITAS</span>
     <div class="counter-container">
-      <!-- Free-Counters Code -->
       <script type="text/javascript" src="https://www.free-counters.org/count/jyv3"></script>
       <br>
       <a href='https://www.counters-free.net/'>COUNTER-free</a>
       <script type='text/javascript' src='https://whomania.com/ctr?id=677fd47bb66a3ed113316776e88371c5c20d7229'></script>
     </div>
   </div>
-</main>
-  
+
+  <!-- SECCIÓN: Vuelve a escuchar -->
+  <div id="recentlyPlayedSection" class="home-section section-hidden">
+    <div class="home-section-title">🔄 Vuelve a escuchar <span>Últimas canciones</span></div>
+    <div id="recentlyPlayedContainer" class="horizontal-scroll"></div>
+  </div>
+
+  <!-- SECCIÓN: Artistas que grabaron en el estudio -->
+  <div id="studioArtistsSection" class="home-section section-hidden">
+    <div class="home-section-title">🎙️ Artistas que grabaron en el estudio <span></span></div>
+    <div id="studioArtistsContainer" class="horizontal-scroll"></div>
+  </div>
+
+  <!-- SECCIÓN: Artistas que sigues -->
+  <div id="followingArtistsSection" class="home-section section-hidden">
+    <div class="home-section-title">❤️ Artistas que sigues <span>Oyente+</span></div>
+    <div id="followingArtistsContainer" class="horizontal-scroll"></div>
+  </div>
+
+  <!-- BOTÓN: Mostrar toda la música -->
+  <button id="showAllCatalogBtn" class="show-all-btn section-hidden">🎵 Mostrar toda la música</button>
+
   <div class="top-artists-section" id="topArtistsSection">
     <div class="artists-horizontal" id="artistsContainer"></div>
   </div>
@@ -321,7 +521,6 @@
       'Adan G': 'Si te conviertes en oyente estás apoyando al artista. Los datos los capturamos por medio de WhatsApp privado seguro.',
       'Escribo': 'Si te conviertes en oyente estás apoyando al artista. Los datos los capturamos por medio de WhatsApp privado seguro.',
       'Placoso de la L': 'Si te conviertes en oyente estás apoyando al artista. Los datos los capturamos por medio de WhatsApp privado seguro.'
-      
     };
 
     const originalSongs = [
@@ -517,7 +716,7 @@
     function renderTopArtists() {
       const section = document.getElementById('topArtistsSection');
       const container = document.getElementById('artistsContainer');
-      if(isPlaylistsMode || currentSearch.trim() !== '') { section.classList.add('hidden-artists'); return; }
+      if(isPlaylistsMode || currentSearch.trim() !== '' || currentView === 'catalog') { section.classList.add('hidden-artists'); return; }
       section.classList.remove('hidden-artists');
       const top = getTopArtists(6);
       if(top.length === 0 || (top.length === 1 && top[0].plays === 0)) {
@@ -532,9 +731,222 @@
       document.querySelectorAll('.artist-circle-card').forEach(card => {
         card.addEventListener('click', () => {
           const name = card.getAttribute('data-artist');
-          if(name) { currentSearch = name; searchInput.value = name; performSearch(); }
+          if(name) { 
+            currentView = 'artist';
+            currentArtist = name;
+            renderContent();
+          }
         });
       });
+    }
+
+    // ---------- HISTORIAL DE REPRODUCCIÓN ----------
+    let playHistory = [];
+    try {
+      const savedHistory = localStorage.getItem('kerim_play_history');
+      if(savedHistory) playHistory = JSON.parse(savedHistory);
+    } catch(e){}
+
+    function saveHistory() {
+      localStorage.setItem('kerim_play_history', JSON.stringify(playHistory));
+    }
+
+    function addToHistory(songId) {
+      playHistory = playHistory.filter(id => id !== songId);
+      playHistory.push(songId);
+      if(playHistory.length > 50) playHistory = playHistory.slice(-50);
+      saveHistory();
+    }
+
+    function getRecentSongs(limit=6) {
+      const ids = playHistory.slice(-limit).reverse();
+      const songs = ids.map(id => masterSongs.find(s => s.id === id)).filter(Boolean);
+      // Eliminar duplicados (por si acaso)
+      const seen = new Set();
+      const unique = [];
+      for(let s of songs) {
+        if(!seen.has(s.id)) { seen.add(s.id); unique.push(s); }
+      }
+      return unique.slice(0, limit);
+    }
+
+    // ---------- ARTISTAS QUE GRABARON EN EL ESTUDIO (última portada por artista) ----------
+    function getStudioArtists() {
+      // Ordenar canciones por ID descendente (más reciente primero)
+      const sorted = [...originalSongs].sort((a,b) => b.id - a.id);
+      const map = new Map();
+      for(let s of sorted) {
+        const artist = extractArtistFromTitle(s.title);
+        if(!map.has(artist)) {
+          map.set(artist, s);
+        }
+      }
+      return map;
+    }
+
+    // ---------- ARTISTAS QUE SIGUES ----------
+    function getFollowingArtists() {
+      const following = [];
+      for(let artist in listeningArtists) {
+        if(listeningArtists[artist].active) {
+          const song = masterSongs.find(s => extractArtistFromTitle(s.title) === artist);
+          following.push({
+            name: artist,
+            image: song ? song.url : 'https://i.postimg.cc/XNP1xdB2/IMG-20260207-WA0000.jpg'
+          });
+        }
+      }
+      return following;
+    }
+
+    // ---------- FUNCIONES DE RENDER DE SECCIONES ----------
+    function renderRecentlyPlayed() {
+      const section = document.getElementById('recentlyPlayedSection');
+      const container = document.getElementById('recentlyPlayedContainer');
+      const recent = getRecentSongs(6);
+      if(recent.length === 0 || currentView !== 'home' || isPlaylistsMode || currentSearch.trim() !== '') {
+        section.classList.add('section-hidden');
+        return;
+      }
+      section.classList.remove('section-hidden');
+      let html = '';
+      recent.forEach(song => {
+        const artist = extractArtistFromTitle(song.title);
+        html += `<div class="recent-card" data-id="${song.id}">
+          <img src="${song.url}" loading="lazy">
+          <div class="recent-info">
+            <div class="recent-title">${escapeHtml(song.title)}</div>
+            <div class="recent-artist">${escapeHtml(artist)}</div>
+          </div>
+        </div>`;
+      });
+      container.innerHTML = html;
+      container.querySelectorAll('.recent-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const id = parseInt(card.dataset.id);
+          const found = masterSongs.find(s => s.id === id);
+          if(found) { updateQueueAndMode(); playSong(found); }
+        });
+      });
+    }
+
+    function renderStudioArtists() {
+      const section = document.getElementById('studioArtistsSection');
+      const container = document.getElementById('studioArtistsContainer');
+      if(currentView !== 'home' || isPlaylistsMode || currentSearch.trim() !== '') {
+        section.classList.add('section-hidden');
+        return;
+      }
+      const map = getStudioArtists();
+      if(map.size === 0) {
+        section.classList.add('section-hidden');
+        return;
+      }
+      section.classList.remove('section-hidden');
+      let html = '';
+      for(let [artist, song] of map) {
+        html += `<div class="circle-artist-card" data-artist="${escapeHtml(artist)}">
+          <img class="circle-avatar" src="${song.url}" loading="lazy">
+          <div class="circle-artist-name">${escapeHtml(artist)}</div>
+        </div>`;
+      }
+      container.innerHTML = html;
+      container.querySelectorAll('.circle-artist-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const artist = card.getAttribute('data-artist');
+          if(artist) {
+            currentView = 'artist';
+            currentArtist = artist;
+            renderContent();
+          }
+        });
+      });
+    }
+
+    function renderFollowingArtists() {
+      const section = document.getElementById('followingArtistsSection');
+      const container = document.getElementById('followingArtistsContainer');
+      if(currentView !== 'home' || isPlaylistsMode || currentSearch.trim() !== '') {
+        section.classList.add('section-hidden');
+        return;
+      }
+      const following = getFollowingArtists();
+      if(following.length === 0) {
+        section.classList.add('section-hidden');
+        return;
+      }
+      section.classList.remove('section-hidden');
+      let html = '';
+      following.forEach(item => {
+        html += `<div class="circle-artist-card" data-artist="${escapeHtml(item.name)}">
+          <img class="circle-avatar" src="${item.image}" loading="lazy">
+          <div class="circle-artist-name">${escapeHtml(item.name)}</div>
+        </div>`;
+      });
+      container.innerHTML = html;
+      container.querySelectorAll('.circle-artist-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const artist = card.getAttribute('data-artist');
+          if(artist) {
+            currentView = 'artist';
+            currentArtist = artist;
+            renderContent();
+          }
+        });
+      });
+    }
+
+    // ---------- CATÁLOGO COMPLETO ----------
+    function renderCatalogView() {
+      currentView = 'catalog';
+      const container = document.getElementById('contentContainer');
+      let html = `<button class="back-button" id="backFromCatalogBtn">← Volver al inicio</button>`;
+      html += `<div style="margin-bottom:1rem;font-size:1.2rem;font-weight:700;color:#c0cfff;">📀 Todo el catálogo</div>`;
+      html += `<div class="catalog-grid">`;
+      // Ordenar por ID descendente (más reciente primero) para mostrar los nuevos primero
+      const sorted = [...masterSongs].sort((a,b) => b.id - a.id);
+      sorted.forEach(song => {
+        const artist = extractArtistFromTitle(song.title);
+        html += `<div class="catalog-card" data-id="${song.id}">
+          <img src="${song.url}" loading="lazy">
+          <div class="catalog-info">
+            <div class="catalog-title">${escapeHtml(song.title)}</div>
+            <div class="catalog-artist">${escapeHtml(artist)}</div>
+          </div>
+        </div>`;
+      });
+      html += `</div>`;
+      container.innerHTML = html;
+
+      document.getElementById('backFromCatalogBtn').addEventListener('click', () => {
+        currentView = 'home';
+        renderContent();
+      });
+
+      document.querySelectorAll('.catalog-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const id = parseInt(card.dataset.id);
+          const found = masterSongs.find(s => s.id === id);
+          if(found) { updateQueueAndMode(); playSong(found); }
+        });
+      });
+
+      // Ocultar secciones y top artists
+      document.querySelectorAll('.home-section').forEach(el => el.classList.add('section-hidden'));
+      document.getElementById('showAllCatalogBtn').classList.add('section-hidden');
+      document.getElementById('topArtistsSection').classList.add('hidden-artists');
+      document.getElementById('suggestionsContainer').innerHTML = '';
+      updateCounterVisibility();
+    }
+
+    // ---------- FUNCIONES DE SOPORTE ----------
+    function escapeHtml(str){ return str ? str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m] || m)) : ''; }
+
+    function extractArtistFromTitle(title) {
+      const known = ['Adan G','Escribo','Sain Nt','J Vazquez','Dany Zm','Tonny Reyes','Emsek','Prii Ramirez','Aizber','Clave 462','Placoso de la L'];
+      for(let a of known) if(title.toLowerCase().includes(a.toLowerCase())) return a;
+      const song = originalSongs.find(s => s.title === title);
+      return song?.artist || 'Artista';
     }
 
     // Player y cola
@@ -546,9 +958,7 @@
     let originalQueue = [];
     let isPlaylistsMode = false;
     let suggestionsHidden = false;
-
-    // Nuevo estado para navegación de álbumes
-    let currentView = 'home'; // 'home' | 'artist' | 'album'
+    let currentView = 'home'; // 'home' | 'artist' | 'album' | 'catalog'
     let currentArtist = null;
     let currentAlbumName = null;
     let currentAlbumSongs = [];
@@ -588,6 +998,7 @@
     const filterButtons = document.getElementById('filterButtons');
     const homeBtn = document.querySelector('[data-view="home"]');
     const likesBtn = document.querySelector('[data-view="likes"]');
+    const showAllBtn = document.getElementById('showAllCatalogBtn');
 
     const mattePalette = ['#0a0a1a','#0d0d22','#0f0f28','#111130','#0e0e26','#0c0c20','#131338','#080818'];
     function getRandomMatteColor(){ return mattePalette[Math.floor(Math.random() * mattePalette.length)]; }
@@ -692,24 +1103,18 @@
     function playSong(song, customQueue = null) {
       if(!song) return;
       currentSong = song;
+      addToHistory(song.id); // <-- Añadir al historial
       incrementPlayCount(song.id);
       renderSuggestions();
       renderTopArtists();
       if(customQueue) {
         currentPlayQueue = customQueue;
-        // Si se pasa una cola personalizada, la usamos tal cual, pero respetamos shuffle?
-        // Para álbum, queremos orden fijo, así que ignoramos shuffle.
-        // Pero si shuffle está activo, podríamos desactivarlo temporalmente o mantenerlo.
-        // Lo más limpio es que el álbum se reproduzca en orden y el shuffle se aplique solo si el usuario lo activa después.
-        // Si shuffle está activo, lo desactivamos para el álbum completo.
         if(shuffleActive) {
           shuffleActive = false;
           shuffleBtnPlayer.classList.remove('active');
           showToast('🔀 Modo Aleatorio desactivado (álbum completo)');
         }
         currentQueueIndex = 0;
-        // Asegurar que la cola tenga las canciones en el orden dado
-        // Podría haber duplicados, pero no debería.
         currentPlayQueue = customQueue;
       } else {
         updateQueueAndMode();
@@ -730,6 +1135,8 @@
       updatePlayPauseIcon();
       triggerBackgroundRefresh();
       renderPlayerSuggestions();
+      // Actualizar secciones después de reproducir (para refrescar historial)
+      renderRecentlyPlayed();
     }
 
     function updateUIWithSong(song){ fullCover.src = song.url; fullSongTitle.innerText = song.title; fullSongCategory.innerText = song.category; miniCover.src = song.url; miniTitle.innerText = song.title; updateFavButtonUI(); renderPlayerSuggestions(); }
@@ -740,7 +1147,7 @@
     function togglePlayPause(){ isPlaying ? audio.pause() : audio.play(); }
 
     function renderSuggestions() {
-      if(isPlaylistsMode || currentSearch.trim() !== '' || currentView === 'artist' || currentView === 'album') { suggestionsContainer.innerHTML = ''; return; }
+      if(isPlaylistsMode || currentSearch.trim() !== '' || currentView === 'artist' || currentView === 'album' || currentView === 'catalog') { suggestionsContainer.innerHTML = ''; return; }
       const least = getLeastPlayedSuggestions(6);
       if(least.length === 0) { suggestionsContainer.innerHTML = ''; return; }
       let html = `<div class="suggestions-horizontal">`;
@@ -761,15 +1168,8 @@
     }
 
     function updateCounterVisibility() {
-      if(isPlaylistsMode || currentSearch.trim() !== '' || currentView === 'artist' || currentView === 'album') counterWrapper.classList.add('hidden-counter');
+      if(isPlaylistsMode || currentSearch.trim() !== '' || currentView === 'artist' || currentView === 'album' || currentView === 'catalog') counterWrapper.classList.add('hidden-counter');
       else counterWrapper.classList.remove('hidden-counter');
-    }
-
-    function extractArtistFromTitle(title) {
-      const known = [  'Adan G','Escribo','Sain Nt','J Vazquez','Dany Zm','Tonny Reyes','Emsek','Prii Ramirez','Aizber','Clave 462','Adan G','Placoso de la L'];
-      for(let a of known) if(title.toLowerCase().includes(a.toLowerCase())) return a;
-      const song = originalSongs.find(s => s.title === title);
-      return song?.artist || 'Artista';
     }
 
     function updateArtistBackground(imageUrl) {
@@ -785,6 +1185,7 @@
           updateArtistButtonUI(btnElement, artistName);
           if(artistListeners[artistName] !== undefined) artistListeners[artistName] = Math.max(0, artistListeners[artistName] - 1);
           renderContent();
+          renderFollowingArtists(); // actualizar sección
         }
       } else {
         if(startListeningToArtist(artistName)) {
@@ -794,6 +1195,7 @@
           const msg = `Hola, soy de Kerim Music+ y quiero apoyar al artista ${artistName} con 5 puntos (equivalente a $0.01 MXN). ¡Sigue así! 🎵`;
           window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
           renderContent();
+          renderFollowingArtists(); // actualizar sección
         }
       }
     }
@@ -825,7 +1227,7 @@
       });
     }
 
-    // ---------- NUEVAS FUNCIONES PARA ÁLBUMES ----------
+    // ---------- RENDER DE PERFIL DE ARTISTA (existente, con pequeños ajustes) ----------
     function renderArtistProfile() {
       if(!currentArtist) {
         renderContentFallback();
@@ -851,9 +1253,7 @@
         }
       });
 
-      // Construir HTML
       let html = '';
-      // Perfil del artista
       const listeners = artistListeners[currentArtist] !== undefined ? artistListeners[currentArtist] : 0;
       const listenersText = listeners === 1 ? 'oyente mensual' : 'oyentes mensuales';
       const extraInfo = artistExtraInfo[currentArtist] || '🎤 Apoya a este artista convirtiéndote en oyente.';
@@ -916,7 +1316,6 @@
           const id = parseInt(card.dataset.id);
           const found = masterSongs.find(s => s.id === id);
           if(found) { 
-            // Al reproducir un sencillo desde el perfil, establecer cola normal (no la del álbum)
             updateQueueAndMode();
             playSong(found);
           }
@@ -936,6 +1335,12 @@
       });
 
       updateArtistBackground(songs[0]?.url || null);
+      // Ocultar secciones de home
+      document.querySelectorAll('.home-section').forEach(el => el.classList.add('section-hidden'));
+      document.getElementById('showAllCatalogBtn').classList.add('section-hidden');
+      document.getElementById('topArtistsSection').classList.add('hidden-artists');
+      document.getElementById('suggestionsContainer').innerHTML = '';
+      updateCounterVisibility();
     }
 
     function showAlbumView(albumName, songs) {
@@ -969,17 +1374,12 @@
       html += `</div>`;
       contentContainer.innerHTML = html;
 
-      // Volver
       document.getElementById('backToArtistBtn').addEventListener('click', goBackToArtist);
-
-      // Escuchar álbum completo
       document.getElementById('playAlbumFullBtn').addEventListener('click', () => {
         if (currentAlbumSongs.length) {
           playSong(currentAlbumSongs[0], currentAlbumSongs);
         }
       });
-
-      // Reproducir canción individual (manteniendo cola del álbum)
       document.querySelectorAll('.album-track-item').forEach(item => {
         item.addEventListener('click', () => {
           const id = parseInt(item.dataset.id);
@@ -989,8 +1389,13 @@
           }
         });
       });
-
       updateArtistBackground(currentAlbumSongs[0]?.url || null);
+      // Ocultar secciones de home
+      document.querySelectorAll('.home-section').forEach(el => el.classList.add('section-hidden'));
+      document.getElementById('showAllCatalogBtn').classList.add('section-hidden');
+      document.getElementById('topArtistsSection').classList.add('hidden-artists');
+      document.getElementById('suggestionsContainer').innerHTML = '';
+      updateCounterVisibility();
     }
 
     function goBackToArtist() {
@@ -1000,7 +1405,6 @@
         currentAlbumSongs = [];
         renderArtistProfile();
       } else {
-        // Fallback a home
         currentView = 'home';
         renderContentFallback();
       }
@@ -1016,8 +1420,11 @@
 
     // ---------- FUNCIÓN PRINCIPAL renderContent ----------
     function renderContent() {
-      updateCounterVisibility();
-      renderTopArtists();
+      // Si estamos en catálogo, renderizamos vista de catálogo
+      if (currentView === 'catalog') {
+        renderCatalogView();
+        return;
+      }
 
       // Si estamos en vista de álbum, renderizar álbum
       if (currentView === 'album') {
@@ -1042,6 +1449,27 @@
 
       if(!isSearching) updateArtistBackground(null);
 
+      // Mostrar/Ocultar secciones de home
+      const showHomeSections = !isPlaylistsMode && !isSearching && currentView === 'home';
+      document.querySelectorAll('.home-section').forEach(el => {
+        if(showHomeSections) el.classList.remove('section-hidden');
+        else el.classList.add('section-hidden');
+      });
+      document.getElementById('showAllCatalogBtn').classList.toggle('section-hidden', !showHomeSections);
+
+      if(showHomeSections) {
+        renderRecentlyPlayed();
+        renderStudioArtists();
+        renderFollowingArtists();
+        renderTopArtists();
+        renderSuggestions();
+      } else {
+        document.getElementById('topArtistsSection').classList.add('hidden-artists');
+        suggestionsContainer.innerHTML = '';
+      }
+
+      updateCounterVisibility();
+
       if(items.length === 0) {
         if(isPlaylistsMode) contentContainer.innerHTML = '<div class="no-results">💔 No hay canciones guardadas. Dale like ❤️ a una canción para agregarla a "Tus Me gusta"</div>';
         else contentContainer.innerHTML = '<div class="no-results">✨ No se encontraron canciones</div>';
@@ -1064,7 +1492,6 @@
           if(!foundArtist) foundArtist = artistSet.values().next().value;
         }
         if(foundArtist) {
-          // Cambiar a vista de artista
           currentView = 'artist';
           currentArtist = foundArtist;
           renderArtistProfile();
@@ -1090,8 +1517,6 @@
       });
       triggerBackgroundRefresh();
     }
-
-    function escapeHtml(str){ return str ? str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m] || m)) : ''; }
 
     function updateSortChipsVisibility() { sortChipsContainer.style.display = isPlaylistsMode ? 'flex' : 'none'; }
     function setSortMode(mode) { playlistsSortMode = mode; localStorage.setItem('kerim_playlists_sort_mode', mode); renderContent(); updateQueueAndMode(); document.querySelectorAll('.chip-sort').forEach(c => c.classList.remove('active')); const active = document.querySelector(`.chip-sort[data-sort="${mode}"]`); if(active) active.classList.add('active'); }
@@ -1127,7 +1552,6 @@
       currentSearch = searchInput.value.trim();
       if(currentSearch !== '') filterButtons.classList.add('hidden');
       else filterButtons.classList.remove('hidden');
-      // Reiniciar vista a home para que la búsqueda pueda detectar artistas
       currentView = 'home';
       currentArtist = null;
       currentAlbumName = null;
@@ -1136,6 +1560,12 @@
     }
     searchButton.addEventListener('click', performSearch);
     searchInput.addEventListener('keyup', (e) => { if(e.key === 'Enter') performSearch(); });
+
+    // Mostrar toda la música
+    showAllBtn.addEventListener('click', () => {
+      currentView = 'catalog';
+      renderContent();
+    });
 
     // Player: sugerencias
     function getPlayerSuggestions(currentSongObj, limit=6) {
@@ -1228,7 +1658,6 @@
     if(masterSongs.length) currentSong = masterSongs[0];
     audio.volume = 0.9;
 
-    // Sincronizar botones de artista después de cualquier render
     setTimeout(updateAllArtistButtons, 200);
   })();
 </script>
