@@ -7,23 +7,158 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { background-color: #0a0a1a; color: #e0e8ff; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; line-height: 1.4; overflow-x: hidden; width: 100%; min-height: 100vh; }
-    .top-bar { background: #0a0a1a; padding: 0.5rem 1rem; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
-    .top-bar h1 { font-weight: 700; font-size: 1.5rem; background: linear-gradient(135deg, #1e90ff, #0a4da4); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -0.5px; white-space: nowrap; text-shadow: 0 0 20px rgba(30,144,255,0.3); }
-    .search-container { display: flex; align-items: center; background: #14142a; border: 1px solid #1e3a6b; border-radius: 500px; padding: 0.2rem 0.2rem 0.2rem 1rem; flex: 1; min-width: 140px; max-width: 300px; transition: all 0.2s; box-shadow: 0 0 15px rgba(30,144,255,0.1); }
-    .search-container:focus-within { background: #1a1a35; border: 1px solid #1e90ff; box-shadow: 0 0 25px rgba(30,144,255,0.2); }
-    .search-container input { background: transparent; border: none; color: #e0e8ff; font-size: 0.85rem; padding: 0.6rem 0; width: 100%; outline: none; }
-    .search-container input::placeholder { color: #6a7a9a; }
-    .search-container button { background: transparent; border: none; border-radius: 50%; width: 38px; height: 38px; cursor: pointer; color: #6a8abf; font-size: 1rem; transition: 0.2s; }
-    .search-container button:hover { color: #1e90ff; }
+
+    /* TOP BAR con buscador mejorado */
+    .top-bar {
+      background: #0a0a1a;
+      padding: 0.5rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .top-bar h1 {
+      font-weight: 700;
+      font-size: 1.5rem;
+      background: linear-gradient(135deg, #1e90ff, #0a4da4);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+      white-space: nowrap;
+      text-shadow: 0 0 20px rgba(30,144,255,0.3);
+      transition: opacity 0.3s ease, transform 0.3s ease, max-width 0.3s ease;
+      opacity: 1;
+      transform: scale(1);
+      max-width: 200px;
+      overflow: hidden;
+    }
+    .top-bar h1.hidden-title {
+      opacity: 0;
+      transform: scale(0.8);
+      max-width: 0;
+      margin: 0;
+      padding: 0;
+      pointer-events: none;
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      background: #14142a;
+      border: 1px solid #1e3a6b;
+      border-radius: 500px;
+      padding: 0.2rem 0.2rem 0.2rem 1rem;
+      flex: 1;
+      min-width: 140px;
+      max-width: 300px;
+      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      box-shadow: 0 0 15px rgba(30,144,255,0.1);
+      position: relative;
+    }
+    .search-container.expanded {
+      max-width: 100%;
+      background: #1a1a35;
+      border-color: #1e90ff;
+      box-shadow: 0 0 25px rgba(30,144,255,0.2);
+      padding: 0.2rem 0.2rem 0.2rem 1.2rem;
+      flex: 1 1 100%;
+    }
+
+    /* Botón de búsqueda (estado colapsado) */
+    .search-toggle-btn {
+      background: transparent;
+      border: none;
+      color: #6a8abf;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0.4rem 0.8rem;
+      border-radius: 500px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+      width: 100%;
+      justify-content: center;
+    }
+    .search-toggle-btn:hover {
+      color: #e0e8ff;
+      background: rgba(30,144,255,0.05);
+    }
+    .search-toggle-btn .icon {
+      font-size: 1rem;
+    }
+
+    /* Contenido expandido (input + cerrar) */
+    .search-expanded {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+    .search-container.expanded .search-expanded {
+      display: flex;
+    }
+    .search-container.expanded .search-toggle-btn {
+      display: none;
+    }
+
+    .search-expanded input {
+      background: transparent;
+      border: none;
+      color: #e0e8ff;
+      font-size: 0.95rem;
+      padding: 0.6rem 0;
+      width: 100%;
+      outline: none;
+      min-width: 0;
+    }
+    .search-expanded input::placeholder {
+      color: #6a7a9a;
+    }
+
+    .search-close-btn {
+      background: transparent;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      color: #6a8abf;
+      font-size: 1.2rem;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .search-close-btn:hover {
+      color: #e0e8ff;
+      background: rgba(255,255,255,0.05);
+      transform: rotate(90deg);
+    }
+
+    /* Resto de estilos (sin cambios) */
     .filter-buttons { display: flex; justify-content: center; gap: 1rem; margin: 0.5rem auto 1rem auto; padding: 0 1rem; flex-wrap: wrap; transition: all 0.3s ease; }
     .filter-buttons.hidden { display: none; }
     .filter-main-btn { background: #14142a; border: 1px solid #1e3a6b; border-radius: 500px; padding: 0.55rem 1.5rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; color: #8a9abf; letter-spacing: 0.3px; }
     .filter-main-btn.active { background: #1e90ff; color: #0a0a1a; border-color: #1e90ff; box-shadow: 0 0 30px rgba(30,144,255,0.4); }
     .filter-main-btn:hover:not(.active) { background: #1a1a35; border-color: #1e90ff; color: #e0e8ff; transform: scale(1.02); }
+
     .gallery-section { max-width: 1400px; margin: 0.5rem auto; padding: 0 1rem 6rem; position: relative; }
     .counter-wrapper { display: flex; justify-content: center; align-items: center; margin: 0.5rem auto 1rem auto; padding: 4px 12px; background: rgba(10,10,26,0.8); border-radius: 500px; width: fit-content; gap: 0.5rem; border: 1px solid #1e3a6b; }
     .counter-wrapper.hidden-counter { display: none; }
     .counter-label { font-size: 0.7rem; font-weight: 500; letter-spacing: 1px; color: #1e90ff; }
+
     .top-artists-section { margin-bottom: 2rem; padding: 0; }
     .top-artists-section.hidden-artists { display: none; }
     .artists-horizontal { display: flex; gap: 1.5rem; overflow-x: auto; scrollbar-width: thin; padding-bottom: 0.75rem; -webkit-overflow-scrolling: touch; justify-content: flex-start; }
@@ -35,17 +170,20 @@
     .artist-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #1e3a6b; transition: all 0.2s ease; background: #14142a; }
     .artist-name { font-size: 0.75rem; font-weight: 600; text-align: center; color: #c0cfff; max-width: 90px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .artist-plays { font-size: 0.55rem; color: #6a8abf; }
+
     .sort-chips-container { display: flex; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; gap: 0.8rem; margin: 0.5rem auto 1.5rem auto; padding: 0.25rem 0.3rem 0.6rem 0.3rem; scrollbar-width: thin; -webkit-overflow-scrolling: touch; justify-content: flex-start; width: 100%; white-space: nowrap; }
     .sort-chips-container::-webkit-scrollbar { height: 3px; background: #14142a; border-radius: 10px; }
     .sort-chips-container::-webkit-scrollbar-thumb { background: #1e90ff; border-radius: 10px; }
     .chip-sort { flex: 0 0 auto; background: #14142a; border: 1px solid #1e3a6b; border-radius: 500px; padding: 0.55rem 1.3rem; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; color: #8a9abf; letter-spacing: 0.3px; white-space: nowrap; }
     .chip-sort.active { background: #1e90ff; color: #0a0a1a; border-color: #1e90ff; box-shadow: 0 0 20px rgba(30,144,255,0.3); }
     .chip-sort:hover:not(.active) { background: #1a1a35; border-color: #1e90ff; color: #e0e8ff; transform: scale(1.02); }
+
     .random-matte-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; transition: background-color 0.6s cubic-bezier(0.2,0.9,0.4,1.1); pointer-events: none; }
     .random-matte-bg::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 40%, rgba(30,144,255,0.08) 0%, rgba(0,0,20,0.6) 100%); pointer-events: none; }
     .artist-cover-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0; transition: opacity 0.6s ease; pointer-events: none; }
     .artist-cover-background.show { opacity: 0.3; }
     .artist-cover-background::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(0,0,30,0.4) 0%, rgba(0,0,10,0.85) 100%); }
+
     .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; opacity: 0; animation: fadeUp 0.4s forwards; }
     .music-list-view { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; }
     .music-list-item { background: rgba(10,10,26,0.95); border-radius: 8px; border: 1px solid #1e3a6b; display: flex; align-items: center; gap: 1rem; padding: 0.5rem 1rem 0.5rem 0.5rem; cursor: pointer; transition: all 0.2s ease; }
@@ -60,6 +198,7 @@
     .gallery-grid.list-view .image-card { display: flex; flex-direction: row; align-items: center; gap: 1rem; padding: 0.5rem; border-radius: 8px; background: rgba(10,10,26,0.95); border: 1px solid #1e3a6b; }
     .gallery-grid.list-view .image-card img { width: 48px; height: 48px; border-radius: 4px; aspect-ratio: 1/1; flex-shrink: 0; }
     .gallery-grid.list-view .card-title { flex: 1; text-align: left; white-space: normal; background: transparent; border: none; padding: 0; font-size: 0.85rem; font-weight: 500; color: #e0e8ff; }
+
     .suggestions-section { margin-bottom: 2rem; padding: 0; }
     .suggestions-horizontal { display: flex; gap: 1rem; overflow-x: auto; scrollbar-width: thin; padding-bottom: 0.75rem; -webkit-overflow-scrolling: touch; }
     .suggestions-horizontal::-webkit-scrollbar { height: 4px; background: #14142a; }
@@ -71,16 +210,19 @@
     .suggestion-title { font-size: 0.75rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #c0cfff; margin-bottom: 4px; }
     .suggestion-badge { font-size: 0.55rem; color: #1e90ff; display: inline-block; padding: 2px 8px; border-radius: 20px; background: rgba(30,144,255,0.1); }
     .suggestion-invite { font-size: 0.6rem; color: #6a8abf; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+
     .image-card { background: #0d0d22; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.25s ease; border: 1px solid #1e3a6b; display: flex; flex-direction: column; }
     .image-card:hover { background: #1a1a35; transform: translateY(-4px); border-color: #1e90ff; box-shadow: 0 0 30px rgba(30,144,255,0.15); }
     .image-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; transition: transform 0.3s ease; display: block; border-radius: 0px; }
     .image-card:hover img { transform: scale(1.02); }
     .card-title { padding: 0.75rem 0.5rem; text-align: left; font-size: 0.8rem; font-weight: 600; color: #c0cfff; background: transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
     .album-card { background: #0d0d22; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.25s ease; border: 1px solid #1e3a6b; display: flex; flex-direction: column; }
     .album-card:hover { background: #1a1a35; transform: translateY(-4px); border-color: #1e90ff; box-shadow: 0 0 30px rgba(30,144,255,0.15); }
     .album-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
     .album-card .album-title { padding: 0.75rem 0.5rem; text-align: left; font-size: 0.8rem; font-weight: 600; color: #c0cfff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .album-card .album-badge { font-size: 0.6rem; color: #6a8abf; padding: 0 0.5rem 0.5rem; }
+
     .back-button { background: #14142a; border: 1px solid #1e3a6b; border-radius: 500px; padding: 0.55rem 1.5rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; color: #8a9abf; display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
     .back-button:hover { background: #1a1a35; border-color: #1e90ff; color: #e0e8ff; }
     .album-view-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; }
@@ -96,12 +238,15 @@
     .album-track-sub { font-size: 0.7rem; color: #6a8abf; }
     .album-track-play-icon { font-size: 1.2rem; opacity: 0; transition: opacity 0.2s; color: #1e90ff; }
     .album-track-item:hover .album-track-play-icon { opacity: 1; }
+
     @media (min-width:500px){ .gallery-grid:not(.list-view){ grid-template-columns:repeat(3,1fr); gap:1rem; } }
     @media (min-width:640px){ .gallery-grid:not(.list-view){ grid-template-columns:repeat(4,1fr); } }
     @media (min-width:900px){ .gallery-grid:not(.list-view){ grid-template-columns:repeat(5,1fr); } }
     @media (min-width:1200px){ .gallery-grid:not(.list-view){ grid-template-columns:repeat(6,1fr); } }
+
     .no-results { text-align: center; padding: 3rem; color: #6a8abf; background: rgba(13,13,34,0.8); border-radius: 8px; border: 1px solid #1e3a6b; }
     .search-badge { font-size: 0.8rem; color: #6a8abf; margin-bottom: 1rem; padding-left: 0.5rem; }
+
     .artist-profile-result { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 1.5rem 0 1rem 0; margin-bottom: 0.5rem; position: relative; z-index: 1; }
     .artist-profile-result .artist-name-large { font-size: 2rem; font-weight: 700; color: #e0e8ff; text-shadow: 0 2px 20px rgba(0,0,30,0.9); margin-bottom: 0.5rem; }
     .artist-profile-result .artist-listeners { font-size: 0.9rem; color: #6a8abf; margin-bottom: 0.8rem; text-shadow: 0 2px 10px rgba(0,0,20,0.8); }
@@ -114,6 +259,7 @@
     .artist-info-extra { margin-top: 0.8rem; padding: 0.5rem 1rem; background: rgba(0,0,20,0.6); border-radius: 8px; border-left: 2px solid #1e90ff; max-width: 400px; width: 100%; text-align: left; font-size: 0.75rem; color: #8a9abf; line-height: 1.5; text-shadow: 0 1px 8px rgba(0,0,10,0.9); }
     .artist-info-extra strong { color: #1e90ff; }
     .days-remaining { font-size: 0.7rem; color: #ff6b6b; margin-top: 0.3rem; font-weight: 500; }
+
     .fullscreen-player { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, #0a0a2a 0%, #050510 100%); backdrop-filter: blur(0); z-index: 3000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; overflow-y: auto; padding: 1rem; }
     .fullscreen-player.show { opacity: 1; visibility: visible; }
     .player-card { background: transparent; border: none; max-width: 500px; width: 100%; margin: 0 auto; }
@@ -153,6 +299,7 @@
     .player-suggestion-info { padding: 0.4rem 0.2rem; }
     .player-suggestion-title { font-size: 0.6rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #c0cfff; }
     .player-suggestion-plays { font-size: 0.45rem; color: #6a8abf; }
+
     .mini-player { position: fixed; bottom: 0; left: 0; right: 0; background: #0a0a1a; border-top: 1px solid #1e3a6b; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 12px; transform: translateY(100%); transition: transform 0.3s ease; z-index: 1200; cursor: pointer; }
     .mini-player.show { transform: translateY(0); }
     .mini-cover { width: 48px; height: 48px; border-radius: 4px; overflow: hidden; flex-shrink: 0; border: 1px solid #1e3a6b; }
@@ -164,6 +311,7 @@
     .mini-btn:hover { color: #e0e8ff; }
     .mini-progress-bg { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: #14142a; }
     .mini-progress-fill { width: 0%; height: 100%; background: #1e90ff; box-shadow: 0 0 10px rgba(30,144,255,0.3); }
+
     .welcome-modal { position: fixed; inset: 0; background: rgba(0,0,10,0.95); backdrop-filter: blur(8px); z-index: 5000; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
     .welcome-modal.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
     .welcome-card { background: #0d0d22; border-radius: 8px; padding: 2rem 1.5rem; text-align: center; max-width: 320px; width: 85%; border: 1px solid #1e3a6b; box-shadow: 0 0 50px rgba(30,144,255,0.1); }
@@ -171,9 +319,12 @@
     .welcome-card p { color: #6a8abf; }
     .accept-btn { background: #1e90ff; color: #0a0a1a; border: none; padding: 0.8rem 2rem; border-radius: 500px; font-weight: bold; margin-top: 1rem; cursor: pointer; transition: 0.2s; box-shadow: 0 0 30px rgba(30,144,255,0.2); }
     .accept-btn:hover { transform: scale(1.02); background: #4da6ff; box-shadow: 0 0 40px rgba(30,144,255,0.4); }
+
     .attribution { text-align: center; margin-top: 2rem; font-size: 0.6rem; color: #3a4a6a; }
+
     @media (max-width:480px){ .top-bar h1{font-size:1.2rem;} .artist-avatar{width:65px;height:65px;} .artist-circle-card{width:75px;} .suggestion-card{flex:0 0 130px;} }
     @keyframes fadeUp { 0% { opacity:0; transform:translateY(10px); } 100% { opacity:1; transform:translateY(0); } }
+
     .toast-notification {
       position: fixed;
       bottom: 80px;
@@ -200,185 +351,37 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* NUEVAS SECCIONES */
-    .home-section {
-      margin-bottom: 2.5rem;
-    }
-    .home-section-title {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #c0cfff;
-      margin-bottom: 0.8rem;
-      letter-spacing: 0.3px;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .home-section-title span {
-      color: #6a8abf;
-      font-weight: 400;
-      font-size: 0.75rem;
-    }
-    .horizontal-scroll {
-      display: flex;
-      gap: 1rem;
-      overflow-x: auto;
-      scrollbar-width: thin;
-      padding-bottom: 0.75rem;
-      -webkit-overflow-scrolling: touch;
-    }
-    .horizontal-scroll::-webkit-scrollbar {
-      height: 4px;
-      background: #14142a;
-    }
-    .horizontal-scroll::-webkit-scrollbar-thumb {
-      background: #1e90ff;
-      border-radius: 10px;
-    }
-    .recent-card {
-      flex: 0 0 140px;
-      background: #0d0d22;
-      border-radius: 8px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border: 1px solid #1e3a6b;
-    }
-    .recent-card:hover {
-      background: #1a1a35;
-      transform: translateY(-4px);
-      border-color: #1e90ff;
-      box-shadow: 0 0 30px rgba(30,144,255,0.15);
-    }
-    .recent-card img {
-      width: 100%;
-      aspect-ratio: 1/1;
-      object-fit: cover;
-      display: block;
-    }
-    .recent-card .recent-info {
-      padding: 0.6rem 0.5rem;
-      text-align: left;
-    }
-    .recent-card .recent-title {
-      font-size: 0.7rem;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: #c0cfff;
-    }
-    .recent-card .recent-artist {
-      font-size: 0.6rem;
-      color: #6a8abf;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .circle-artist-card {
-      flex: 0 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      width: 90px;
-    }
-    .circle-artist-card:hover {
-      transform: translateY(-4px);
-    }
-    .circle-artist-card:hover .circle-avatar {
-      box-shadow: 0 0 0 3px #1e90ff;
-    }
-    .circle-avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid #1e3a6b;
-      transition: all 0.2s ease;
-      background: #14142a;
-    }
-    .circle-artist-name {
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-align: center;
-      color: #c0cfff;
-      max-width: 90px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .show-all-btn {
-      display: block;
-      margin: 2rem auto 1rem auto;
-      background: #14142a;
-      border: 1px solid #1e90ff;
-      border-radius: 500px;
-      padding: 0.8rem 2.5rem;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      color: #e0e8ff;
-      letter-spacing: 0.5px;
-      box-shadow: 0 0 20px rgba(30,144,255,0.1);
-    }
-    .show-all-btn:hover {
-      background: #1a1a35;
-      transform: scale(1.02);
-      box-shadow: 0 0 30px rgba(30,144,255,0.2);
-    }
+    /* SECCIONES HOME */
+    .home-section { margin-bottom: 2.5rem; }
+    .home-section-title { font-size: 1rem; font-weight: 700; color: #c0cfff; margin-bottom: 0.8rem; letter-spacing: 0.3px; display: flex; align-items: center; gap: 0.5rem; }
+    .home-section-title span { color: #6a8abf; font-weight: 400; font-size: 0.75rem; }
+    .horizontal-scroll { display: flex; gap: 1rem; overflow-x: auto; scrollbar-width: thin; padding-bottom: 0.75rem; -webkit-overflow-scrolling: touch; }
+    .horizontal-scroll::-webkit-scrollbar { height: 4px; background: #14142a; }
+    .horizontal-scroll::-webkit-scrollbar-thumb { background: #1e90ff; border-radius: 10px; }
+    .recent-card { flex: 0 0 140px; background: #0d0d22; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.2s ease; border: 1px solid #1e3a6b; }
+    .recent-card:hover { background: #1a1a35; transform: translateY(-4px); border-color: #1e90ff; box-shadow: 0 0 30px rgba(30,144,255,0.15); }
+    .recent-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
+    .recent-card .recent-info { padding: 0.6rem 0.5rem; text-align: left; }
+    .recent-card .recent-title { font-size: 0.7rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #c0cfff; }
+    .recent-card .recent-artist { font-size: 0.6rem; color: #6a8abf; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* CATÁLOGO COMPLETO */
-    .catalog-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-    }
-    .catalog-card {
-      background: #0d0d22;
-      border-radius: 8px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      border: 1px solid #1e3a6b;
-    }
-    .catalog-card:hover {
-      background: #1a1a35;
-      transform: translateY(-4px);
-      border-color: #1e90ff;
-      box-shadow: 0 0 30px rgba(30,144,255,0.15);
-    }
-    .catalog-card img {
-      width: 100%;
-      aspect-ratio: 1/1;
-      object-fit: cover;
-      display: block;
-    }
-    .catalog-card .catalog-info {
-      padding: 0.6rem 0.5rem;
-      text-align: left;
-    }
-    .catalog-card .catalog-title {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: #c0cfff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .catalog-card .catalog-artist {
-      font-size: 0.65rem;
-      color: #6a8abf;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    @media (max-width: 480px) {
-      .catalog-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
-    }
+    .circle-artist-card { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; cursor: pointer; transition: all 0.2s ease; width: 90px; }
+    .circle-artist-card:hover { transform: translateY(-4px); }
+    .circle-artist-card:hover .circle-avatar { box-shadow: 0 0 0 3px #1e90ff; }
+    .circle-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #1e3a6b; transition: all 0.2s ease; background: #14142a; }
+    .circle-artist-name { font-size: 0.75rem; font-weight: 600; text-align: center; color: #c0cfff; max-width: 90px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .show-all-btn { display: block; margin: 2rem auto 1rem auto; background: #14142a; border: 1px solid #1e90ff; border-radius: 500px; padding: 0.8rem 2.5rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; color: #e0e8ff; letter-spacing: 0.5px; box-shadow: 0 0 20px rgba(30,144,255,0.1); }
+    .show-all-btn:hover { background: #1a1a35; transform: scale(1.02); box-shadow: 0 0 30px rgba(30,144,255,0.2); }
+
+    .catalog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .catalog-card { background: #0d0d22; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.25s ease; border: 1px solid #1e3a6b; }
+    .catalog-card:hover { background: #1a1a35; transform: translateY(-4px); border-color: #1e90ff; box-shadow: 0 0 30px rgba(30,144,255,0.15); }
+    .catalog-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
+    .catalog-card .catalog-info { padding: 0.6rem 0.5rem; text-align: left; }
+    .catalog-card .catalog-title { font-size: 0.75rem; font-weight: 600; color: #c0cfff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .catalog-card .catalog-artist { font-size: 0.65rem; color: #6a8abf; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    @media (max-width: 480px) { .catalog-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; } }
     .section-hidden { display: none !important; }
   </style>
 </head>
@@ -394,10 +397,17 @@
 </div>
 
 <header class="top-bar">
-  <h1>Kerim Music+</h1>
-  <div class="search-container">
-    <input type="text" id="searchInput" placeholder="¿Qué quieres escuchar?">
-    <button id="searchButton">🔍</button>
+  <h1 id="mainTitle">Kerim Music+</h1>
+  <div class="search-container" id="searchContainer">
+    <!-- Botón colapsado -->
+    <button class="search-toggle-btn" id="searchToggleBtn">
+      <span class="icon">🔍</span> Búsqueda
+    </button>
+    <!-- Contenido expandido -->
+    <div class="search-expanded" id="searchExpanded">
+      <input type="text" id="searchInput" placeholder="¿Qué quieres escuchar?">
+      <button class="search-close-btn" id="searchCloseBtn">✕</button>
+    </div>
   </div>
 </header>
 
@@ -507,7 +517,7 @@
     // ---------- DATOS ----------
     const artistListeners = {
       'Sain Nt': 0, 'J Vazquez': 0, 'Escribo': 0, 'Adan G': 0, 'Dany Zm': 0, 'Tonny Reyes': 0, 'Emsek': 0,
-      'Prii Ramirez': 0, 'Aizber': 0, 'Clave 462': 0, 'Adan G': 0, 'Placoso de la L': 0
+      'Prii Ramirez': 0, 'Aizber': 0, 'Clave 462': 0, 'Placoso de la L': 0
     };
     const artistExtraInfo = {
       'Sain Nt': 'Si te conviertes en oyente estás apoyando al artista. Los datos los capturamos por medio de WhatsApp privado seguro.',
@@ -740,7 +750,7 @@
       });
     }
 
-    // ---------- HISTORIAL DE REPRODUCCIÓN ----------
+    // HISTORIAL DE REPRODUCCIÓN
     let playHistory = [];
     try {
       const savedHistory = localStorage.getItem('kerim_play_history');
@@ -769,9 +779,8 @@
       return unique.slice(0, limit);
     }
 
-    // ---------- ARTISTAS QUE GRABARON EN EL ESTUDIO (orden aleatorio) ----------
+    // ARTISTAS QUE GRABARON EN EL ESTUDIO (orden aleatorio)
     function getStudioArtistsRandom() {
-      // Obtener la portada más reciente (mayor id) de cada artista
       const sorted = [...originalSongs].sort((a,b) => b.id - a.id);
       const map = new Map();
       for(let s of sorted) {
@@ -780,12 +789,11 @@
           map.set(artist, s);
         }
       }
-      // Convertir a array de objetos y barajar
       const artists = Array.from(map.entries()).map(([name, song]) => ({ name, image: song.url }));
       return shuffleArray(artists);
     }
 
-    // ---------- ARTISTAS QUE SIGUES ----------
+    // ARTISTAS QUE SIGUES
     function getFollowingArtists() {
       const following = [];
       for(let artist in listeningArtists) {
@@ -800,7 +808,7 @@
       return following;
     }
 
-    // ---------- FUNCIONES DE RENDER DE SECCIONES ----------
+    // FUNCIONES DE RENDER DE SECCIONES
     function renderRecentlyPlayed() {
       const section = document.getElementById('recentlyPlayedSection');
       const container = document.getElementById('recentlyPlayedContainer');
@@ -897,7 +905,7 @@
       });
     }
 
-    // ---------- CATÁLOGO COMPLETO ----------
+    // CATÁLOGO COMPLETO
     function renderCatalogView() {
       currentView = 'catalog';
       const container = document.getElementById('contentContainer');
@@ -938,7 +946,7 @@
       updateCounterVisibility();
     }
 
-    // ---------- FUNCIONES DE SOPORTE ----------
+    // FUNCIONES DE SOPORTE
     function escapeHtml(str){ return str ? str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m] || m)) : ''; }
 
     function extractArtistFromTitle(title) {
@@ -957,7 +965,7 @@
     let originalQueue = [];
     let isPlaylistsMode = false;
     let suggestionsHidden = false;
-    let currentView = 'home'; // 'home' | 'artist' | 'album' | 'catalog'
+    let currentView = 'home';
     let currentArtist = null;
     let currentAlbumName = null;
     let currentAlbumSongs = [];
@@ -987,7 +995,10 @@
     const miniNext = document.getElementById('miniNextBtn');
     const miniProgressFill = document.getElementById('miniProgressFill');
     const searchInput = document.getElementById('searchInput');
-    const searchButton = document.getElementById('searchButton');
+    const searchToggleBtn = document.getElementById('searchToggleBtn');
+    const searchCloseBtn = document.getElementById('searchCloseBtn');
+    const searchContainer = document.getElementById('searchContainer');
+    const mainTitle = document.getElementById('mainTitle');
     const randomMatteBg = document.getElementById('randomMatteBg');
     const counterWrapper = document.getElementById('counterWrapper');
     const sortChipsContainer = document.getElementById('sortChipsContainer');
@@ -998,6 +1009,83 @@
     const homeBtn = document.querySelector('[data-view="home"]');
     const likesBtn = document.querySelector('[data-view="likes"]');
     const showAllBtn = document.getElementById('showAllCatalogBtn');
+
+    // ---- BÚSQUEDA MEJORADA ----
+    let searchDebounceTimer = null;
+
+    // Expandir buscador
+    function expandSearch() {
+      searchContainer.classList.add('expanded');
+      mainTitle.classList.add('hidden-title');
+      searchInput.focus();
+      // Si ya hay texto, se mantiene
+    }
+
+    // Colapsar buscador
+    function collapseSearch() {
+      searchContainer.classList.remove('expanded');
+      mainTitle.classList.remove('hidden-title');
+      // Si el input tiene texto, lo mantenemos (no lo borramos) pero al colapsar se oculta
+      // Si queremos borrar el texto al colapsar, descomentar:
+      // searchInput.value = '';
+      // currentSearch = '';
+      // performSearch(); // para refrescar
+    }
+
+    // Evento: clic en botón de búsqueda
+    searchToggleBtn.addEventListener('click', expandSearch);
+
+    // Evento: clic en cerrar
+    searchCloseBtn.addEventListener('click', () => {
+      // Limpiar búsqueda y colapsar
+      searchInput.value = '';
+      currentSearch = '';
+      performSearch();
+      collapseSearch();
+    });
+
+    // Evento: tecla ESC para cerrar
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        searchInput.value = '';
+        currentSearch = '';
+        performSearch();
+        collapseSearch();
+        e.preventDefault();
+      }
+    });
+
+    // Evento: blur (perder foco) solo si no hay texto y no estamos en medio de una interacción con sugerencias
+    searchInput.addEventListener('blur', () => {
+      // Pequeño retardo para permitir clics en resultados
+      setTimeout(() => {
+        if (document.activeElement !== searchInput) {
+          // Si el campo está vacío, colapsar
+          if (searchInput.value.trim() === '') {
+            collapseSearch();
+          } else {
+            // Si tiene texto, quizás no colapsar para no perder la búsqueda
+          }
+        }
+      }, 150);
+    });
+
+    // Evento: input en tiempo real con debounce
+    searchInput.addEventListener('input', function() {
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        const val = this.value.trim();
+        currentSearch = val;
+        performSearch();
+        // Si el texto está vacío, colapsar automáticamente después de un breve momento
+        if (val === '') {
+          // No colapsamos inmediatamente para permitir cerrar con X
+          // Pero podemos dejar que el usuario cierre con X o ESC
+        }
+      }, 200);
+    });
+
+    // ---------- FIN BÚSQUEDA MEJORADA ----------
 
     const mattePalette = ['#0a0a1a','#0d0d22','#0f0f28','#111130','#0e0e26','#0c0c20','#131338','#080818'];
     function getRandomMatteColor(){ return mattePalette[Math.floor(Math.random() * mattePalette.length)]; }
@@ -1225,7 +1313,7 @@
       });
     }
 
-    // ---------- RENDER DE PERFIL DE ARTISTA ----------
+    // RENDER DE PERFIL DE ARTISTA
     function renderArtistProfile() {
       if(!currentArtist) {
         renderContentFallback();
@@ -1408,7 +1496,7 @@
       renderContent();
     }
 
-    // ---------- FUNCIÓN PRINCIPAL renderContent ----------
+    // FUNCIÓN PRINCIPAL renderContent
     function renderContent() {
       if (currentView === 'catalog') {
         renderCatalogView();
@@ -1517,6 +1605,7 @@
       filterButtons.classList.remove('hidden');
       updateSortChipsVisibility();
       renderContent(); renderSuggestions(); updateQueueAndMode();
+      collapseSearch(); // Aseguramos que el buscador se colapse
     });
     likesBtn.addEventListener('click', () => {
       likesBtn.classList.add('active'); homeBtn.classList.remove('active');
@@ -1529,20 +1618,20 @@
       filterButtons.classList.remove('hidden');
       updateSortChipsVisibility();
       renderContent(); renderSuggestions(); updateQueueAndMode();
+      collapseSearch();
     });
 
     function performSearch() {
-      currentSearch = searchInput.value.trim();
-      if(currentSearch !== '') filterButtons.classList.add('hidden');
-      else filterButtons.classList.remove('hidden');
+      // Esta función se llama desde input y desde otros lugares
       currentView = 'home';
       currentArtist = null;
       currentAlbumName = null;
       currentAlbumSongs = [];
       renderContent(); renderSuggestions(); updateQueueAndMode();
+      // Mostrar/ocultar filtros según haya búsqueda
+      if (currentSearch.trim() !== '') filterButtons.classList.add('hidden');
+      else filterButtons.classList.remove('hidden');
     }
-    searchButton.addEventListener('click', performSearch);
-    searchInput.addEventListener('keyup', (e) => { if(e.key === 'Enter') performSearch(); });
 
     showAllBtn.addEventListener('click', () => {
       currentView = 'catalog';
