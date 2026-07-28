@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Botón de redirección</title>
+    <title>Botones de redirección</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,6 +13,10 @@
             height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
+        }
+        .contenedor {
+            display: flex;
+            gap: 20px;
         }
         .boton {
             background-color: #008CBA;
@@ -31,9 +35,18 @@
         .boton:hover {
             background-color: #0077a3;
         }
+        .boton-secundario {
+            background-color: #4CAF50;
+        }
+        .boton-secundario:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
-    <button class="boton" onclick="window.location.href='vistasanilsis.html'">Ir a Vista Sanilsis</button>
+    <div class="contenedor">
+        <button class="boton" onclick="window.location.href='vistasanilsis.html'">Ir a Vista Sanilsis</button>
+        <button class="boton boton-secundario" onclick="window.location.href='Jvazquez.html'">Ir a Jvazquez</button>
+    </div>
 </body>
 </html>
