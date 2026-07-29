@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Reproductor J Vazquez</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    
     <style>
         /* ---------- Reset y base ---------- */
         * {
@@ -652,10 +657,10 @@
         <!-- Botón inferior -->
         <button id="showTracksBtn" class="show-tracks-btn">Ver los temas</button>
 
-        <!-- CONTADOR DE VISITAS PERSONALIZADO (por usuario único) -->
+        <!-- CONTADOR DE VISITAS ÚNICAS CON FIREBASE - CARGA INSTANTÁNEA -->
         <div class="visitor-counter">
-            <span class="counter-icon">👁️</span>
-            <span id="contador">Cargando...</span>
+            <span class="counter-icon">👤</span>
+            <span id="contador">0 visitas únicas</span>
         </div>
 
     </div>
@@ -676,76 +681,112 @@
 
     <script>
         // --------------------------------------------------------------
-        // CONTADOR DE VISITAS POR USUARIO ÚNICO
+        // CONFIGURACIÓN DE FIREBASE
+        // --------------------------------------------------------------
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5R9mPw1PQMjYIqWpz5w3W7BvGmZV4tX8",
+            authDomain: "kerim-music-a9c46.firebaseapp.com",
+            databaseURL: "https://kerim-music-a9c46-default-rtdb.firebaseio.com",
+            projectId: "kerim-music-a9c46",
+            storageBucket: "kerim-music-a9c46.firebasestorage.app",
+            messagingSenderId: "103691719997",
+            appId: "1:103691719997:web:da58ff98f78f1b632b19cb"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // --------------------------------------------------------------
+        // CONTADOR DE VISITAS ÚNICAS - CARGA INSTANTÁNEA
         // --------------------------------------------------------------
         (function() {
-            const pagina = window.location.pathname.split("/").pop().replace(".html", "") || "index";
             const contadorElement = document.getElementById('contador');
+            const pagina = window.location.pathname.split("/").pop().replace(".html", "") || "index";
 
             // Generar un ID único para el usuario (persistente en localStorage)
-            function getUsuarioId() {
-                let userId = localStorage.getItem('usuario_id_visitas');
+            function getUserId() {
+                let userId = localStorage.getItem('visitor_id_jvazquez');
                 if (!userId) {
-                    // Generar ID único usando timestamp + random
                     userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                    localStorage.setItem('usuario_id_visitas', userId);
+                    localStorage.setItem('visitor_id_jvazquez', userId);
                 }
                 return userId;
             }
 
-            const usuarioId = getUsuarioId();
-            // Clave específica para esta página y este usuario
-            const claveVisita = 'visita_usuario_' + pagina + '_' + usuarioId;
+            const userId = getUserId();
 
-            // Función para actualizar el contador en la UI
+            // Referencias en Firebase
+            const counterRef = database.ref('visitantes_unicos/' + pagina);
+            const userRef = database.ref('visitantes_unicos/' + pagina + '/usuarios/' + userId);
+
+            // Función para actualizar la UI (instantáneo)
             function actualizarContador(count) {
                 if (contadorElement) {
-                    contadorElement.textContent = count + " visitas";
+                    contadorElement.textContent = count + " visitas únicas";
                 }
             }
 
-            // Función para obtener el contador actual
-            function obtenerContador() {
-                fetch(`https://api.counterapi.dev/v1/kerimmusic/${pagina}`)
-                    .then(r => {
-                        if (!r.ok) throw new Error('Error al obtener contador');
-                        return r.json();
-                    })
-                    .then(data => {
-                        actualizarContador(data.count);
-                    })
-                    .catch(error => {
-                        console.error('Error al obtener contador:', error);
-                        if (contadorElement) {
-                            contadorElement.textContent = "--- visitas";
-                        }
-                    });
-            }
-
-            // Verificar si este usuario ya ha visitado esta página (una sola vez en total)
-            if (!localStorage.getItem(claveVisita)) {
-                // Primera visita de este usuario a esta página
-                localStorage.setItem(claveVisita, 'true');
-
-                fetch(`https://api.counterapi.dev/v1/kerimmusic/${pagina}/up`, {
-                    method: 'POST'
-                })
-                    .then(r => {
-                        if (!r.ok) throw new Error('Error al incrementar contador');
-                        return r.json();
-                    })
-                    .then(data => {
-                        actualizarContador(data.count);
-                    })
-                    .catch(error => {
-                        console.error('Error al incrementar contador:', error);
-                        // Si falla, intentar obtener el contador actual
-                        obtenerContador();
-                    });
+            // 1. PRIMERO: Mostrar un valor inicial desde localStorage (si existe)
+            // Esto hace que el contador aparezca instantáneamente
+            let cachedCount = localStorage.getItem('visitor_count_' + pagina);
+            if (cachedCount !== null) {
+                actualizarContador(parseInt(cachedCount));
             } else {
-                // Este usuario ya visitó esta página anteriormente
-                obtenerContador();
+                // Si no hay caché, mostrar 0 temporalmente
+                actualizarContador(0);
             }
+
+            // 2. SEGUNDO: Obtener el valor real de Firebase (rápido)
+            counterRef.child('total').once('value')
+                .then(snapshot => {
+                    const val = snapshot.val() || 0;
+                    // Guardar en caché local para futuras cargas instantáneas
+                    localStorage.setItem('visitor_count_' + pagina, val);
+                    actualizarContador(val);
+                })
+                .catch(error => {
+                    console.error('Error al obtener contador:', error);
+                });
+
+            // 3. Verificar si el usuario es nuevo
+            userRef.once('value')
+                .then(snapshot => {
+                    if (!snapshot.exists()) {
+                        // Nuevo usuario - registrar y aumentar contador
+                        const updates = {};
+                        updates['/total'] = firebase.database.ServerValue.increment(1);
+                        updates['/usuarios/' + userId] = {
+                            fecha: new Date().toISOString(),
+                            userAgent: navigator.userAgent.slice(0, 100)
+                        };
+
+                        counterRef.update(updates)
+                            .then(() => {
+                                // Obtener el nuevo total actualizado
+                                counterRef.child('total').once('value')
+                                    .then(snap => {
+                                        const newVal = snap.val() || 0;
+                                        localStorage.setItem('visitor_count_' + pagina, newVal);
+                                        actualizarContador(newVal);
+                                    });
+                            })
+                            .catch(error => {
+                                console.error('Error al registrar usuario:', error);
+                            });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al verificar usuario:', error);
+                });
+
+            // 4. Escuchar cambios en tiempo real (cuando otros usuarios nuevos visitan)
+            counterRef.child('total').on('value', (snapshot) => {
+                const val = snapshot.val() || 0;
+                localStorage.setItem('visitor_count_' + pagina, val);
+                actualizarContador(val);
+            });
+
         })();
 
         // --------------------------------------------------------------
@@ -840,7 +881,6 @@
             // Reajustar al cambiar tamaño
             window.addEventListener('resize', () => {
                 resize();
-                // Reiniciar partículas para que se distribuyan bien
                 for (let p of particles) {
                     p.x = Math.random() * width;
                     p.y = Math.random() * height;
