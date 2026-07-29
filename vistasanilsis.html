@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kerim Music+</title>
+    <title>Kerim Music+ · Lista</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
         * {
             margin: 0;
@@ -24,8 +27,15 @@
             padding: 1.5rem;
         }
 
-        .card {
+        .album-list {
             max-width: 820px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.8rem;
+        }
+
+        .card {
             width: 100%;
             background: rgba(255, 250, 245, 0.7);
             backdrop-filter: blur(4px);
@@ -42,7 +52,6 @@
             flex-wrap: wrap;
             align-items: center;
             gap: 1rem 1.8rem;
-            margin-bottom: 2.5rem;
         }
 
         .avatar-name {
@@ -115,6 +124,24 @@
             font-weight: 600 !important;
         }
 
+        .album-tag {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            color: #7f6250;
+            background: rgba(210, 180, 160, 0.25);
+            padding: 0.25rem 1rem 0.25rem 1rem;
+            border-radius: 40px;
+            text-transform: uppercase;
+            margin-top: 0.3rem;
+            border: 1px solid rgba(200, 175, 155, 0.2);
+        }
+
+        .card + .card {
+            margin-top: 0;
+        }
+
         @media (max-width: 640px) {
             .card {
                 padding: 1.5rem 1rem 2rem;
@@ -133,27 +160,174 @@
             .brand-name {
                 font-size: 1.6rem;
             }
+            .album-list {
+                gap: 1.4rem;
+            }
+        }
+
+        .visit-count {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2f1f16;
+            letter-spacing: 0.01em;
+        }
+
+        .loading-dots {
+            font-size: 0.9rem;
+            opacity: 0.6;
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="header-flex">
-            <div class="avatar-name">
-                <img class="avatar-img" src="https://www.dropbox.com/scl/fi/ic181hn9urht5rpwq59i8/Kerim-Music.png?rlkey=yrsuxjx4nppskluqn50vwyo6q&st=jvkea5wb&raw=1" alt="Kerim Music+ avatar" />
-                <span class="brand-name">Kerim Music+</span>
-            </div>
 
-            <div class="counter-wrapper">
-                <span class="counter-label">VISITAS</span>
-                <div class="counter-container">
-                    <script type="text/javascript" src="https://contador.websiteout.com/js/7/1/0/1"></script>
-                    <noscript>
-                        <span style="font-size:0.9rem; opacity:0.7;">⏺ 1.2k</span>
-                    </noscript>
+    <div class="album-list">
+        <!-- ===== Reproductor Kerim Music+ ===== -->
+        <div class="card" data-album="kerim-music">
+            <div class="header-flex">
+                <div class="avatar-name">
+                    <img class="avatar-img" src="https://www.dropbox.com/scl/fi/ic181hn9urht5rpwq59i8/Kerim-Music.png?rlkey=yrsuxjx4nppskluqn50vwyo6q&st=jvkea5wb&raw=1" alt="Kerim Music+ avatar" />
+                    <span class="brand-name">Kerim Music+</span>
+                </div>
+
+                <div class="counter-wrapper">
+                    <span class="counter-label">VISITAS</span>
+                    <div class="counter-container" id="counter-kerim-music">
+                        <span class="loading-dots">…</span>
+                    </div>
                 </div>
             </div>
+            <div class="album-tag">Radio Music</div>
+        </div>
+
+        <!-- ===== ÁLBUM J Vazquez ===== -->
+        <div class="card" data-album="jvazquez">
+            <div class="header-flex">
+                <div class="avatar-name">
+                    <img class="avatar-img" src="https://www.dropbox.com/scl/fi/ic181hn9urht5rpwq59i8/Kerim-Music.png?rlkey=yrsuxjx4nppskluqn50vwyo6q&st=jvkea5wb&raw=1" alt="Kerim Music+ avatar" />
+                    <span class="brand-name">J Vazquez</span>
+                </div>
+
+                <div class="counter-wrapper">
+                    <span class="counter-label">VISITAS</span>
+                    <div class="counter-container" id="counter-jvazquez">
+                        <span class="loading-dots">…</span>
+                    </div>
+                </div>
+            </div>
+            <div class="album-tag">Album EJEMPLO</div>
+        </div>
+
+        <!-- ===== ÁLBUM danyzm ===== -->
+        <div class="card" data-album="danyzm-album">
+            <div class="header-flex">
+                <div class="avatar-name">
+                    <img class="avatar-img" src="https://www.dropbox.com/scl/fi/ic181hn9urht5rpwq59i8/Kerim-Music.png?rlkey=yrsuxjx4nppskluqn50vwyo6q&st=jvkea5wb&raw=1" alt="Kerim Music+ avatar" />
+                    <span class="brand-name">danyzm</span>
+                </div>
+
+                <div class="counter-wrapper">
+                    <span class="counter-label">VISITAS</span>
+                    <div class="counter-container" id="counter-danyzm-album">
+                        <span class="loading-dots">…</span>
+                    </div>
+                </div>
+            </div>
+            <div class="album-tag">danyzm-album</div>
+        </div>
+
+        <!-- ===== ÁLBUM emsek ===== -->
+        <div class="card" data-album="emsek-album">
+            <div class="header-flex">
+                <div class="avatar-name">
+                    <img class="avatar-img" src="https://www.dropbox.com/scl/fi/ic181hn9urht5rpwq59i8/Kerim-Music.png?rlkey=yrsuxjx4nppskluqn50vwyo6q&st=jvkea5wb&raw=1" alt="Kerim Music+ avatar" />
+                    <span class="brand-name">emsek</span>
+                </div>
+
+                <div class="counter-wrapper">
+                    <span class="counter-label">VISITAS</span>
+                    <div class="counter-container" id="counter-emsek-album">
+                        <span class="loading-dots">…</span>
+                    </div>
+                </div>
+            </div>
+            <div class="album-tag">emsek-album</div>
         </div>
     </div>
+
+    <script>
+        // ------------------------------------------------------------
+        // CONFIGURACIÓN DE FIREBASE
+        // ------------------------------------------------------------
+        const firebaseConfig = {
+            apiKey: "AIzaSyD4X6j5Kp9Yv7o3tR1wU2qZ8mN5cB7vL9E",
+            authDomain: "kerim-music-a9c46.firebaseapp.com",
+            projectId: "kerim-music-a9c46",
+            storageBucket: "kerim-music-a9c46.appspot.com",
+            messagingSenderId: "103691719997216811321",
+            appId: "1:103691719997216811321:web:1a2b3c4d5e6f7890",
+            measurementId: "G-ABCDEFGHIJ"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ------------------------------------------------------------
+        // LISTA DE ÁLBUMES (IDs de documentos)
+        // ------------------------------------------------------------
+        const albumIds = [
+            'kerim-music',
+            'jvazquez',
+            'danyzm-album',
+            'emsek-album'
+        ];
+
+        // Mapa para relacionar ID del documento con el contenedor del DOM
+        const counterMap = {
+            'kerim-music': 'counter-kerim-music',
+            'jvazquez': 'counter-jvazquez',
+            'danyzm-album': 'counter-danyzm-album',
+            'emsek-album': 'counter-emsek-album'
+        };
+
+        // ------------------------------------------------------------
+        // FUNCIÓN PARA OBTENER Y MOSTRAR LAS VISITAS EXISTENTES
+        // (SOLO LECTURA, NO INCREMENTA)
+        // ------------------------------------------------------------
+        async function loadExistingVisits(albumId) {
+            const docRef = db.collection('albumes').doc(albumId);
+            const containerId = counterMap[albumId];
+            const container = document.getElementById(containerId);
+            
+            if (!container) return;
+
+            try {
+                const docSnap = await docRef.get();
+                if (docSnap.exists) {
+                    const visits = docSnap.data().visitas || 0;
+                    container.innerHTML = `<span class="visit-count">${visits}</span>`;
+                } else {
+                    // El documento no existe, mostrar 0
+                    container.innerHTML = `<span class="visit-count">0</span>`;
+                }
+            } catch (error) {
+                console.error(`Error al cargar visitas para ${albumId}:`, error);
+                container.innerHTML = `<span style="font-size:0.8rem; opacity:0.6;">⚠️ error</span>`;
+            }
+        }
+
+        // ------------------------------------------------------------
+        // INICIALIZACIÓN: cargar las visitas existentes sin modificar
+        // ------------------------------------------------------------
+        async function init() {
+            for (const albumId of albumIds) {
+                await loadExistingVisits(albumId);
+            }
+        }
+
+        // Ejecutar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
 </body>
 </html>
