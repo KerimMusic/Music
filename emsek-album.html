@@ -5,11 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Reproductor Emsek</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
-    
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    
+
+    <!-- Firebase SDKs (modulares) -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"
+            }
+        }
+    </script>
+
     <style>
         /* ---------- Reset y base ---------- */
         * {
@@ -657,9 +663,9 @@
         <!-- Botón inferior -->
         <button id="showTracksBtn" class="show-tracks-btn">Ver los temas</button>
 
-        <!-- CONTADOR DE VISITAS CON FIRESTORE -->
+        <!-- CONTADOR DE VISITAS CON FIRESTORE (nueva versión) -->
         <div class="visitor-counter">
-            <span class="counter-icon"></span>
+            <span class="counter-icon">Visitas</span>
             <span id="contador">Visitas</span>
         </div>
 
@@ -668,7 +674,7 @@
     <!-- Modal de lista de canciones -->
     <div class="modal-overlay" id="tracksModal">
         <div class="modal-header">
-            <h3>🎵 Lista de canciones</h3>
+            <h3>Lista de canciones</h3>
             <button class="close-modal" id="closeModalBtn">✕</button>
         </div>
         <div class="modal-list" id="modalList">
@@ -679,10 +685,22 @@
     <!-- Elemento de audio oculto -->
     <audio id="audioPlayer" preload="metadata"></audio>
 
-    <script>
-        // ==============================================================
-        // CONFIGURACIÓN DE FIREBASE
-        // ==============================================================
+    <!-- ==============================================================
+    SCRIPT PRINCIPAL (módulo ES con Firebase)
+    ============================================================== -->
+    <script type="module">
+        // ----- Importaciones de Firebase (API modular) -----
+        import { initializeApp } from "firebase/app";
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            setDoc,
+            runTransaction,
+            // onSnapshot, // no lo usamos en esta versión
+        } from "firebase/firestore";
+
+        // ----- Configuración de Firebase -----
         const firebaseConfig = {
             apiKey: "AIzaSyC5R9mPw1PQMjYIqWpz5w3W7BvGmZV4tX8",
             authDomain: "kerim-music-a9c46.firebaseapp.com",
@@ -692,101 +710,89 @@
             appId: "1:103691719997:web:da58ff98f78f1b632b19cb"
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-        // ==============================================================
-        // CONTADOR DE VISITAS - Colección "visitas"
-        // ==============================================================
-        (function() {
-            const contadorElement = document.getElementById('contador');
-            const pagina = window.location.pathname.split("/").pop().replace(".html", "") || "index";
+        // ----- Referencia al documento en la colección "Nombre" con ID "Nombre" -----
+        const contadorRef = doc(db, "AlbunEmsek", "emsek-album");
 
-            function getUserId() {
-                let userId = localStorage.getItem('visitor_id_emsek');
-                if (!userId) {
-                    userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                    localStorage.setItem('visitor_id_emsek', userId);
+        // Campo que almacena el total
+        const CAMPO_CONTADOR = "total";
+
+        // Elemento del DOM que muestra el total (id="contador")
+        const totalSpan = document.getElementById("contador");
+
+        // ----- Funciones del contador -----
+
+        // Leer el valor actual desde Firestore
+        async function obtenerValor() {
+            try {
+                const docSnap = await getDoc(contadorRef);
+                if (docSnap.exists()) {
+                    return docSnap.data()[CAMPO_CONTADOR] || 0;
+                } else {
+                    // Si no existe, lo creamos con valor = 0
+                    await setDoc(contadorRef, { [CAMPO_CONTADOR]: 0 });
+                    return 0;
                 }
-                return userId;
+            } catch (error) {
+                console.error("Error al leer el contador:", error);
+                return 0;
             }
+        }
 
-            const userId = getUserId();
+        // Actualizar la interfaz con el valor actual
+        async function actualizarInterfaz() {
+            const valor = await obtenerValor();
+            totalSpan.textContent = valor;
+        }
 
-            // Referencias en Firestore - Colección "visitas"
-            const counterRef = db.collection('AlbunEmsek').doc(pagina);
-            const userRef = counterRef.collection('usuarios').doc(userId);
-
-            function actualizarContador(count) {
-                if (contadorElement) {
-                    contadorElement.textContent = count + " visitas";
-                }
-            }
-
-            // Mostrar valor desde localStorage (instantáneo)
-            let cachedCount = localStorage.getItem('visitor_count_' + pagina);
-            if (cachedCount !== null) {
-                actualizarContador(parseInt(cachedCount));
-            } else {
-                actualizarContador(0);
-            }
-
-            // Obtener valor real de Firestore
-            counterRef.get()
-                .then(doc => {
-                    if (doc.exists) {
-                        const val = doc.data().total || 0;
-                        localStorage.setItem('visitor_count_' + pagina, val);
-                        actualizarContador(val);
-                    } else {
-                        counterRef.set({ total: 0 });
+        // Incrementar el contador usando una transacción
+        async function aumentarContador() {
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const docSnap = await transaction.get(contadorRef);
+                    if (!docSnap.exists()) {
+                        // Si no existe, lo creamos con valor = 1 (porque aumentamos)
+                        transaction.set(contadorRef, { [CAMPO_CONTADOR]: 1 });
+                        return;
                     }
-                })
-                .catch(error => {
-                    console.error('Error al obtener contador:', error);
+                    const nuevoValor = (docSnap.data()[CAMPO_CONTADOR] || 0) + 1;
+                    transaction.update(contadorRef, { [CAMPO_CONTADOR]: nuevoValor });
                 });
+                // Después de la transacción, actualizamos la vista
+                await actualizarInterfaz();
+            } catch (error) {
+                console.error("Error al aumentar:", error);
+                alert("Hubo un error al actualizar el contador. Revisa la consola.");
+            }
+        }
 
-            // Verificar si el usuario es nuevo
-            userRef.get()
-                .then(doc => {
-                    if (!doc.exists) {
-                        counterRef.update({
-                            total: firebase.firestore.FieldValue.increment(1)
-                        }).then(() => {
-                            userRef.set({
-                                fecha: new Date().toISOString(),
-                                userAgent: navigator.userAgent.slice(0, 100)
-                            });
-                            counterRef.get().then(snap => {
-                                if (snap.exists) {
-                                    const newVal = snap.data().total || 0;
-                                    localStorage.setItem('visitor_count_' + pagina, newVal);
-                                    actualizarContador(newVal);
-                                }
-                            });
-                        }).catch(error => {
-                            console.error('Error al registrar usuario:', error);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error al verificar usuario:', error);
-                });
+        // ----- Autenticación (opcional, se mantiene pero sin uso real) -----
+        // Si no usas autenticación, puedes eliminar esto o dejarlo como está.
+        // import { getAuth, onAuthStateChanged } from "firebase/auth";
+        // const auth = getAuth(app);
+        // onAuthStateChanged(auth, (user) => {
+        //     if (user) console.log("Usuario autenticado:", user);
+        //     else console.log("Usuario no autenticado");
+        // });
 
-            // Escuchar cambios en tiempo real
-            counterRef.onSnapshot((doc) => {
-                if (doc.exists) {
-                    const val = doc.data().total || 0;
-                    localStorage.setItem('visitor_count_' + pagina, val);
-                    actualizarContador(val);
-                }
-            });
+        // ----- Cargar el valor inicial y luego incrementar -----
+        // Al cargar la página, mostramos el valor actual y aumentamos en 1
+        document.addEventListener("DOMContentLoaded", async () => {
+            await actualizarInterfaz();   // muestra el valor actual
+            await aumentarContador();      // incrementa y actualiza la interfaz
+        });
 
-        })();
+        // (Opcional) Exponer la función de aumento globalmente, por si se necesita desde un botón
+        window.aumentarContador = aumentarContador;
 
         // ==============================================================
-        // PARTÍCULAS
+        // RESTO DEL REPRODUCTOR (sin cambios)
         // ==============================================================
+
+        // ----- PARTÍCULAS -----
         (function initParticles() {
             const canvas = document.getElementById('particlesCanvas');
             const ctx = canvas.getContext('2d');
@@ -889,9 +895,7 @@
             observer.observe(overlay, { attributes: true, attributeFilter: ['class'] });
         })();
 
-        // ==============================================================
-        // OCULTAR OVERLAY
-        // ==============================================================
+        // ----- OCULTAR OVERLAY -----
         (function() {
             const overlay = document.getElementById('welcomeOverlay');
             setTimeout(() => {
@@ -902,9 +906,7 @@
             }, 4000);
         })();
 
-        // ==============================================================
-        // DATOS DE CANCIONES
-        // ==============================================================
+        // ----- DATOS DE CANCIONES -----
         const emsekSongs = [{
             id: 59,
             url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1',
@@ -977,9 +979,7 @@
             music: 'https://www.dropbox.com/scl/fi/thmc7o0uftl3hhvig4lc6/Entre_tus_Redes_-msek__HM___462__Casero_Records_MP3_256kbps_128k.mp3?rlkey=6raowpgc6b5j5a0h21qyo6p34&st=5jws1foy&raw=1'
         }];
 
-        // ==============================================================
-        // DOM REFERENCIAS
-        // ==============================================================
+        // ----- DOM REFERENCIAS (reproductor) -----
         const audio = document.getElementById('audioPlayer');
         const coverImg = document.getElementById('coverImage');
         const coverWrapper = document.getElementById('coverWrapper');
@@ -999,18 +999,14 @@
         const closeModalBtn = document.getElementById('closeModalBtn');
         const songListEl = document.getElementById('songList');
 
-        // ==============================================================
-        // ESTADO
-        // ==============================================================
+        // ----- ESTADO DEL REPRODUCTOR -----
         let songs = emsekSongs;
         let currentIndex = 0;
         let isPlaying = false;
         let isShuffle = false;
         let repeatMode = 'off';
 
-        // ==============================================================
-        // FUNCIONES AUXILIARES
-        // ==============================================================
+        // ----- FUNCIONES AUXILIARES -----
         function formatTime(seconds) {
             if (isNaN(seconds) || seconds === Infinity) return '0:00';
             const m = Math.floor(seconds / 60);
@@ -1022,9 +1018,7 @@
             return songs[index] || null;
         }
 
-        // ==============================================================
-        // ACTUALIZAR UI
-        // ==============================================================
+        // ----- ACTUALIZAR UI -----
         function loadSong(index, autoPlay = false) {
             const song = getSong(index);
             if (!song) return;
@@ -1098,9 +1092,7 @@
             });
         }
 
-        // ==============================================================
-        // CONTROLES
-        // ==============================================================
+        // ----- CONTROLES DEL REPRODUCTOR -----
         function togglePlay() {
             if (audio.paused) {
                 if (audio.src === '') {
@@ -1194,9 +1186,7 @@
             }
         }
 
-        // ==============================================================
-        // RENDERIZAR LISTA
-        // ==============================================================
+        // ----- RENDERIZAR LISTA -----
         function renderPlaylist() {
             songListEl.innerHTML = '';
             songs.forEach((song, idx) => {
@@ -1237,9 +1227,7 @@
             updateActiveInModal();
         }
 
-        // ==============================================================
-        // MODAL
-        // ==============================================================
+        // ----- MODAL -----
         function toggleModal(open) {
             if (open) {
                 tracksModal.classList.add('open');
@@ -1248,9 +1236,7 @@
             }
         }
 
-        // ==============================================================
-        // EVENTOS
-        // ==============================================================
+        // ----- EVENTOS DEL REPRODUCTOR -----
         playBtn.addEventListener('click', togglePlay);
         prevBtn.addEventListener('click', prevSong);
         nextBtn.addEventListener('click', nextSong);
@@ -1316,13 +1302,15 @@
             }
         }, { passive: true });
 
-        // ==============================================================
-        // INICIALIZAR
-        // ==============================================================
+        // ----- INICIALIZAR REPRODUCTOR -----
         renderPlaylist();
         loadSong(0, false);
         updateShuffleButton();
         updateRepeatButton();
+
+        // (El contador ya se maneja arriba, con el event listener de DOMContentLoaded)
+
+        console.log("Reproductor Emsek iniciado con nuevo contador Firestore (Albunes/Jvazquez)");
     </script>
 </body>
 </html>
