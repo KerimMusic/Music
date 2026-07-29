@@ -3,209 +3,302 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>J Vazquez · Contador de visitas</title>
+    <title>Contadores en tiempo real</title>
     <style>
+        /* Reset básico */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-            background: linear-gradient(145deg, #f0f4fa 0%, #d9e2ec 100%);
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            background: linear-gradient(145deg, #f5f7fa 0%, #e9edf5 100%);
+            padding: 20px;
         }
-        .card {
-            background: #ffffff;
-            padding: 2.5rem 3rem;
-            border-radius: 28px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 6px 12px rgba(0, 0, 0, 0.05);
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 40px;
+            padding: 30px 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .titulo {
             text-align: center;
-            max-width: 450px;
-            width: 90%;
-        }
-        h1 {
-            font-size: 2.6rem;
-            font-weight: 700;
-            color: #1a2a3a;
-            letter-spacing: -0.5px;
-            margin-bottom: 0.25rem;
-        }
-        .subtitle {
-            color: #5b6f82;
-            font-size: 1rem;
-            margin-bottom: 1.8rem;
-            border-bottom: 2px solid #eef3f8;
-            padding-bottom: 1rem;
-        }
-        .url-box {
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 0.8rem 1rem;
-            margin: 1.5rem 0 1rem;
-            word-break: break-all;
-            border: 1px solid #e2e8f0;
-        }
-        .url-box a {
-            color: #1a73e8;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .url-box a:hover {
-            text-decoration: underline;
-        }
-        .footnote {
-            margin-top: 1.2rem;
-            font-size: 0.75rem;
-            color: #8a9aa8;
-        }
-        .visitor-counter {
-            display: inline-block;
-            background: #f0f4fa;
-            padding: 0.6rem 1.8rem;
-            border-radius: 60px;
-            margin-bottom: 0.5rem;
-        }
-        .visitor-counter span {
-            font-size: 1.4rem;
-        }
-        #contador {
-            font-weight: 700;
-            font-size: 2rem;
-            color: #0b2b4a;
-            margin: 0 4px;
-        }
-        .visitor-counter .label {
-            color: #3d5a73;
             font-weight: 600;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
+            font-size: 1.8rem;
+            color: #1e293b;
+            letter-spacing: -0.5px;
+            margin-bottom: 28px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+        }
+        .titulo span {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .usuario-card {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            background: white;
+            padding: 16px 22px;
+            border-radius: 60px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(4px);
+        }
+        .usuario-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        .usuario-card img {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #f1f5f9;
+            flex-shrink: 0;
+            background: #f8fafc;
+        }
+
+        .info {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            flex: 1;
+            flex-wrap: wrap;
+        }
+
+        .nombre {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: #0f172a;
+            letter-spacing: -0.3px;
+        }
+
+        .contador {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1e293b;
+            background: #f1f5f9;
+            padding: 0 18px;
+            border-radius: 40px;
+            line-height: 1.5;
+            min-width: 70px;
+            text-align: center;
+            transition: background 0.2s;
+        }
+        .usuario-card:hover .contador {
+            background: #e2e8f0;
+        }
+
+        .contador .numero {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Ajustes para móviles */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px;
+            }
+            .usuario-card {
+                padding: 12px 16px;
+                border-radius: 40px;
+                gap: 12px;
+            }
+            .usuario-card img {
+                width: 44px;
+                height: 44px;
+            }
+            .nombre {
+                font-size: 1.1rem;
+            }
+            .contador {
+                font-size: 1.6rem;
+                min-width: 55px;
+                padding: 0 10px;
+            }
+            .titulo {
+                font-size: 1.4rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>J Vazquez</h1>
-        <div class="subtitle">Album J Vazquez</div>
+    <div class="container">
+        <div class="titulo"><span>Kerim Music+</span></div>
 
-        <!-- ===== CONTADOR ===== -->
-        <div class="visitor-counter">
-            <span id="contador">Cargando...</span>
-            <span class="label">Visitas</span>
+        <!-- Usuario 1: Emsek -->
+        <div class="usuario-card">
+            <img src="https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=srurysqy&raw=1" alt="Emsek" />
+            <div class="info">
+                <span class="nombre">Emsek</span>
+                <span class="contador"><span class="numero" id="totalEmsek">0</span></span>
+            </div>
+        </div>
+
+        <!-- Usuario 2: J Vazquez -->
+        <div class="usuario-card">
+            <img src="https://www.dropbox.com/scl/fi/bv6fo6j2vmnp2esqd4ula/800x800-7986476-700B12B5-E66A-4DC7-B44D0B4ABA4553B2-0-483095-Picsart251220185548595.jpg?rlkey=r6plwuux7kuee6uw307l1isar&st=61s02yro&raw=1" alt="J Vazquez" />
+            <div class="info">
+                <span class="nombre">J Vazquez</span>
+                <span class="contador"><span class="numero" id="totalJvazquez">0</span></span>
+            </div>
+        </div>
+
+        <!-- Usuario 3: Dany Zm -->
+        <div class="usuario-card">
+            <img src="https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=32pukmtf&raw=1" alt="Dany Zm" />
+            <div class="info">
+                <span class="nombre">Dany Zm</span>
+                <span class="contador"><span class="numero" id="totalDanyZm">0</span></span>
+            </div>
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase módulos (sin cambios) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            setDoc,
+            runTransaction,
+            onSnapshot
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    <script>
-        // ========== CONFIGURACIÓN DE FIREBASE ==========
+        // ⚠️ REEMPLAZA con tu configuración real de Firebase
         const firebaseConfig = {
-            apiKey: "AIzaSyC5R9mPw1PQMjYIqWpz5w3W7BvGmZV4tX8",
+            apiKey: "AIzaSy...",               // ← Pon tu apiKey
             authDomain: "kerim-music-a9c46.firebaseapp.com",
             projectId: "kerim-music-a9c46",
-            storageBucket: "kerim-music-a9c46.firebasestorage.app",
-            messagingSenderId: "103691719997",
-            appId: "1:103691719997:web:da58ff98f78f1b632b19cb"
+            storageBucket: "kerim-music-a9c46.appspot.com",
+            messagingSenderId: "...",          // ← Pon tu messagingSenderId
+            appId: "..."                       // ← Pon tu appId
         };
-        // ===============================================
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-        // ========== CONTADOR GLOBAL (documento fijo "Jvazquez") ==========
-        (function() {
-            const contadorElement = document.getElementById('contador');
-            const DOCUMENTO_ID = 'Jvazquez';  // ← Único documento para todo el sitio
-            const counterRef = db.collection('Albunes').doc(DOCUMENTO_ID);
+        // ─── Referencias a los documentos ────────────────────────────────
+        const refEmsek   = doc(db, "AlbunEmsek", "emsek-album");
+        const refSain    = doc(db, "Albunes", "Jvazquez");     
+        const refDanyZm  = doc(db, "Albun Dany Zm", "danyzm-album");
 
-            // Identificador único del dispositivo (se guarda en localStorage)
-            function getUserId() {
-                let userId = localStorage.getItem('visitor_id_jvazquez');
-                if (!userId) {
-                    userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                    localStorage.setItem('visitor_id_jvazquez', userId);
-                }
-                return userId;
-            }
+        // ─── Nombres de los campos ──────────────────────────────────────
+        const CAMPO_EMSEK   = "total";
+        const CAMPO_SAIN    = "total";
+        const CAMPO_DANY_ZM = "total";
 
-            const userId = getUserId();
-            const userRef = counterRef.collection('usuarios').doc(userId);
+        // ─── Elementos del DOM ──────────────────────────────────────────
+        const spanEmsek   = document.getElementById("totalEmsek");
+        const spanSain    = document.getElementById("totalJvazquez");
+        const spanDanyZm  = document.getElementById("totalDanyZm");
 
-            function actualizarContador(count) {
-                if (contadorElement) {
-                    contadorElement.textContent = count;
-                }
-            }
-
-            // 1. Mostrar valor en caché (si existe)
-            let cachedCount = localStorage.getItem('visitor_count_global');
-            if (cachedCount !== null) {
-                actualizarContador(parseInt(cachedCount));
-            } else {
-                actualizarContador(0);
-            }
-
-            // 2. Obtener valor real de Firestore (y crear el documento si no existe)
-            counterRef.get()
-                .then(doc => {
-                    if (doc.exists) {
-                        const val = doc.data().total || 0;
-                        localStorage.setItem('visitor_count_global', val);
-                        actualizarContador(val);
-                    } else {
-                        // Crear el documento con total = 0
-                        counterRef.set({ total: 0 });
+        // ─── Función genérica de inicialización ────────────────────────
+        async function inicializarDocumento(ref, campo, nombre) {
+            try {
+                const docSnap = await getDoc(ref);
+                if (!docSnap.exists()) {
+                    await setDoc(ref, { [campo]: 0 });
+                    console.log(`Documento ${nombre} creado con valor 0`);
+                } else {
+                    const data = docSnap.data();
+                    if (!(campo in data)) {
+                        await setDoc(ref, { [campo]: 0 }, { merge: true });
+                        console.log(`Campo ${campo} añadido en ${nombre}`);
                     }
-                })
-                .catch(error => {
-                    console.error('Error al obtener contador:', error);
-                });
-
-            // 3. Verificar si el usuario ya ha visitado (usuario nuevo → incrementar)
-            userRef.get()
-                .then(doc => {
-                    if (!doc.exists) {
-                        // Incrementar el contador global
-                        counterRef.update({
-                            total: firebase.firestore.FieldValue.increment(1)
-                        }).then(() => {
-                            // Registrar el usuario
-                            userRef.set({
-                                fecha: new Date().toISOString(),
-                                userAgent: navigator.userAgent.slice(0, 100)
-                            });
-                            // Leer el nuevo valor y actualizar caché
-                            counterRef.get().then(snap => {
-                                if (snap.exists) {
-                                    const newVal = snap.data().total || 0;
-                                    localStorage.setItem('visitor_count_global', newVal);
-                                    actualizarContador(newVal);
-                                }
-                            });
-                        }).catch(error => {
-                            console.error('Error al registrar usuario:', error);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error al verificar usuario:', error);
-                });
-
-            // 4. Escuchar cambios en tiempo real (cuando otro usuario visita)
-            counterRef.onSnapshot((doc) => {
-                if (doc.exists) {
-                    const val = doc.data().total || 0;
-                    localStorage.setItem('visitor_count_global', val);
-                    actualizarContador(val);
                 }
+            } catch (error) {
+                console.error(`Error al inicializar ${nombre}:`, error);
+            }
+        }
+
+        // ─── Listener genérico ──────────────────────────────────────────
+        function escucharContador(ref, campo, spanElement, nombre) {
+            return onSnapshot(ref, (docSnap) => {
+                if (docSnap.exists()) {
+                    const valor = docSnap.data()[campo] ?? 0;
+                    spanElement.textContent = valor;
+                } else {
+                    inicializarDocumento(ref, campo, nombre);
+                }
+            }, (error) => {
+                console.error(`Error en listener de ${nombre}:`, error);
             });
+        }
 
-        })();
+        // ─── Función genérica para incrementar ────────────────────────
+        async function incrementarCampo(ref, campo) {
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const docSnap = await transaction.get(ref);
+                    if (!docSnap.exists()) {
+                        transaction.set(ref, { [campo]: 1 });
+                        return;
+                    }
+                    const valorActual = docSnap.data()[campo] ?? 0;
+                    transaction.update(ref, { [campo]: valorActual + 1 });
+                });
+            } catch (error) {
+                console.error(`Error al incrementar ${campo}:`, error);
+            }
+        }
+
+        // ─── Funciones para exponer en consola ──────────────────────────
+        function aumentarEmsek()   { incrementarCampo(refEmsek, CAMPO_EMSEK); }
+        function aumentarJvazquez() { incrementarCampo(refSain, CAMPO_SAIN); }
+        function aumentarDanyZm()  { incrementarCampo(refDanyZm, CAMPO_DANY_ZM); }
+
+        // ─── Autenticación (opcional) ──────────────────────────────────
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("Usuario autenticado:", user);
+            } else {
+                console.log("Usuario no autenticado");
+            }
+        });
+
+        // ─── Inicio ──────────────────────────────────────────────────────
+        document.addEventListener("DOMContentLoaded", async () => {
+            await inicializarDocumento(refEmsek, CAMPO_EMSEK, "Emsek");
+            await inicializarDocumento(refSain, CAMPO_SAIN, "J Vazquez");
+            await inicializarDocumento(refDanyZm, CAMPO_DANY_ZM, "Dany Zm");
+
+            escucharContador(refEmsek, CAMPO_EMSEK, spanEmsek, "Emsek");
+            escucharContador(refSain, CAMPO_SAIN, spanSain, "J Vazquez");
+            escucharContador(refDanyZm, CAMPO_DANY_ZM, spanDanyZm, "Dany Zm");
+        });
+
+        // Exponer funciones globales
+        window.aumentarEmsek     = aumentarEmsek;
+        window.aumentarJvazquez  = aumentarJvazquez;
+        window.aumentarDanyZm    = aumentarDanyZm;
     </script>
 </body>
 </html>
