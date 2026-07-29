@@ -20,33 +20,33 @@
             align-items: center;
             padding: 20px;
             transition: background-color 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            background-color: #e0e0e0;
+            background-color: #1a1a2e;
         }
 
         .container {
             max-width: 700px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(26, 26, 46, 0.85);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-radius: 40px;
             padding: 30px 25px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12), 0 8px 20px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 8px 20px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .titulo {
             text-align: center;
             font-weight: 700;
             font-size: 1.8rem;
-            color: #1a1a1a;
+            color: #f0f0f0;
             letter-spacing: -0.5px;
             margin-bottom: 8px;
             padding-bottom: 12px;
-            border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.06);
         }
         .titulo span {
-            color: #000000;
+            color: #ffffff;
         }
 
         /* ---------- TARJETA DE ÁLBUM DESTACADO ---------- */
@@ -75,16 +75,16 @@
             display: flex;
             align-items: center;
             gap: 20px;
-            background: #f7f7f7;
+            background: #24243a;
             padding: 18px 24px;
             border-radius: 24px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.03);
-            border: 1px solid #e0e0e0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             transition: transform 0.2s ease;
         }
         .destacado-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
         }
 
         .destacado-imagen {
@@ -92,10 +92,10 @@
             height: 80px;
             border-radius: 16px;
             object-fit: cover;
-            border: 2px solid #d0d0d0;
+            border: 2px solid rgba(255, 255, 255, 0.08);
             flex-shrink: 0;
-            background: #eeeeee;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            background: #1a1a2e;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .destacado-info {
@@ -111,8 +111,8 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: #555555;
-            background: rgba(0, 0, 0, 0.06);
+            color: #a0a0c0;
+            background: rgba(255, 255, 255, 0.06);
             display: inline-block;
             padding: 2px 12px;
             border-radius: 20px;
@@ -122,7 +122,7 @@
         .destacado-nombre {
             font-size: 1.6rem;
             font-weight: 700;
-            color: #111111;
+            color: #f0f0f0;
             letter-spacing: -0.5px;
             line-height: 1.2;
             white-space: nowrap;
@@ -133,20 +133,20 @@
         .destacado-visitas {
             font-size: 1.2rem;
             font-weight: 600;
-            color: #444444;
+            color: #b0b0d0;
             display: flex;
             align-items: center;
             gap: 6px;
         }
         .destacado-visitas .numero {
-            color: #000000;
+            color: #ffffff;
             font-size: 1.6rem;
             font-weight: 700;
         }
 
         .destacado-badge {
-            background: #222222;
-            color: #ffffff;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #0f0f1a;
             font-weight: 700;
             font-size: 0.7rem;
             padding: 4px 12px;
@@ -156,7 +156,7 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
         }
 
         /* ---------- Tarjetas de usuarios ---------- */
@@ -164,19 +164,19 @@
             display: flex;
             align-items: center;
             gap: 18px;
-            background: #fcfcfc;
+            background: #1e1e32;
             padding: 16px 22px;
             border-radius: 60px;
             margin-bottom: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             transition: all 0.2s ease;
-            border: 1px solid #e8e8e8;
+            border: 1px solid rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(4px);
         }
         .usuario-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
-            border-color: #c0c0c0;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.12);
         }
 
         .usuario-card img {
@@ -184,9 +184,9 @@
             height: 58px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #e0e0e0;
+            border: 2px solid rgba(255, 255, 255, 0.08);
             flex-shrink: 0;
-            background: #f0f0f0;
+            background: #12121f;
         }
 
         .info {
@@ -200,15 +200,15 @@
         .nombre {
             font-size: 1.35rem;
             font-weight: 600;
-            color: #1a1a1a;
+            color: #f0f0f0;
             letter-spacing: -0.3px;
         }
 
         .contador {
             font-size: 2.2rem;
             font-weight: 700;
-            color: #1a1a1a;
-            background: #f0f0f0;
+            color: #f0f0f0;
+            background: #12121f;
             padding: 0 18px;
             border-radius: 40px;
             line-height: 1.5;
@@ -217,11 +217,11 @@
             transition: background 0.2s;
         }
         .usuario-card:hover .contador {
-            background: #e0e0e0;
+            background: #1a1a2e;
         }
 
         .contador .numero {
-            color: #000000;
+            color: #ffffff;
         }
 
         /* ---------- Responsive ---------- */
@@ -287,7 +287,7 @@
                     <span class="destacado-etiqueta">🏆 Álbum más escuchado</span>
                     <div class="destacado-nombre" id="destacadoArtista">—</div>
                     <div class="destacado-visitas">
-                        <span>🎧</span>
+                        <span></span>
                         <span class="numero" id="destacadoVisitas">0</span>
                         <span>visitas</span>
                         <span class="destacado-badge">🔥 TOP</span>
@@ -327,7 +327,7 @@
         <div class="usuario-card">
             <img src="https://www.dropbox.com/scl/fi/ic181hn9urht5rpwq59i8/Kerim-Music.png?rlkey=yrsuxjx4nppskluqn50vwyo6q&st=rkfz6q4w&raw=1" alt="Radio Muisc" />
             <div class="info">
-                <span class="nombre">Radio Muisc</span>
+                <span class="nombre">Radio Music</span>
                 <span class="contador"><span class="numero" id="totalRadioMuisc">0</span></span>
             </div>
         </div>
@@ -475,10 +475,10 @@
         window.aumentarDanyZm = () => incrementarCampo(refDanyZm, "Dany Zm");
         window.aumentarRadioMuisc = () => incrementarCampo(refRadioMuisc, "Radio Muisc");
 
-        // ─── FONDO ALEATORIO ─────────────────────────────────────────────
+        // ─── FONDO ALEATORIO (TONOS OSCUROS) ─────────────────────────────
         const palette = [
-            '#e0e0e0', '#d6d6d6', '#c8c8c8', '#b0b0b0', '#f0f0f0',
-            '#eaeaea', '#dcdcdc', '#cccccc', '#e8e8e8', '#f5f5f5'
+            '#1a1a2e', '#16213e', '#0f0f1a', '#1e1e2f', '#14142b',
+            '#1c1c30', '#12121f', '#202035', '#18182a', '#1f1f33'
         ];
 
         function changeBackground() {
