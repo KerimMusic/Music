@@ -6,9 +6,10 @@
     <title>Reproductor J Vazquez</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
     
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs (compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     
     <style>
         /* ---------- Reset y base ---------- */
@@ -383,7 +384,7 @@
             font-size: 0.9rem;
         }
 
-        .visitor-counter #contador {
+        .visitor-counter #totalValor {
             color: #888888;
             font-weight: 600;
             background: #1a1a1a;
@@ -533,7 +534,7 @@
             .welcome-content h1 { font-size: 3rem; }
             .welcome-content p { font-size: 1rem; }
             .visitor-counter { font-size: 0.7rem; }
-            .visitor-counter #contador { font-size: 0.7rem; padding: 0.15rem 0.8rem; min-width: 60px; }
+            .visitor-counter #totalValor { font-size: 0.7rem; padding: 0.15rem 0.8rem; min-width: 60px; }
         }
 
         @media (min-width: 600px) {
@@ -592,10 +593,11 @@
         <!-- Botón inferior -->
         <button id="showTracksBtn" class="show-tracks-btn">Ver los temas</button>
 
-        <!-- CONTADOR DE VISITAS CON FIRESTORE -->
+        <!-- CONTADOR DE VISITAS CON FIRESTORE (NUEVO) -->
         <div class="visitor-counter">
             <span class="counter-icon"></span>
-            <span id="contador">Visitas</span>
+            <span>Visitas:</span>
+            <span id="totalValor">0</span>
         </div>
 
     </div>
@@ -631,93 +633,81 @@
         const db = firebase.firestore();
 
         // ==============================================================
-        // CONTADOR DE VISITAS - Colección "visitas"
+        // CONTADOR DE VISITAS - NUEVA LÓGICA
         // ==============================================================
-        (function() {
-            const contadorElement = document.getElementById('contador');
-            const pagina = window.location.pathname.split("/").pop().replace(".html", "") || "index";
+        // Referencia al documento en la colección "Albunes" con ID "Jvazquez"
+        const contadorRef = db.collection("Albunes").doc("Jvazquez");
 
-            function getUserId() {
-                let userId = localStorage.getItem('visitor_id_jvazquez');
-                if (!userId) {
-                    userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                    localStorage.setItem('visitor_id_jvazquez', userId);
+        // CONSTANTE para el nombre del campo en Firestore
+        const CAMPO_CONTADOR = "total";
+
+        // Elemento del DOM que muestra el total
+        const totalSpan = document.getElementById("totalValor");
+
+        // Función para leer el valor actual del campo desde Firestore
+        async function obtenerValor() {
+            try {
+                const docSnap = await contadorRef.get();
+                if (docSnap.exists) {
+                    return docSnap.data()[CAMPO_CONTADOR] || 0;
+                } else {
+                    // Si no existe, lo creamos con el campo = 0
+                    await contadorRef.set({ [CAMPO_CONTADOR]: 0 });
+                    return 0;
                 }
-                return userId;
+            } catch (error) {
+                console.error("Error al leer el contador:", error);
+                return 0;
             }
+        }
 
-            const userId = getUserId();
+        // Función para actualizar la interfaz con el valor actual
+        async function actualizarInterfaz() {
+            const valor = await obtenerValor();
+            totalSpan.textContent = valor;
+        }
 
-            // Referencias en Firestore - Colección "visitas"
-            const counterRef = db.collection('Albunes').doc(pagina);
-            const userRef = counterRef.collection('usuarios').doc(userId);
-
-            function actualizarContador(count) {
-                if (contadorElement) {
-                    contadorElement.textContent = count + " Visitas";
-                }
+        // Función para incrementar el contador usando una transacción
+        async function aumentarContador() {
+            try {
+                await db.runTransaction(async (transaction) => {
+                    const docSnap = await transaction.get(contadorRef);
+                    if (!docSnap.exists) {
+                        transaction.set(contadorRef, { [CAMPO_CONTADOR]: 1 });
+                        return;
+                    }
+                    const nuevoValor = (docSnap.data()[CAMPO_CONTADOR] || 0) + 1;
+                    transaction.update(contadorRef, { [CAMPO_CONTADOR]: nuevoValor });
+                });
+                // Después de la transacción, actualizamos la vista
+                await actualizarInterfaz();
+            } catch (error) {
+                console.error("Error al aumentar:", error);
+                alert("Hubo un error al actualizar el contador. Revisa la consola.");
             }
+        }
 
-            // Mostrar valor desde localStorage (instantáneo)
-            let cachedCount = localStorage.getItem('visitor_count_' + pagina);
-            if (cachedCount !== null) {
-                actualizarContador(parseInt(cachedCount));
+        // Autenticación (opcional)
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                console.log("Usuario autenticado:", user);
             } else {
-                actualizarContador(0);
+                console.log("Usuario no autenticado");
             }
+        });
 
-            // Obtener valor real de Firestore
-            counterRef.get()
-                .then(doc => {
-                    if (doc.exists) {
-                        const val = doc.data().total || 0;
-                        localStorage.setItem('visitor_count_' + pagina, val);
-                        actualizarContador(val);
-                    } else {
-                        counterRef.set({ total: 0 });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error al obtener contador:', error);
-                });
+        // Cargar el valor inicial al iniciar la página
+        document.addEventListener("DOMContentLoaded", actualizarInterfaz);
 
-            // Verificar si el usuario es nuevo
-            userRef.get()
-                .then(doc => {
-                    if (!doc.exists) {
-                        counterRef.update({
-                            total: firebase.firestore.FieldValue.increment(1)
-                        }).then(() => {
-                            userRef.set({
-                                fecha: new Date().toISOString(),
-                                userAgent: navigator.userAgent.slice(0, 100)
-                            });
-                            counterRef.get().then(snap => {
-                                if (snap.exists) {
-                                    const newVal = snap.data().total || 0;
-                                    localStorage.setItem('visitor_count_' + pagina, newVal);
-                                    actualizarContador(newVal);
-                                }
-                            });
-                        }).catch(error => {
-                            console.error('Error al registrar usuario:', error);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error al verificar usuario:', error);
-                });
+        // Control de visita única con localStorage
+        const VISITED_KEY = 'visited_jvazquez';
+        if (!localStorage.getItem(VISITED_KEY)) {
+            aumentarContador();
+            localStorage.setItem(VISITED_KEY, 'true');
+        }
 
-            // Escuchar cambios en tiempo real
-            counterRef.onSnapshot((doc) => {
-                if (doc.exists) {
-                    const val = doc.data().total || 0;
-                    localStorage.setItem('visitor_count_' + pagina, val);
-                    actualizarContador(val);
-                }
-            });
-
-        })();
+        // Exponer la función de aumento globalmente (por si se necesita desde consola)
+        window.aumentarContador = aumentarContador;
 
         // ==============================================================
         // PARTÍCULAS
