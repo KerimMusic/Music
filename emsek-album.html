@@ -663,10 +663,10 @@
         <!-- Botón inferior -->
         <button id="showTracksBtn" class="show-tracks-btn">Ver los temas</button>
 
-        <!-- CONTADOR DE VISITAS CON FIRESTORE (nueva versión) -->
+        <!-- CONTADOR DE VISITAS CON FIRESTORE (visitas únicas) -->
         <div class="visitor-counter">
             <span class="counter-icon">Visitas</span>
-            <span id="contador">Visitas</span>
+            <span id="contador">0</span>
         </div>
 
     </div>
@@ -686,7 +686,7 @@
     <audio id="audioPlayer" preload="metadata"></audio>
 
     <!-- ==============================================================
-    SCRIPT PRINCIPAL (módulo ES con Firebase)
+    SCRIPT: CONTADOR CON FIREBASE (MÓDULO) – VISITAS ÚNICAS
     ============================================================== -->
     <script type="module">
         // ----- Importaciones de Firebase (API modular) -----
@@ -694,10 +694,10 @@
         import {
             getFirestore,
             doc,
+            collection,
             getDoc,
             setDoc,
             runTransaction,
-            // onSnapshot, // no lo usamos en esta versión
         } from "firebase/firestore";
 
         // ----- Configuración de Firebase -----
@@ -714,25 +714,29 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ----- Referencia al documento en la colección "Nombre" con ID "Nombre" -----
+        // ----- Referencia al documento en la colección "AlbunEmsek" con ID "emsek-album" -----
         const contadorRef = doc(db, "AlbunEmsek", "emsek-album");
-
-        // Campo que almacena el total
         const CAMPO_CONTADOR = "total";
 
         // Elemento del DOM que muestra el total (id="contador")
-        const totalSpan = document.getElementById("contador");
+        const contadorSpan = document.getElementById("contador");
+
+        // ----- Obtener / crear ID de usuario -----
+        let userId = localStorage.getItem('visitor_id_emsek');
+        if (!userId) {
+            userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('visitor_id_emsek', userId);
+        }
+        // Referencia al documento del usuario en la subcolección "usuarios"
+        const userRef = doc(collection(contadorRef, 'usuarios'), userId);
 
         // ----- Funciones del contador -----
-
-        // Leer el valor actual desde Firestore
         async function obtenerValor() {
             try {
                 const docSnap = await getDoc(contadorRef);
                 if (docSnap.exists()) {
                     return docSnap.data()[CAMPO_CONTADOR] || 0;
                 } else {
-                    // Si no existe, lo creamos con valor = 0
                     await setDoc(contadorRef, { [CAMPO_CONTADOR]: 0 });
                     return 0;
                 }
@@ -742,56 +746,60 @@
             }
         }
 
-        // Actualizar la interfaz con el valor actual
         async function actualizarInterfaz() {
             const valor = await obtenerValor();
-            totalSpan.textContent = valor;
+            if (contadorSpan) contadorSpan.textContent = valor;
         }
 
-        // Incrementar el contador usando una transacción
-        async function aumentarContador() {
+        // ----- Inicializar contador (solo incrementa si es nuevo usuario) -----
+        async function inicializarContador() {
+            // Mostrar valor actual
+            await actualizarInterfaz();
+
             try {
-                await runTransaction(db, async (transaction) => {
-                    const docSnap = await transaction.get(contadorRef);
-                    if (!docSnap.exists()) {
-                        // Si no existe, lo creamos con valor = 1 (porque aumentamos)
-                        transaction.set(contadorRef, { [CAMPO_CONTADOR]: 1 });
-                        return;
-                    }
-                    const nuevoValor = (docSnap.data()[CAMPO_CONTADOR] || 0) + 1;
-                    transaction.update(contadorRef, { [CAMPO_CONTADOR]: nuevoValor });
-                });
-                // Después de la transacción, actualizamos la vista
-                await actualizarInterfaz();
+                const userSnap = await getDoc(userRef);
+                if (!userSnap.exists()) {
+                    // Usuario nuevo: incrementar contador principal y registrar
+                    await runTransaction(db, async (transaction) => {
+                        const docSnap = await transaction.get(contadorRef);
+                        const nuevoTotal = (docSnap.exists() ? docSnap.data()[CAMPO_CONTADOR] : 0) + 1;
+                        if (!docSnap.exists()) {
+                            transaction.set(contadorRef, { [CAMPO_CONTADOR]: nuevoTotal });
+                        } else {
+                            transaction.update(contadorRef, { [CAMPO_CONTADOR]: nuevoTotal });
+                        }
+                    });
+                    // Crear documento del usuario
+                    await setDoc(userRef, {
+                        fecha: new Date().toISOString(),
+                        userAgent: navigator.userAgent.slice(0, 200)
+                    });
+                    // Actualizar la interfaz con el nuevo valor
+                    await actualizarInterfaz();
+                    console.log("✅ Nuevo usuario registrado. Contador incrementado.");
+                } else {
+                    console.log("👤 Usuario ya registrado. No se incrementa.");
+                }
             } catch (error) {
-                console.error("Error al aumentar:", error);
-                alert("Hubo un error al actualizar el contador. Revisa la consola.");
+                console.error("Error al verificar/registrar usuario:", error);
             }
         }
 
-        // ----- Autenticación (opcional, se mantiene pero sin uso real) -----
-        // Si no usas autenticación, puedes eliminar esto o dejarlo como está.
-        // import { getAuth, onAuthStateChanged } from "firebase/auth";
-        // const auth = getAuth(app);
-        // onAuthStateChanged(auth, (user) => {
-        //     if (user) console.log("Usuario autenticado:", user);
-        //     else console.log("Usuario no autenticado");
-        // });
+        // Ejecutar al cargar la página
+        document.addEventListener("DOMContentLoaded", inicializarContador);
 
-        // ----- Cargar el valor inicial y luego incrementar -----
-        // Al cargar la página, mostramos el valor actual y aumentamos en 1
-        document.addEventListener("DOMContentLoaded", async () => {
-            await actualizarInterfaz();   // muestra el valor actual
-            await aumentarContador();      // incrementa y actualiza la interfaz
-        });
+        // (Opcional) exponer función para uso externo
+        window.aumentarContador = async () => {
+            console.warn("Incremento manual deshabilitado para visitas únicas.");
+        };
 
-        // (Opcional) Exponer la función de aumento globalmente, por si se necesita desde un botón
-        window.aumentarContador = aumentarContador;
+        console.log("✅ Contador Firebase con visitas únicas inicializado (AlbunEmsek/emsek-album)");
+    </script>
 
-        // ==============================================================
-        // RESTO DEL REPRODUCTOR (sin cambios)
-        // ==============================================================
-
+    <!-- ==============================================================
+    SCRIPT PRINCIPAL DEL REPRODUCTOR (sin cambios)
+    ============================================================== -->
+    <script>
         // ----- PARTÍCULAS -----
         (function initParticles() {
             const canvas = document.getElementById('particlesCanvas');
@@ -1308,9 +1316,7 @@
         updateShuffleButton();
         updateRepeatButton();
 
-        // (El contador ya se maneja arriba, con el event listener de DOMContentLoaded)
-
-        console.log("Reproductor Emsek iniciado con nuevo contador Firestore (Albunes/Jvazquez)");
+        console.log("Reproductor Emsek iniciado con contador de visitas únicas");
     </script>
 </body>
 </html>
