@@ -714,7 +714,7 @@
             const userId = getUserId();
 
             // Referencias en Firestore - Colección "visitas"
-            const counterRef = db.collection('visitas').doc(pagina);
+            const counterRef = db.collection('AlbunEmsek').doc(pagina);
             const userRef = counterRef.collection('usuarios').doc(userId);
 
             function actualizarContador(count) {
