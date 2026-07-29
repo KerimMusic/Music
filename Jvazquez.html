@@ -593,10 +593,10 @@
         <!-- Botón inferior -->
         <button id="showTracksBtn" class="show-tracks-btn">Ver los temas</button>
 
-        <!-- CONTADOR DE VISITAS CON FIRESTORE (NUEVO) -->
+        <!-- CONTADOR DE VISITAS ÚNICAS -->
         <div class="visitor-counter">
             <span class="counter-icon"></span>
-            <span>Visitas:</span>
+            <span>Visitas</span>
             <span id="totalValor">0</span>
         </div>
 
@@ -633,16 +633,30 @@
         const db = firebase.firestore();
 
         // ==============================================================
-        // CONTADOR DE VISITAS - NUEVA LÓGICA
+        // CONTADOR DE VISITAS ÚNICAS
         // ==============================================================
-        // Referencia al documento en la colección "Albunes" con ID "Jvazquez"
         const contadorRef = db.collection("Albunes").doc("Jvazquez");
-
-        // CONSTANTE para el nombre del campo en Firestore
+        const totalSpan = document.getElementById("totalValor");
         const CAMPO_CONTADOR = "total";
 
-        // Elemento del DOM que muestra el total
-        const totalSpan = document.getElementById("totalValor");
+        // Función para generar un ID único de usuario basado en el dispositivo
+        function generarIdUsuario() {
+            // Combinamos información del navegador para crear un ID único
+            const screenInfo = `${window.screen.width}x${window.screen.height}x${window.screen.colorDepth}`;
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const language = navigator.language;
+            const userAgent = navigator.userAgent;
+            
+            // Creamos un hash simple
+            const baseString = `${screenInfo}|${timezone}|${language}|${userAgent}`;
+            let hash = 0;
+            for (let i = 0; i < baseString.length; i++) {
+                const char = baseString.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convertir a entero de 32 bits
+            }
+            return `user_${Math.abs(hash).toString(36)}`;
+        }
 
         // Función para leer el valor actual del campo desde Firestore
         async function obtenerValor() {
@@ -651,7 +665,6 @@
                 if (docSnap.exists) {
                     return docSnap.data()[CAMPO_CONTADOR] || 0;
                 } else {
-                    // Si no existe, lo creamos con el campo = 0
                     await contadorRef.set({ [CAMPO_CONTADOR]: 0 });
                     return 0;
                 }
@@ -667,47 +680,53 @@
             totalSpan.textContent = valor;
         }
 
-        // Función para incrementar el contador usando una transacción
-        async function aumentarContador() {
+        // Función para incrementar el contador de visitas únicas
+        async function registrarVisitaUnica() {
             try {
-                await db.runTransaction(async (transaction) => {
-                    const docSnap = await transaction.get(contadorRef);
-                    if (!docSnap.exists) {
-                        transaction.set(contadorRef, { [CAMPO_CONTADOR]: 1 });
-                        return;
-                    }
-                    const nuevoValor = (docSnap.data()[CAMPO_CONTADOR] || 0) + 1;
-                    transaction.update(contadorRef, { [CAMPO_CONTADOR]: nuevoValor });
-                });
-                // Después de la transacción, actualizamos la vista
+                const userId = generarIdUsuario();
+                const storageKey = `visit_jvazquez_${userId}`;
+                
+                // Verificar si este usuario ya visitó
+                if (localStorage.getItem(storageKey)) {
+                    console.log("Usuario ya registrado, no se incrementa el contador");
+                    return;
+                }
+
+                // Primero obtenemos el valor actual
+                const valorActual = await obtenerValor();
+                
+                // Incrementamos en 1
+                const nuevoValor = valorActual + 1;
+                await contadorRef.set({ [CAMPO_CONTADOR]: nuevoValor });
+                
+                // Guardamos que este usuario ya visitó
+                localStorage.setItem(storageKey, 'true');
+                
+                console.log(`✅ Visita única registrada: ${nuevoValor}`);
+                
+                // Actualizamos la interfaz
                 await actualizarInterfaz();
+                
+                // Añadimos un pequeño efecto visual
+                totalSpan.style.transition = 'transform 0.3s ease';
+                totalSpan.style.transform = 'scale(1.3)';
+                setTimeout(() => {
+                    totalSpan.style.transform = 'scale(1)';
+                }, 300);
+                
             } catch (error) {
-                console.error("Error al aumentar:", error);
-                alert("Hubo un error al actualizar el contador. Revisa la consola.");
+                console.error("Error al registrar visita única:", error);
             }
         }
 
-        // Autenticación (opcional)
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                console.log("Usuario autenticado:", user);
-            } else {
-                console.log("Usuario no autenticado");
-            }
+        // Inicialización
+        document.addEventListener("DOMContentLoaded", async () => {
+            // Mostrar el contador actual
+            await actualizarInterfaz();
+            
+            // Registrar visita única si es un nuevo usuario
+            await registrarVisitaUnica();
         });
-
-        // Cargar el valor inicial al iniciar la página
-        document.addEventListener("DOMContentLoaded", actualizarInterfaz);
-
-        // Control de visita única con localStorage
-        const VISITED_KEY = 'visited_jvazquez';
-        if (!localStorage.getItem(VISITED_KEY)) {
-            aumentarContador();
-            localStorage.setItem(VISITED_KEY, 'true');
-        }
-
-        // Exponer la función de aumento globalmente (por si se necesita desde consola)
-        window.aumentarContador = aumentarContador;
 
         // ==============================================================
         // PARTÍCULAS
