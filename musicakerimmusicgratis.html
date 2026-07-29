@@ -99,6 +99,16 @@
       letter-spacing: 1px;
       color: #2b6df6;
     }
+    #contador {
+      color: #888888;
+      font-weight: 600;
+      background: #1a1a1a;
+      padding: 0.2rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      display: inline-block;
+      min-width: 80px;
+    }
     .upgrade-banner {
       display: flex;
       justify-content: center;
@@ -926,12 +936,7 @@
 <main class="gallery-section">
   <div class="counter-wrapper" id="counterWrapper">
     <span class="counter-label">VISITAS</span>
-    <div class="counter-container">
-      <!-- Contador actualizado -->
-      <script type="text/javascript" src="https://www.free-counters.org/count/k0r4"></script><br>
-      <a href='https://www.versicherungen.at/studenten-versicherung/'>Erasmus Kranken/Unfall-Versicherung</a>
-      <script type='text/javascript' src='https://whomania.com/ctr?id=7c4570f254a90dbcf8b8508f4122f5a859988c4a'></script>
-    </div>
+    <span id="contador">0</span>
   </div>
 
   <div class="top-artists-section" id="topArtistsSection">
@@ -993,6 +998,117 @@
   <div class="mini-progress-bg"><div class="mini-progress-fill" id="miniProgressFill"></div></div>
 </div>
 
+<!-- ========== CONTADOR CON FIREBASE (MÓDULO) – VISITAS ÚNICAS ========== -->
+<script type="importmap">
+  {
+    "imports": {
+      "firebase/app": "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js",
+      "firebase/firestore": "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"
+    }
+  }
+</script>
+
+<script type="module">
+  import { initializeApp } from "firebase/app";
+  import {
+    getFirestore,
+    doc,
+    collection,
+    getDoc,
+    setDoc,
+    runTransaction,
+  } from "firebase/firestore";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC5R9mPw1PQMjYIqWpz5w3W7BvGmZV4tX8",
+    authDomain: "kerim-music-a9c46.firebaseapp.com",
+    projectId: "kerim-music-a9c46",
+    storageBucket: "kerim-music-a9c46.firebasestorage.app",
+    messagingSenderId: "103691719997",
+    appId: "1:103691719997:web:da58ff98f78f1b632b19cb"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const contadorRef = doc(db, "Radio Muisc", "Kerim Music+");
+  const CAMPO_CONTADOR = "total";
+  const contadorSpan = document.getElementById("contador");
+
+  // ---------- Obtener / crear ID de usuario ----------
+  let userId = localStorage.getItem('visitor_id_kerim');
+  if (!userId) {
+    userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('visitor_id_kerim', userId);
+  }
+  const userRef = doc(collection(contadorRef, 'usuarios'), userId);
+
+  // ---------- Funciones del contador ----------
+  async function obtenerValor() {
+    try {
+      const docSnap = await getDoc(contadorRef);
+      if (docSnap.exists()) {
+        return docSnap.data()[CAMPO_CONTADOR] || 0;
+      } else {
+        await setDoc(contadorRef, { [CAMPO_CONTADOR]: 0 });
+        return 0;
+      }
+    } catch (error) {
+      console.error("Error al leer el contador:", error);
+      return 0;
+    }
+  }
+
+  async function actualizarInterfaz() {
+    const valor = await obtenerValor();
+    if (contadorSpan) contadorSpan.textContent = valor;
+  }
+
+  // ---------- Inicializar contador (solo incrementa si es nuevo usuario) ----------
+  async function inicializarContador() {
+    await actualizarInterfaz();  // muestra el valor actual
+
+    try {
+      const userSnap = await getDoc(userRef);
+      if (!userSnap.exists()) {
+        // Usuario nuevo: incrementar contador principal y registrar
+        await runTransaction(db, async (transaction) => {
+          const docSnap = await transaction.get(contadorRef);
+          const nuevoTotal = (docSnap.exists() ? docSnap.data()[CAMPO_CONTADOR] : 0) + 1;
+          if (!docSnap.exists()) {
+            transaction.set(contadorRef, { [CAMPO_CONTADOR]: nuevoTotal });
+          } else {
+            transaction.update(contadorRef, { [CAMPO_CONTADOR]: nuevoTotal });
+          }
+        });
+        // Crear documento del usuario
+        await setDoc(userRef, {
+          fecha: new Date().toISOString(),
+          userAgent: navigator.userAgent.slice(0, 200)
+        });
+        // Actualizar la interfaz con el nuevo valor
+        await actualizarInterfaz();
+        console.log("✅ Nuevo usuario registrado. Contador incrementado.");
+      } else {
+        console.log("👤 Usuario ya registrado. No se incrementa.");
+      }
+    } catch (error) {
+      console.error("Error al verificar/registrar usuario:", error);
+    }
+  }
+
+  // Ejecutar al cargar la página
+  document.addEventListener("DOMContentLoaded", inicializarContador);
+
+  // (Opcional) exponer función para uso externo – no se usa en el reproductor
+  window.aumentarContador = async () => {
+    console.warn("Incremento manual deshabilitado para visitas únicas.");
+  };
+
+  console.log("✅ Contador Firebase con visitas únicas inicializado (Radio Muisc/Kerim Music+)");
+</script>
+
+<!-- ========== SCRIPT PRINCIPAL DEL REPRODUCTOR (sin cambios) ========== -->
 <script>
   (function(){
     // ==================== CONFIGURACIÓN ====================
