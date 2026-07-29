@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Reproductor J Vazquez</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    
     <style>
         /* ---------- Reset y base ---------- */
         * {
@@ -652,7 +657,7 @@
         <!-- Botón inferior -->
         <button id="showTracksBtn" class="show-tracks-btn">Ver los temas</button>
 
-        <!-- CONTADOR DE VISITAS PERSONALIZADO -->
+        <!-- CONTADOR DE VISITAS CON FIREBASE -->
         <div class="visitor-counter">
             <span class="counter-icon">👁️</span>
             <span id="contador">Cargando...</span>
@@ -676,15 +681,35 @@
 
     <script>
         // --------------------------------------------------------------
-        // CONTADOR DE VISITAS PERSONALIZADO (sin depender de scripts externos)
+        // CONFIGURACIÓN DE FIREBASE
+        // --------------------------------------------------------------
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5R9mPw1PQMjYIqWpz5w3W7BvGmZV4tX8",
+            authDomain: "kerim-music-a9c46.firebaseapp.com",
+            databaseURL: "https://kerim-music-a9c46-default-rtdb.firebaseio.com",
+            projectId: "kerim-music-a9c46",
+            storageBucket: "kerim-music-a9c46.firebasestorage.app",
+            messagingSenderId: "103691719997",
+            appId: "1:103691719997:web:da58ff98f78f1b632b19cb"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // --------------------------------------------------------------
+        // CONTADOR DE VISITAS CON FIREBASE REALTIME DATABASE
         // --------------------------------------------------------------
         (function() {
+            const contadorElement = document.getElementById('contador');
             const pagina = window.location.pathname.split("/").pop().replace(".html", "") || "index";
             const hoy = new Date().toISOString().slice(0,10);
-            const clave = "visita_" + pagina;
-            const contadorElement = document.getElementById('contador');
+            const clave = "visita_" + pagina + "_" + hoy;
 
-            // Función para actualizar el contador en la UI
+            // Referencia al contador en Firebase
+            const counterRef = database.ref('visitantes/' + pagina);
+
+            // Función para actualizar la UI
             function actualizarContador(count) {
                 if (contadorElement) {
                     contadorElement.textContent = count + " visitas";
@@ -693,13 +718,10 @@
 
             // Función para obtener el contador actual
             function obtenerContador() {
-                fetch(`https://api.counterapi.dev/v1/kerimmusic/${pagina}`)
-                    .then(r => {
-                        if (!r.ok) throw new Error('Error al obtener contador');
-                        return r.json();
-                    })
-                    .then(data => {
-                        actualizarContador(data.count);
+                counterRef.once('value')
+                    .then(snapshot => {
+                        const val = snapshot.val() || 0;
+                        actualizarContador(val);
                     })
                     .catch(error => {
                         console.error('Error al obtener contador:', error);
@@ -709,30 +731,34 @@
                     });
             }
 
-            // Verificar si es una nueva visita hoy
-            if (localStorage.getItem(clave) !== hoy) {
-                // Primera visita del día - incrementar contador
-                localStorage.setItem(clave, hoy);
+            // Verificar si es una nueva visita hoy (usando localStorage)
+            const todayKey = "visita_" + pagina + "_" + hoy;
 
-                fetch(`https://api.counterapi.dev/v1/kerimmusic/${pagina}/up`, {
-                    method: 'POST'
-                })
-                    .then(r => {
-                        if (!r.ok) throw new Error('Error al incrementar contador');
-                        return r.json();
-                    })
-                    .then(data => {
-                        actualizarContador(data.count);
-                    })
-                    .catch(error => {
+            if (localStorage.getItem(todayKey) !== hoy) {
+                // Primera visita del día - incrementar contador
+                localStorage.setItem(todayKey, hoy);
+
+                // Incrementar en Firebase usando transacción para evitar conflictos
+                counterRef.transaction((currentValue) => {
+                    return (currentValue || 0) + 1;
+                }, (error, committed, snapshot) => {
+                    if (error) {
                         console.error('Error al incrementar contador:', error);
-                        // Si falla, intentar obtener el contador actual
-                        obtenerContador();
-                    });
+                        obtenerContador(); // Fallback: obtener el valor actual
+                    } else if (committed) {
+                        actualizarContador(snapshot.val());
+                    }
+                });
             } else {
                 // Ya visitó hoy - solo mostrar el contador
                 obtenerContador();
             }
+
+            // Escuchar cambios en tiempo real (para actualizar si otro usuario visita)
+            counterRef.on('value', (snapshot) => {
+                const val = snapshot.val() || 0;
+                actualizarContador(val);
+            });
         })();
 
         // --------------------------------------------------------------
