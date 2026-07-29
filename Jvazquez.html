@@ -6,7 +6,7 @@
     <title>Reproductor J Vazquez</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
     
-    <!-- Firebase SDKs (versión modular para Firestore) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     
@@ -71,7 +71,7 @@
             pointer-events: none;
         }
 
-        /* Canvas de partículas (fondo del overlay) */
+        /* Canvas de partículas */
         #particlesCanvas {
             position: absolute;
             top: 0;
@@ -81,7 +81,6 @@
             z-index: 0;
         }
 
-        /* Contenido del overlay (por encima del canvas) */
         .welcome-content {
             position: relative;
             z-index: 1;
@@ -119,44 +118,23 @@
         }
 
         @keyframes welcomePop {
-            0% {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
         }
 
         @keyframes shimmer {
-            0% {
-                background-position: 0% 50%;
-            }
-            100% {
-                background-position: 100% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
 
         @keyframes fadeUp {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes pulse {
-            0%,
-            100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.2);
-            }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
         }
 
         /* ---------- Portada ---------- */
@@ -384,7 +362,7 @@
             background: #1A73E8;
         }
 
-        /* ---------- Contador de visitas personalizado ---------- */
+        /* ---------- Contador de visitas ---------- */
         .visitor-counter {
             width: 90%;
             text-align: center;
@@ -416,7 +394,7 @@
             min-width: 80px;
         }
 
-        /* ---------- Modal de lista de canciones ---------- */
+        /* ---------- Modal ---------- */
         .modal-overlay {
             position: fixed;
             bottom: 0;
@@ -544,74 +522,31 @@
             margin-left: 0.2rem;
         }
 
-        /* ---------- Ajustes responsive ---------- */
+        /* ---------- Responsive ---------- */
         @media (max-width: 400px) {
-            .play-btn {
-                width: 64px;
-                height: 64px;
-                font-size: 2.2rem;
-            }
-            .side-btn {
-                font-size: 1.7rem;
-                width: 46px;
-                height: 46px;
-            }
-            .controls-row {
-                gap: 0.8rem;
-            }
-            .info h2 {
-                font-size: 1.3rem;
-            }
-            .show-tracks-btn {
-                width: 70%;
-                font-size: 1rem;
-                padding: 0.8rem 0;
-            }
-            .modal-overlay {
-                height: 80vh;
-                padding: 1.2rem 1rem;
-            }
-            .welcome-content h1 {
-                font-size: 3rem;
-            }
-            .welcome-content p {
-                font-size: 1rem;
-            }
-            .visitor-counter {
-                font-size: 0.7rem;
-            }
-            .visitor-counter #contador {
-                font-size: 0.7rem;
-                padding: 0.15rem 0.8rem;
-                min-width: 60px;
-            }
+            .play-btn { width: 64px; height: 64px; font-size: 2.2rem; }
+            .side-btn { font-size: 1.7rem; width: 46px; height: 46px; }
+            .controls-row { gap: 0.8rem; }
+            .info h2 { font-size: 1.3rem; }
+            .show-tracks-btn { width: 70%; font-size: 1rem; padding: 0.8rem 0; }
+            .modal-overlay { height: 80vh; padding: 1.2rem 1rem; }
+            .welcome-content h1 { font-size: 3rem; }
+            .welcome-content p { font-size: 1rem; }
+            .visitor-counter { font-size: 0.7rem; }
+            .visitor-counter #contador { font-size: 0.7rem; padding: 0.15rem 0.8rem; min-width: 60px; }
         }
 
         @media (min-width: 600px) {
-            .player-container {
-                gap: 2.2rem;
-            }
-            .play-btn {
-                width: 80px;
-                height: 80px;
-                font-size: 3rem;
-            }
-            .side-btn {
-                width: 60px;
-                height: 60px;
-                font-size: 2.2rem;
-            }
-            .show-tracks-btn {
-                width: 45%;
-                padding: 1rem 0;
-                font-size: 1.2rem;
-            }
+            .player-container { gap: 2.2rem; }
+            .play-btn { width: 80px; height: 80px; font-size: 3rem; }
+            .side-btn { width: 60px; height: 60px; font-size: 2.2rem; }
+            .show-tracks-btn { width: 45%; padding: 1rem 0; font-size: 1.2rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- OVERLAY DE BIENVENIDA CON PARTÍCULAS -->
+    <!-- OVERLAY DE BIENVENIDA -->
     <div id="welcomeOverlay">
         <canvas id="particlesCanvas"></canvas>
         <div class="welcome-content">
@@ -657,15 +592,15 @@
         <!-- Botón inferior -->
         <button id="showTracksBtn" class="show-tracks-btn">Ver los temas</button>
 
-        <!-- CONTADOR DE VISITAS ÚNICAS CON FIRESTORE -->
+        <!-- CONTADOR DE VISITAS CON FIRESTORE -->
         <div class="visitor-counter">
-            <span class="counter-icon">👤</span>
-            <span id="contador">0 visitas únicas</span>
+            <span class="counter-icon"></span>
+            <span id="contador">Visitas</span>
         </div>
 
     </div>
 
-    <!-- Modal de lista de canciones -->
+    <!-- Modal -->
     <div class="modal-overlay" id="tracksModal">
         <div class="modal-header">
             <h3>🎵 Lista de canciones</h3>
@@ -676,13 +611,13 @@
         </div>
     </div>
 
-    <!-- Elemento de audio oculto -->
+    <!-- Audio -->
     <audio id="audioPlayer" preload="metadata"></audio>
 
     <script>
-        // --------------------------------------------------------------
-        // CONFIGURACIÓN DE FIREBASE (FIRESTORE)
-        // --------------------------------------------------------------
+        // ==============================================================
+        // CONFIGURACIÓN DE FIREBASE
+        // ==============================================================
         const firebaseConfig = {
             apiKey: "AIzaSyC5R9mPw1PQMjYIqWpz5w3W7BvGmZV4tX8",
             authDomain: "kerim-music-a9c46.firebaseapp.com",
@@ -692,18 +627,16 @@
             appId: "1:103691719997:web:da58ff98f78f1b632b19cb"
         };
 
-        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // --------------------------------------------------------------
-        // CONTADOR DE VISITAS ÚNICAS CON FIRESTORE
-        // --------------------------------------------------------------
+        // ==============================================================
+        // CONTADOR DE VISITAS - Colección "visitas"
+        // ==============================================================
         (function() {
             const contadorElement = document.getElementById('contador');
             const pagina = window.location.pathname.split("/").pop().replace(".html", "") || "index";
 
-            // Generar un ID único para el usuario (persistente en localStorage)
             function getUserId() {
                 let userId = localStorage.getItem('visitor_id_jvazquez');
                 if (!userId) {
@@ -715,18 +648,17 @@
 
             const userId = getUserId();
 
-            // Referencias en Firestore
-            const counterRef = db.collection('visitantes_unicos').doc(pagina);
+            // Referencias en Firestore - Colección "visitas"
+            const counterRef = db.collection('Albunes').doc(pagina);
             const userRef = counterRef.collection('usuarios').doc(userId);
 
-            // Función para actualizar la UI (instantáneo)
             function actualizarContador(count) {
                 if (contadorElement) {
-                    contadorElement.textContent = count + " visitas únicas";
+                    contadorElement.textContent = count + "Visitas";
                 }
             }
 
-            // 1. PRIMERO: Mostrar un valor inicial desde localStorage (si existe)
+            // Mostrar valor desde localStorage (instantáneo)
             let cachedCount = localStorage.getItem('visitor_count_' + pagina);
             if (cachedCount !== null) {
                 actualizarContador(parseInt(cachedCount));
@@ -734,7 +666,7 @@
                 actualizarContador(0);
             }
 
-            // 2. SEGUNDO: Obtener el valor real de Firestore (rápido)
+            // Obtener valor real de Firestore
             counterRef.get()
                 .then(doc => {
                     if (doc.exists) {
@@ -742,7 +674,6 @@
                         localStorage.setItem('visitor_count_' + pagina, val);
                         actualizarContador(val);
                     } else {
-                        // Crear el documento si no existe
                         counterRef.set({ total: 0 });
                     }
                 })
@@ -750,20 +681,17 @@
                     console.error('Error al obtener contador:', error);
                 });
 
-            // 3. Verificar si el usuario es nuevo
+            // Verificar si el usuario es nuevo
             userRef.get()
                 .then(doc => {
                     if (!doc.exists) {
-                        // Nuevo usuario - registrar y aumentar contador
                         counterRef.update({
                             total: firebase.firestore.FieldValue.increment(1)
                         }).then(() => {
-                            // Registrar usuario
                             userRef.set({
                                 fecha: new Date().toISOString(),
                                 userAgent: navigator.userAgent.slice(0, 100)
                             });
-                            // Obtener el nuevo total
                             counterRef.get().then(snap => {
                                 if (snap.exists) {
                                     const newVal = snap.data().total || 0;
@@ -780,7 +708,7 @@
                     console.error('Error al verificar usuario:', error);
                 });
 
-            // 4. Escuchar cambios en tiempo real
+            // Escuchar cambios en tiempo real
             counterRef.onSnapshot((doc) => {
                 if (doc.exists) {
                     const val = doc.data().total || 0;
@@ -791,9 +719,9 @@
 
         })();
 
-        // --------------------------------------------------------------
+        // ==============================================================
         // PARTÍCULAS
-        // --------------------------------------------------------------
+        // ==============================================================
         (function initParticles() {
             const canvas = document.getElementById('particlesCanvas');
             const ctx = canvas.getContext('2d');
@@ -896,9 +824,9 @@
             observer.observe(overlay, { attributes: true, attributeFilter: ['class'] });
         })();
 
-        // --------------------------------------------------------------
-        // OCULTAR OVERLAY TRAS 4 SEGUNDOS
-        // --------------------------------------------------------------
+        // ==============================================================
+        // OCULTAR OVERLAY
+        // ==============================================================
         (function() {
             const overlay = document.getElementById('welcomeOverlay');
             setTimeout(() => {
@@ -909,87 +837,51 @@
             }, 4000);
         })();
 
-        // --------------------------------------------------------------
+        // ==============================================================
         // DATOS DE CANCIONES
-        // --------------------------------------------------------------
+        // ==============================================================
         const emsekSongs = [
             { id: 13, url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'Volver',
-                music: 'https://www.dropbox.com/scl/fi/me17xjy18fcpljgr2d3hi/volver-j-vazquez-video-oficial.mp3?rlkey=3h5tiyv9u527pywplvv7sz9x5&st=ftb2yj3b&raw=1' 
-            },
+                category: 'Reggeton', album: '2019', title: 'Volver',
+                music: 'https://www.dropbox.com/scl/fi/me17xjy18fcpljgr2d3hi/volver-j-vazquez-video-oficial.mp3?rlkey=3h5tiyv9u527pywplvv7sz9x5&st=ftb2yj3b&raw=1' },
             { id: 12, url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                category: 'Reggetoon', 
-                album: '2019', 
-                title: 'Tiempo J Vazquez',
-                music: 'https://www.dropbox.com/scl/fi/00twno5l0kdb08ue26non/Tiempo-Cie-campos-ft-J-Vazquez-Kerim-Music-LKN-Records..wav?rlkey=1ryk8nwj93j0nk9pt8pv6t9uv&st=co15tivd&raw=1' 
-            },
+                category: 'Reggetoon', album: '2019', title: 'Tiempo J Vazquez',
+                music: 'https://www.dropbox.com/scl/fi/00twno5l0kdb08ue26non/Tiempo-Cie-campos-ft-J-Vazquez-Kerim-Music-LKN-Records..wav?rlkey=1ryk8nwj93j0nk9pt8pv6t9uv&st=co15tivd&raw=1' },
             { id: 11, url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'Que esta pasando J Vazueqez',
-                music: 'https://www.dropbox.com/scl/fi/pc1usnse2fyvesvyppsy6/Que-esta-pasando-J-Vazquez.wav?rlkey=x342bg6l9htpo1p7zckkg6583&st=qqyg4qq7&raw=1' 
-            },
+                category: 'Reggeton', album: '2019', title: 'Que esta pasando J Vazueqez',
+                music: 'https://www.dropbox.com/scl/fi/pc1usnse2fyvesvyppsy6/Que-esta-pasando-J-Vazquez.wav?rlkey=x342bg6l9htpo1p7zckkg6583&st=qqyg4qq7&raw=1' },
             { id: 10, url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'Pegaoo J Vazquez',
-                music: 'https://www.dropbox.com/scl/fi/1h7xgsfdukb0fwz6068bo/Pegaoo-J-Vazquez.wav?rlkey=y2hri9cuhlpmyv21y9br7l5t9&st=cl9lqa7v&raw=1' 
-            },
+                category: 'Reggeton', album: '2019', title: 'Pegaoo J Vazquez',
+                music: 'https://www.dropbox.com/scl/fi/1h7xgsfdukb0fwz6068bo/Pegaoo-J-Vazquez.wav?rlkey=y2hri9cuhlpmyv21y9br7l5t9&st=cl9lqa7v&raw=1' },
             { id: 8, url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'Obcesion J Vazquez',
-                music: 'https://www.dropbox.com/scl/fi/fi7vh0aizey6iod26en48/Obsecion-j-vazquez.wav?rlkey=ch8el1ronylotfeqyv6romnur&st=xumfzh4n&raw=1' 
-            },
+                category: 'Reggeton', album: '2019', title: 'Obcesion J Vazquez',
+                music: 'https://www.dropbox.com/scl/fi/fi7vh0aizey6iod26en48/Obsecion-j-vazquez.wav?rlkey=ch8el1ronylotfeqyv6romnur&st=xumfzh4n&raw=1' },
             { id: 7, url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'No eres Juego de Nintendo',
-                music: 'https://www.dropbox.com/scl/fi/3gnc6sadywpb24ps9z4k9/No-eres-juego-de-nintendo-J-bazquez.wav?rlkey=79nintn3bhle2lyye1nb249e6&st=tf6f6kaj&raw=1' 
-            },
+                category: 'Reggeton', album: '2019', title: 'No eres Juego de Nintendo',
+                music: 'https://www.dropbox.com/scl/fi/3gnc6sadywpb24ps9z4k9/No-eres-juego-de-nintendo-J-bazquez.wav?rlkey=79nintn3bhle2lyye1nb249e6&st=tf6f6kaj&raw=1' },
             { id: 6, url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'Me veuelve Loco J Vazquez',
-                music: 'https://www.dropbox.com/scl/fi/5ojo4u3dak6gytmkcy605/j-vazquez-me-vuelve-loco-fusa-company.mp3?rlkey=ickcmbzdf3wi1k012e0mygo8e&st=7virpnfk&raw=1' 
-            },
+                category: 'Reggeton', album: '2019', title: 'Me veuelve Loco J Vazquez',
+                music: 'https://www.dropbox.com/scl/fi/5ojo4u3dak6gytmkcy605/j-vazquez-me-vuelve-loco-fusa-company.mp3?rlkey=ickcmbzdf3wi1k012e0mygo8e&st=7virpnfk&raw=1' },
             { id: 5, url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'Una Aventura',
-                music: 'https://www.dropbox.com/scl/fi/dwovntv7djswyqmguk8yd/j-vazquez-aventura-ft-cie-campos-video-liryc.mp3?rlkey=3durnbujd9955pikh47jgyjob&st=xc0vklla&raw=1' 
-            },
+                category: 'Reggeton', album: '2019', title: 'Una Aventura',
+                music: 'https://www.dropbox.com/scl/fi/dwovntv7djswyqmguk8yd/j-vazquez-aventura-ft-cie-campos-video-liryc.mp3?rlkey=3durnbujd9955pikh47jgyjob&st=xc0vklla&raw=1' },
             { id: 4, url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=k9w3fdxx&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'Foto J Vazquez',
-                music: 'https://www.dropbox.com/scl/fi/5mnj6mb2evikxph4wlbyq/j-vazquez-FOTO.wav?rlkey=s1q4uliexbe4bvrtcdrxzm1b2&st=8tu1szip&raw=1' 
-            },
+                category: 'Reggeton', album: '2019', title: 'Foto J Vazquez',
+                music: 'https://www.dropbox.com/scl/fi/5mnj6mb2evikxph4wlbyq/j-vazquez-FOTO.wav?rlkey=s1q4uliexbe4bvrtcdrxzm1b2&st=8tu1szip&raw=1' },
             { id: 3, url: 'https://www.dropbox.com/scl/fi/uwuq0dmdotm4lx00z82r5/800x800-7986476-C4F4AACF-E181-4041-A6075E17315FCA83-0-289400-WhatsAppImage20260206at6.03.47PM.jpg?rlkey=t8wcuqx2xiq5c0bwgtr6dokn3&st=u3gdtb4m&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: '14 de Febrero',
-                music: 'https://www.dropbox.com/scl/fi/igoyb7x8feuz6otf67ddt/JBazques14deFrebreroOficial.wav?rlkey=vbgyvxlgyk5t1pl6kojif7w65&st=x1vzpuib&raw=1' 
-            },
+                category: 'Reggeton', album: '2019', title: '14 de Febrero',
+                music: 'https://www.dropbox.com/scl/fi/igoyb7x8feuz6otf67ddt/JBazques14deFrebreroOficial.wav?rlkey=vbgyvxlgyk5t1pl6kojif7w65&st=x1vzpuib&raw=1' },
             { id: 2, url: 'https://www.dropbox.com/scl/fi/w51t3llqpavnpmxxgus83/el-chiris.png?rlkey=leru6o7n7omsn9b455yqcrf4g&st=zv4scg8y&raw=1',
-                category: 'Norteño', 
-                album: '2019', 
-                title: 'El chiris J Vazquez',
-                music: 'https://www.dropbox.com/scl/fi/7gcv8k4ke1mglv3jkya1k/El-Chiris.wav?rlkey=hpgsr66ebcy6tyl6ounf7ii81&st=jxoazn66&raw=1' 
-            },
+                category: 'Norteño', album: '2019', title: 'El chiris J Vazquez',
+                music: 'https://www.dropbox.com/scl/fi/7gcv8k4ke1mglv3jkya1k/El-Chiris.wav?rlkey=hpgsr66ebcy6tyl6ounf7ii81&st=jxoazn66&raw=1' },
             { id: 1, url: 'https://www.dropbox.com/scl/fi/kgnxbl0mdp3q2uivbi4et/800x800-7986476-0F948044-9801-4FC9-8EFF36DDC1873148-0-3542185-Teestoyllamando.jpg?rlkey=jki22g8n7mq0b7ufv138n4wsn&st=10uw8nqx&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'Te estoy Llamando J Vazquez',
-                music: 'https://www.dropbox.com/scl/fi/97yj1flb0bgaaedaxr9h1/Te_estoy_Llamando_lista.wav?rlkey=cn3oppwsfjv617hhcuy2rcga4&st=715yp09y&raw=1' 
-            }
+                category: 'Reggeton', album: '2019', title: 'Te estoy Llamando J Vazquez',
+                music: 'https://www.dropbox.com/scl/fi/97yj1flb0bgaaedaxr9h1/Te_estoy_Llamando_lista.wav?rlkey=cn3oppwsfjv617hhcuy2rcga4&st=715yp09y&raw=1' }
         ];
 
-        // --------------------------------------------------------------
+        // ==============================================================
         // DOM REFERENCIAS
-        // --------------------------------------------------------------
+        // ==============================================================
         const audio = document.getElementById('audioPlayer');
         const coverImg = document.getElementById('coverImage');
         const coverWrapper = document.getElementById('coverWrapper');
@@ -1009,18 +901,18 @@
         const closeModalBtn = document.getElementById('closeModalBtn');
         const songListEl = document.getElementById('songList');
 
-        // --------------------------------------------------------------
+        // ==============================================================
         // ESTADO
-        // --------------------------------------------------------------
+        // ==============================================================
         let songs = emsekSongs;
         let currentIndex = 0;
         let isPlaying = false;
         let isShuffle = false;
         let repeatMode = 'off';
 
-        // --------------------------------------------------------------
+        // ==============================================================
         // FUNCIONES AUXILIARES
-        // --------------------------------------------------------------
+        // ==============================================================
         function formatTime(seconds) {
             if (isNaN(seconds) || seconds === Infinity) return '0:00';
             const m = Math.floor(seconds / 60);
@@ -1032,9 +924,9 @@
             return songs[index] || null;
         }
 
-        // --------------------------------------------------------------
+        // ==============================================================
         // ACTUALIZAR UI
-        // --------------------------------------------------------------
+        // ==============================================================
         function loadSong(index, autoPlay = false) {
             const song = getSong(index);
             if (!song) return;
@@ -1108,9 +1000,9 @@
             });
         }
 
-        // --------------------------------------------------------------
+        // ==============================================================
         // CONTROLES
-        // --------------------------------------------------------------
+        // ==============================================================
         function togglePlay() {
             if (audio.paused) {
                 if (audio.src === '') {
@@ -1204,9 +1096,9 @@
             }
         }
 
-        // --------------------------------------------------------------
-        // RENDERIZAR LISTA EN MODAL
-        // --------------------------------------------------------------
+        // ==============================================================
+        // RENDERIZAR LISTA
+        // ==============================================================
         function renderPlaylist() {
             songListEl.innerHTML = '';
             songs.forEach((song, idx) => {
@@ -1247,9 +1139,9 @@
             updateActiveInModal();
         }
 
-        // --------------------------------------------------------------
+        // ==============================================================
         // MODAL
-        // --------------------------------------------------------------
+        // ==============================================================
         function toggleModal(open) {
             if (open) {
                 tracksModal.classList.add('open');
@@ -1258,9 +1150,9 @@
             }
         }
 
-        // --------------------------------------------------------------
+        // ==============================================================
         // EVENTOS
-        // --------------------------------------------------------------
+        // ==============================================================
         playBtn.addEventListener('click', togglePlay);
         prevBtn.addEventListener('click', prevSong);
         nextBtn.addEventListener('click', nextSong);
@@ -1326,9 +1218,9 @@
             }
         }, { passive: true });
 
-        // --------------------------------------------------------------
+        // ==============================================================
         // INICIALIZAR
-        // --------------------------------------------------------------
+        // ==============================================================
         renderPlaylist();
         loadSong(0, false);
         updateShuffleButton();
