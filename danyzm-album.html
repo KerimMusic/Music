@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Reproductor Emsek</title>
+    <title>Reproductor Dany Zm</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
 
     <!-- Firebase SDKs (modulares) -->
@@ -621,7 +621,7 @@
     <div id="welcomeOverlay">
         <canvas id="particlesCanvas"></canvas>
         <div class="welcome-content">
-            <h1>Emsek</h1>
+            <h1>Dany Zm</h1>
             <p>Bienvenido</p>
             <span class="emoji">🎵</span>
         </div>
@@ -674,7 +674,7 @@
     <!-- Modal de lista de canciones -->
     <div class="modal-overlay" id="tracksModal">
         <div class="modal-header">
-            <h3>Lista de canciones</h3>
+            <h3>🎵 Lista de canciones</h3>
             <button class="close-modal" id="closeModalBtn">✕</button>
         </div>
         <div class="modal-list" id="modalList">
@@ -697,7 +697,6 @@
             getDoc,
             setDoc,
             runTransaction,
-            // onSnapshot, // no lo usamos en esta versión
         } from "firebase/firestore";
 
         // ----- Configuración de Firebase -----
@@ -714,8 +713,8 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ----- Referencia al documento en la colección "Nombre" con ID "Nombre" -----
-        const contadorRef = doc(db, "AlbunEmsek", "emsek-album");
+        // ----- Referencia al documento en la colección "nombre" con ID "nombre" -----
+        const contadorRef = doc(db, "Albun Dany Zm", "danyzm-album");
 
         // Campo que almacena el total
         const CAMPO_CONTADOR = "total";
@@ -769,15 +768,6 @@
             }
         }
 
-        // ----- Autenticación (opcional, se mantiene pero sin uso real) -----
-        // Si no usas autenticación, puedes eliminar esto o dejarlo como está.
-        // import { getAuth, onAuthStateChanged } from "firebase/auth";
-        // const auth = getAuth(app);
-        // onAuthStateChanged(auth, (user) => {
-        //     if (user) console.log("Usuario autenticado:", user);
-        //     else console.log("Usuario no autenticado");
-        // });
-
         // ----- Cargar el valor inicial y luego incrementar -----
         // Al cargar la página, mostramos el valor actual y aumentamos en 1
         document.addEventListener("DOMContentLoaded", async () => {
@@ -789,7 +779,7 @@
         window.aumentarContador = aumentarContador;
 
         // ==============================================================
-        // RESTO DEL REPRODUCTOR (sin cambios)
+        // RESTO DEL REPRODUCTOR (sin cambios, solo copiado del original)
         // ==============================================================
 
         // ----- PARTÍCULAS -----
@@ -906,80 +896,131 @@
             }, 4000);
         })();
 
-        // ----- DATOS DE CANCIONES -----
-        const emsekSongs = [{
-            id: 59,
-            url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1',
-            category: 'Música',
-            album: 'Entre tus redes',
-            title: 'Todo acabo Emsek',
-            music: 'https://www.dropbox.com/scl/fi/8rxh1zmz1jnbw3jnyw30u/Todo-se-Acabo-Emsek.wav?rlkey=gdjt2d5ixehg02f66zrmn2oo4&st=11wubvyf&raw=1'
-        }, {
-            id: 58,
-            url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1',
-            category: 'Música',
-            album: 'Entre tus redes',
-            title: 'Perdondame Emsek',
-            music: 'https://www.dropbox.com/scl/fi/09x3ro2pgjk5uytus7qnf/perdoname-emsek-video-oficial.mp3?rlkey=w5wnge74deqrg9j5cugdgso93&st=l9jqz3s2&raw=1'
-        }, {
-            id: 57,
-            url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1',
-            category: 'Música',
-            album: 'Entre tus redes',
-            title: 'Nada es sencillo Emsek',
-            music: 'https://www.dropbox.com/scl/fi/0b08k7lmf6bi3unghwi0o/Nada-es-secillo-Oswaldo.wav?rlkey=00zjb5omwsyc7lpa4epk2dxzx&st=owffemlr&raw=1'
-        }, {
-            id: 56,
-            url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1',
-            category: 'Música',
-            album: 'Entre tus redes',
-            title: 'Musa Emsek',
-            music: 'https://www.dropbox.com/scl/fi/vyrkq3cz1d32v6cbrml99/Mi-mussa-Emsek-HFcompany-Estudios.wav?rlkey=8mzfyjhjbqasi7cvcynku8e29&st=f6rkh9hu&raw=1'
-        }, {
-            id: 55,
-            url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1',
-            category: 'Música',
-            album: 'Entre tus redes',
-            title: 'Los tiempos cambiasn Emsek ft Charles wed',
-            music: 'https://www.dropbox.com/scl/fi/scvt36sujqhsk7abj4q9g/Los-tiempos-cambian-Emsek-ft-Charl-s-weed.wav?rlkey=hbvmut3vj4wyx166y6nv53vi9&st=7ytsyfvs&raw=1'
-        }, {
-            id: 54,
-            url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1',
-            category: 'Música',
-            album: 'Entre tus redes',
-            title: 'Tus errores Emsek',
-            music: 'https://www.dropbox.com/scl/fi/4q3fc1b7dcbm3s0irdriy/Emsek-tus-errores.wav?rlkey=dn1bgzk4im7jwxo5p46osot4h&st=bs9g15gb&raw=1'
-        }, {
-            id: 53,
-            url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1',
-            category: 'Música',
-            album: 'Entre tus redes',
-            title: 'No fue lo mismo Emsek',
-            music: 'https://www.dropbox.com/scl/fi/rv1nm22lnovi1phko6ufn/Emsek-No-fue-lo-mismo.wav?rlkey=ojx6h1hpudu8q9v4h0b5ncm77&st=fawt5ksq&raw=1'
-        }, {
-            id: 52,
-            url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1',
-            category: 'Música',
-            album: 'Entre tus redes',
-            title: 'En busca de la bictoria Emsek',
-            music: 'https://www.dropbox.com/scl/fi/veoiwn4fh0ikcb6rqn39y/Emsek-len-busca-de-labictoria.wav?rlkey=40y7btf8uvd4bxxpk4uaogiwv&st=fhihmz7c&raw=1'
-        }, {
-            id: 51,
-            url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1',
-            category: 'Música',
-            album: 'Entre tus redes',
-            title: 'El fin de la historia Emsek',
-            music: 'https://www.dropbox.com/scl/fi/jk2c7g0fixoaqv5e5ajri/El-fin-de-hiastoria-EMSEK.wav?rlkey=kxgq808oded0cdhcd6woh3tdz&st=vkmutc4j&raw=1'
-        }, {
-            id: 35,
-            url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=74eri4wc&raw=1',
-            category: 'Música',
-            album: 'Entre tus redes',
-            title: 'Entre tus redes Emsek',
-            music: 'https://www.dropbox.com/scl/fi/thmc7o0uftl3hhvig4lc6/Entre_tus_Redes_-msek__HM___462__Casero_Records_MP3_256kbps_128k.mp3?rlkey=6raowpgc6b5j5a0h21qyo6p34&st=5jws1foy&raw=1'
-        }];
+        // ----- DATOS DE CANCIONES (Dany Zm) -----
+        const danyZmSongs = [
+            {
+                id: 70,
+                url: 'https://www.dropbox.com/scl/fi/10taifx84l0e4h2y9l2nx/Te-estra-o-tanto.png?rlkey=kp4gp2kp8rhbzsdobyl5tfng6&st=vrnzzymz&raw=1',
+                category: 'Trap',
+                album: 'Único lanzamiento',
+                title: 'Te estraño tanto Dany Zm Ft Sain Nt',
+                music: 'https://www.dropbox.com/scl/fi/pw73qa4qv84nnxh1t8qez/Te-estra-o-La-S-Y-D.flac?rlkey=8soehefmsezdpm3rjzxvkazbh&st=x0hjaq9k&raw=1'
+            },
+            {
+                id: 20,
+                url: 'https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=79kjdiww&raw=1',
+                category: 'Musica',
+                album: 'Construyendo el barco',
+                title: 'Vuelve Dany Zm',
+                music: 'https://www.dropbox.com/scl/fi/5dlej4wkll16uxyz3knwf/vuelve-9-dany-zm.mp3?rlkey=1mw4i576qw1q6xn4wofshg3gz&st=tbpp90qm&raw=1'
+            },
+            {
+                id: 19,
+                url: 'https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=79kjdiww&raw=1',
+                category: 'Musica',
+                album: 'Construyendo el barco',
+                title: 'Nuestro cuento Dany Zm',
+                music: 'https://www.dropbox.com/scl/fi/xmca1v67r0foa02ah0ix5/nuestro-cuento-7-dany-zm.mp3?rlkey=4wdtldt4ch8usesgbsqdkl0o1&st=4xdrusp8&raw=1'
+            },
+            {
+                id: 18,
+                url: 'https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=79kjdiww&raw=1',
+                category: 'Musica',
+                album: 'Construyendo el barco',
+                title: 'Me dejo solor Dany Zm',
+                music: 'https://www.dropbox.com/scl/fi/ybuowdfnam5frrjksy570/me-dejo-solo-5-dany-zm.mp3?rlkey=9oiwuxep5v6se4r7af6qlwhb2&st=zbzpdjp2&raw=1'
+            },
+            {
+                id: 17,
+                url: 'https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=79kjdiww&raw=1',
+                category: 'Musica',
+                album: 'Construyendo el barco',
+                title: 'Lluvia Dany Zm',
+                music: 'https://www.dropbox.com/scl/fi/fo85o8m1etbo68m9a46xq/lluvia-8-dany-zm.mp3?rlkey=ywh0y4ezduhd3q7bjvh5orki1&st=n3ykoz9q&raw=1'
+            },
+            {
+                id: 16,
+                url: 'https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=79kjdiww&raw=1',
+                category: 'Musica',
+                album: 'Construyendo el barco',
+                title: 'Hasta cuendo Dany Zm',
+                music: 'https://www.dropbox.com/scl/fi/6588ikrqstte1wzjkreja/hasta-cuando-1-dany-zm.mp3?rlkey=uqpq1cpmnj1e5pnd5ndxwpb47&st=tgxuj89m&raw=1'
+            },
+            {
+                id: 15,
+                url: 'https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=79kjdiww&raw=1',
+                category: 'Musica',
+                album: 'Construyendo el barco',
+                title: 'Engaño Dany Zm',
+                music: 'https://www.dropbox.com/scl/fi/7qvtyhs6smsgnu56z9ch7/en-gano-6-dany-zm.mp3?rlkey=lzu6kbgqicirph9sp4ndhyq90&st=gu0hpw1p&raw=1'
+            },
+            {
+                id: 14,
+                url: 'https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=79kjdiww&raw=1',
+                category: 'Musica',
+                album: 'Construyendo el barco',
+                title: 'Tu tiempo de acabo Dany Zm',
+                music: 'https://www.dropbox.com/scl/fi/ees3i5mgfc50lwtg59hgw/Dany-Zm-Tu-tiempo-se-acavo.mp3?rlkey=kijhvu3rsv6j3zri6dh20wowf&st=3k6i51wu&raw=1'
+            },
+            {
+                id: 13,
+                url: 'https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=79kjdiww&raw=1',
+                category: 'Musica',
+                album: 'Construyendo el barco',
+                title: 'Especial Dany Zm',
+                music: 'https://www.dropbox.com/scl/fi/han7yoy13ncejnz4exj3r/dalex-especial-cover-dany-zm.mp3?rlkey=8pchaqdtz2iq854i8zrhxfriw&st=var5yqcp&raw=1'
+            },
+            {
+                id: 12,
+                url: 'https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=79kjdiww&raw=1',
+                category: 'Musica',
+                album: 'Construyendo el barco',
+                title: 'Corito sano Dany Zm',
+                music: 'https://www.dropbox.com/scl/fi/l4d8dvoahieq4yqf536ol/CORITO-SANO-DANY-ZM-VA-YEZKOR-CRUZ-SAIN-NT-VERSION-T.E.C.mp3?rlkey=wsj8578k3e14hqr74npb3krjb&st=pdov6vmy&raw=1'
+            },
+            {
+                id: 11,
+                url: 'https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=79kjdiww&raw=1',
+                category: 'Musica',
+                album: 'Construyendo el barco',
+                title: 'Beyby Dany Zm',
+                music: 'https://www.dropbox.com/scl/fi/v4remtzyol50e00rvhpen/beyby-4dany-zm.mp3?rlkey=y803hhbgxghxrlgsvpe9w16i9&st=p6m3gs7z&raw=1'
+            },
+            {
+                id: 10,
+                url: 'https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=79kjdiww&raw=1',
+                category: 'Musica',
+                album: 'Construyendo el barco',
+                title: 'Bailalo Dany Zm',
+                music: 'https://www.dropbox.com/scl/fi/ctedqktecjqbqvd2t5uct/bailado-3-dany-zm.mp3?rlkey=l1zrwqrevorjbxjq3u7gi4k3t&st=3kh4wkgz&raw=1'
+            },
+            {
+                id: 9,
+                url: 'https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=79kjdiww&raw=1',
+                category: 'Musica',
+                album: 'Construyendo el barco',
+                title: 'Modo Avion Dany Zm',
+                music: 'https://www.dropbox.com/scl/fi/rq7dnfuqaywgjdo6dp9de/1-Modo-avion-Dany-Zm-El-rencuentro..flac?rlkey=xfv7h1xurdroh0ct3xu71ge9m&st=v1bfhinm&raw=1'
+            },
+            {
+                id: 8,
+                url: 'https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=79kjdiww&raw=1',
+                category: 'Musica',
+                album: 'Construyendo el barco',
+                title: 'Ay estare Dany Zm',
+                music: 'https://www.dropbox.com/scl/fi/lbohzzgaf7xnw1v7o3ec9/ay-estare-2-dany-zm.mp3?rlkey=41qeo3w154ctk8gvlzl2aa0v1&st=ybnb2zya&raw=1'
+            },
+            {
+                id: 5,
+                url: 'https://i.postimg.cc/wMCFZY9H/Picsart-26-02-15-14-39-19-042.jpg',
+                category: 'Musica',
+                album: '2024',
+                title: 'Dile que tu eres mia Dany Zm',
+                music: 'https://www.dropbox.com/scl/fi/g8ojpqgcavyfp2fgwn2wg/Dany_Zm_Tu-eres-mia-Ofical.wav?rlkey=xiowtehy8h6fq38maadjid4bq&st=3hz6dasg&raw=1'
+            }
+        ];
 
-        // ----- DOM REFERENCIAS (reproductor) -----
+        // ----- DOM REFERENCIAS -----
         const audio = document.getElementById('audioPlayer');
         const coverImg = document.getElementById('coverImage');
         const coverWrapper = document.getElementById('coverWrapper');
@@ -999,8 +1040,8 @@
         const closeModalBtn = document.getElementById('closeModalBtn');
         const songListEl = document.getElementById('songList');
 
-        // ----- ESTADO DEL REPRODUCTOR -----
-        let songs = emsekSongs;
+        // ----- ESTADO -----
+        let songs = danyZmSongs;
         let currentIndex = 0;
         let isPlaying = false;
         let isShuffle = false;
@@ -1092,7 +1133,7 @@
             });
         }
 
-        // ----- CONTROLES DEL REPRODUCTOR -----
+        // ----- CONTROLES -----
         function togglePlay() {
             if (audio.paused) {
                 if (audio.src === '') {
@@ -1236,7 +1277,7 @@
             }
         }
 
-        // ----- EVENTOS DEL REPRODUCTOR -----
+        // ----- EVENTOS -----
         playBtn.addEventListener('click', togglePlay);
         prevBtn.addEventListener('click', prevSong);
         nextBtn.addEventListener('click', nextSong);
@@ -1302,15 +1343,13 @@
             }
         }, { passive: true });
 
-        // ----- INICIALIZAR REPRODUCTOR -----
+        // ----- INICIALIZAR -----
         renderPlaylist();
         loadSong(0, false);
         updateShuffleButton();
         updateRepeatButton();
 
-        // (El contador ya se maneja arriba, con el event listener de DOMContentLoaded)
-
-        console.log("Reproductor Emsek iniciado con nuevo contador Firestore (Albunes/Jvazquez)");
+        console.log("Reproductor Dany Zm iniciado con nuevo contador Firestore (Albunes/Jvazquez)");
     </script>
 </body>
 </html>
