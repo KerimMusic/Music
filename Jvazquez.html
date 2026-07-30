@@ -12,9 +12,10 @@
       box-sizing: border-box;
     }
     body {
-      background: linear-gradient(rgba(10, 14, 26, 0.85), rgba(10, 14, 26, 0.85)),
-                  url('https://i.postimg.cc/XNP1xdB2/IMG-20260207-WA0000.jpg') no-repeat center center fixed;
+      /* El fondo se actualizará dinámicamente con JavaScript */
       background-size: cover;
+      background-position: center center;
+      background-attachment: fixed;
       color: #e8ecf4;
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       padding: 1rem;
@@ -23,6 +24,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      transition: background-image 0.5s ease;
     }
     h1 {
       font-size: 1.8rem;
@@ -437,9 +439,9 @@
 
   <h1>Album J Vazquez</h1>
 
-  <!-- PORTADA CUADRADA CENTRADA -->
+  <!-- PORTADA CUADRADA CENTRADA (se actualiza automáticamente) -->
   <div class="album-cover">
-    <img src="https://i.postimg.cc/XNP1xdB2/IMG-20260207-WA0000.jpg" alt="Album J Vazquez" />
+    <img id="albumCoverImg" src="https://i.postimg.cc/XNP1xdB2/IMG-20260207-WA0000.jpg" alt="Album J Vazquez" />
   </div>
 
   <!-- LISTA DE CANCIONES -->
@@ -498,7 +500,7 @@
     </div>
   </div>
 
-  <!-- ========== MÓDULO FIREBASE ========== -->
+  <!-- ========== MÓDULO FIREBASE CON CADUCIDAD DE 3 MESES ========== -->
   <script type="importmap">
     {
       "imports": {
@@ -517,7 +519,6 @@
       getDoc,
       setDoc,
       runTransaction,
-      arrayUnion,
       updateDoc
     } from "firebase/firestore";
 
@@ -533,6 +534,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // ---- CONTADOR GLOBAL DE VISITAS (opcional) ----
     const contadorRef = doc(db, "Radio Muisc", "Kerim Music+");
     const CAMPO_CONTADOR = "total";
     let userId = localStorage.getItem('visitor_id_kerim');
@@ -542,87 +544,157 @@
     }
     const userRef = doc(collection(contadorRef, 'usuarios'), userId);
 
-    async function obtenerValorGlobal() {
-      try {
-        const docSnap = await getDoc(contadorRef);
-        if (docSnap.exists()) return docSnap.data()[CAMPO_CONTADOR] || 0;
-        else { await setDoc(contadorRef, { [CAMPO_CONTADOR]: 0 }); return 0; }
-      } catch (e) { console.error(e); return 0; }
-    }
+    // ================================================================
+    //  NUEVA LÓGICA DE CONTADOR POR CANCIÓN CON CADUCIDAD DE 3 MESES
+    // ================================================================
 
-    async function inicializarContadorGlobal() {
-      try {
-        const userSnap = await getDoc(userRef);
-        if (!userSnap.exists()) {
-          await runTransaction(db, async (transaction) => {
-            const docSnap = await transaction.get(contadorRef);
-            const nuevoTotal = (docSnap.exists() ? docSnap.data()[CAMPO_CONTADOR] : 0) + 1;
-            if (!docSnap.exists()) transaction.set(contadorRef, { [CAMPO_CONTADOR]: nuevoTotal });
-            else transaction.update(contadorRef, { [CAMPO_CONTADOR]: nuevoTotal });
-          });
-          await setDoc(userRef, { fecha: new Date().toISOString(), userAgent: navigator.userAgent.slice(0, 200), canciones_escuchadas: [] });
-          console.log("✅ Nuevo usuario registrado. Contador global incrementado.");
-        } else {
-          console.log("👤 Usuario ya registrado. No se incrementa.");
-        }
-      } catch (error) { console.error("Error al verificar/registrar usuario:", error); }
-    }
+    const TRES_MESES_MS = 3 * 30 * 24 * 60 * 60 * 1000;  // ~ 7.776.000.000 ms
 
-    async function obtenerReproducciones(songId) {
-      try {
-        const ref = doc(db, "Radio Muisc", String(songId));
-        const docSnap = await getDoc(ref);
-        if (docSnap.exists()) return docSnap.data().reproducciones || 0;
-        return 0;
-      } catch (error) {
-        console.error("Error al obtener reproducciones:", error);
-        return 0;
+    /**
+     * Migra el campo antiguo (array) a objeto con fechas actuales.
+     * Se llama una sola vez por usuario si es necesario.
+     */
+    async function migrarSiEsArray(userData) {
+      const historial = userData.canciones_escuchadas;
+      if (Array.isArray(historial)) {
+        console.log('🔄 Migrando historial de array a objeto para usuario', userId);
+        const nuevoMap = {};
+        const ahora = Date.now();
+        historial.forEach(id => { nuevoMap[id] = ahora; });
+        await updateDoc(userRef, { canciones_escuchadas: nuevoMap });
+        return nuevoMap;
       }
+      return historial || {};
     }
 
+    /**
+     * Incrementa la reproducción de una canción para el usuario actual.
+     * Solo cuenta si es la primera vez o han pasado más de 3 meses desde la última escucha.
+     * Además, limpia automáticamente cualquier otra canción expirada del historial del usuario.
+     * @param {string} songId - ID de la canción.
+     * @returns {Promise<number|null>} Nuevo total de reproducciones de la canción, o null si error.
+     */
     window.incrementarReproduccion = async function(songId) {
       if (!songId) return null;
       try {
+        // 1. Asegurar que el usuario existe
         const userSnap = await getDoc(userRef);
         if (!userSnap.exists()) {
           await setDoc(userRef, { 
             fecha: new Date().toISOString(), 
             userAgent: navigator.userAgent.slice(0, 200), 
-            canciones_escuchadas: [] 
+            canciones_escuchadas: {} 
           });
         }
-        const cancionesEscuchadas = userSnap.exists() ? (userSnap.data().canciones_escuchadas || []) : [];
-        if (cancionesEscuchadas.includes(String(songId))) {
-          console.log(`⏭️ Usuario ya escuchó la canción ${songId}, no se incrementa`);
-          const ref = doc(db, "Radio Muisc", String(songId));
-          const docSnap = await getDoc(ref);
-          return docSnap.exists() ? docSnap.data().reproducciones || 0 : 0;
-        }
-        const ref = doc(db, "Radio Muisc", String(songId));
-        let nuevoValor;
+
+        // 2. Obtener datos actuales del usuario
+        const userData = (await getDoc(userRef)).data() || {};
+        let historial = await migrarSiEsArray(userData);
+
+        const ahora = Date.now();
+        const fechaExpiracion = ahora - TRES_MESES_MS;
+
+        // 3. Preparar transacción para actualizar usuario y canción(es)
+        let resultado = null;
+
         await runTransaction(db, async (transaction) => {
-          const docSnap = await transaction.get(ref);
-          const actual = docSnap.exists() ? docSnap.data().reproducciones || 0 : 0;
-          nuevoValor = actual + 1;
-          if (!docSnap.exists()) transaction.set(ref, { reproducciones: nuevoValor });
-          else transaction.update(ref, { reproducciones: nuevoValor });
+          // Leer el documento de la canción
+          const songRef = doc(db, "Radio Muisc", String(songId));
+          const songSnap = await transaction.get(songRef);
+          let currentPlays = songSnap.exists() ? songSnap.data().reproducciones || 0 : 0;
+
+          // --- Manejo de la canción actual ---
+          const lastPlayed = historial[songId] || 0;
+          let incrementar = false;
+
+          if (lastPlayed === 0) {
+            // Nunca escuchada → nueva reproducción
+            incrementar = true;
+          } else if (lastPlayed < fechaExpiracion) {
+            // Expiró → se elimina y se vuelve a contar
+            incrementar = true;
+            // Decrementar el contador porque estaba expirada
+            currentPlays = Math.max(0, currentPlays - 1);
+            delete historial[songId];
+          } else {
+            // Dentro de los 3 meses → solo actualizar fecha, no incrementar
+            incrementar = false;
+          }
+
+          if (incrementar) {
+            currentPlays += 1;
+            historial[songId] = ahora;
+          } else {
+            // Solo actualizar timestamp (reinicia el contador de 3 meses)
+            historial[songId] = ahora;
+          }
+
+          // --- Limpieza de otras canciones expiradas en el historial ---
+          const idsAEliminar = [];
+          for (const [id, timestamp] of Object.entries(historial)) {
+            if (id !== songId && timestamp < fechaExpiracion) {
+              idsAEliminar.push(id);
+            }
+          }
+
+          // Eliminar las expiradas y decrementar sus contadores
+          for (const id of idsAEliminar) {
+            delete historial[id];
+            const ref = doc(db, "Radio Muisc", String(id));
+            const snap = await transaction.get(ref);
+            if (snap.exists()) {
+              const plays = snap.data().reproducciones || 0;
+              const nuevo = Math.max(0, plays - 1);
+              transaction.update(ref, { reproducciones: nuevo });
+            }
+          }
+
+          // Actualizar el documento del usuario
+          transaction.update(userRef, { canciones_escuchadas: historial });
+
+          // Actualizar el documento de la canción actual
+          if (!songSnap.exists()) {
+            transaction.set(songRef, { reproducciones: currentPlays });
+          } else {
+            transaction.update(songRef, { reproducciones: currentPlays });
+          }
+
+          resultado = currentPlays;
         });
-        await updateDoc(userRef, { canciones_escuchadas: arrayUnion(String(songId)) });
-        console.log(`✅ Primera reproducción registrada para usuario ${userId} - canción ${songId}: ${nuevoValor}`);
-        return nuevoValor;
+
+        console.log(`✅ Reproducción registrada para ${userId} - canción ${songId}: ${resultado}`);
+        return resultado;
+
       } catch (error) {
-        console.error("Error al incrementar reproducción:", error);
+        console.error("❌ Error en incrementarReproduccion:", error);
         return null;
       }
     };
 
-    window.obtenerReproducciones = obtenerReproducciones;
+    /**
+     * Obtiene el total de reproducciones de una canción (usuarios únicos en los últimos 3 meses).
+     * Lee el campo `reproducciones` del documento de la canción.
+     */
+    window.obtenerReproducciones = async function(songId) {
+      try {
+        const ref = doc(db, "Radio Muisc", String(songId));
+        const docSnap = await getDoc(ref);
+        if (docSnap.exists()) {
+          return docSnap.data().reproducciones || 0;
+        }
+        return 0;
+      } catch (error) {
+        console.error("Error al obtener reproducciones:", error);
+        return 0;
+      }
+    };
 
+    // ---- Inicialización del contador global (opcional) ----
     document.addEventListener("DOMContentLoaded", () => {
-      inicializarContadorGlobal();
+      // El contador global ya no es necesario para la funcionalidad principal,
+      // pero lo mantenemos por compatibilidad.
+      console.log("✅ Módulo Firebase con caducidad de 3 meses cargado.");
     });
-
-    console.log("✅ Módulo Firebase cargado: contador único por usuario listo.");
   </script>
 
   <!-- ========== SCRIPT PRINCIPAL DEL REPRODUCTOR ========== -->
@@ -630,18 +702,7 @@
     (function() {
       // ==================== DATOS ====================
       const songs = [
-        { id: "Te estoy llamando J Vazquez", title: "Te estoy llamando", artist: "J Vazquez", category: "Reggeton", url: 'https://i.postimg.cc/XNP1xdB2/IMG-20260207-WA0000.jpg', music: 'https://www.dropbox.com/scl/fi/97yj1flb0bgaaedaxr9h1/Te_estoy_Llamando_lista.wav?rlkey=cn3oppwsfjv617hhcuy2rcga4&st=715yp09y&raw=1' },
-        { id: "El chiris J Vazquez", title: "El chiris", artist: "J Vazquez", category: "Reggeton", url: 'https://www.dropbox.com/scl/fi/w51t3llqpavnpmxxgus83/el-chiris.png?rlkey=leru6o7n7omsn9b455yqcrf4g&st=zv4scg8y&raw=1', music: 'https://www.dropbox.com/scl/fi/7gcv8k4ke1mglv3jkya1k/El-Chiris.wav?rlkey=hpgsr66ebcy6tyl6ounf7ii81&st=jxoazn66&raw=1' },
-        { id: "Foto J Vazquez", title: "Foto", artist: "J Vazquez", category: "Reggeton", url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=k9w3fdxx&raw=1', music: 'https://www.dropbox.com/scl/fi/5mnj6mb2evikxph4wlbyq/j-vazquez-FOTO.wav?rlkey=s1q4uliexbe4bvrtcdrxzm1b2&st=8tu1szip&raw=1' },
-        { id: "Una Aventura J Vazquez", title: "Una Aventura", artist: "J Vazquez ft Cie campos", category: "Reggeton", url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1', music: 'https://www.dropbox.com/scl/fi/dwovntv7djswyqmguk8yd/j-vazquez-aventura-ft-cie-campos-video-liryc.mp3?rlkey=3durnbujd9955pikh47jgyjob&st=xc0vklla&raw=1' },
-        { id: "Me vuelve loco J Vazquez", title: "Me vuelve loco", artist: "J Vazquez", category: "Reggeton", url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1', music: 'https://www.dropbox.com/scl/fi/5ojo4u3dak6gytmkcy605/j-vazquez-me-vuelve-loco-fusa-company.mp3?rlkey=ickcmbzdf3wi1k012e0mygo8e&st=7virpnfk&raw=1' },
-        { id: "Obsesion J Vazquez", title: "Obsesion", artist: "J Vazquez", category: "Reggeton", url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1', music: 'https://www.dropbox.com/scl/fi/fi7vh0aizey6iod26en48/Obsecion-j-vazquez.wav?rlkey=ch8el1ronylotfeqyv6romnur&st=xumfzh4n&raw=1' },
-        { id: "Que esta pasando J Vazquez", title: "Que esta pasando", artist: "J Vazquez", category: "Reggeton", url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1', music: 'https://www.dropbox.com/scl/fi/pc1usnse2fyvesvyppsy6/Que-esta-pasando-J-Vazquez.wav?rlkey=x342bg6l9htpo1p7zckkg6583&st=qqyg4qq7&raw=1' },
-        { id: "Tiempo J Vazquez", title: "Tiempo", artist: "J Vazquez", category: "Reggeton", url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1', music: 'https://www.dropbox.com/scl/fi/00twno5l0kdb08ue26non/Tiempo-Cie-campos-ft-J-Vazquez-Kerim-Music-LKN-Records..wav?rlkey=1ryk8nwj93j0nk9pt8pv6t9uv&st=co15tivd&raw=1' },
-        { id: "Volver", title: "Volver", artist: "J Vazquez", category: "Reggeton", url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1', music: 'https://www.dropbox.com/scl/fi/me17xjy18fcpljgr2d3hi/volver-j-vazquez-video-oficial.mp3?rlkey=3h5tiyv9u527pywplvv7sz9x5&st=ftb2yj3b&raw=1' },
-        { id: "pegaoo!", title: "Pegaoo", artist: "J Vazquez", category: "Reggeton", url: 'https://www.dropbox.com/scl/fi/ofp26lu2vtmkahpv27261/Pegaoo-J-Vazquez.jpg?rlkey=88v0x6qpgrxmpkdvi2bnkl1lq&st=y4r50695&raw=1', music: 'https://www.dropbox.com/scl/fi/1h7xgsfdukb0fwz6068bo/Pegaoo-J-Vazquez.wav?rlkey=y2hri9cuhlpmyv21y9br7l5t9&st=cl9lqa7v&raw=1' },
-        { id: "No eres juego de nintendo", title: "No eres juego de nintendo", artist: "J Vazquez", category: "Reggeton", url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1', music: 'https://www.dropbox.com/scl/fi/3gnc6sadywpb24ps9z4k9/No-eres-juego-de-nintendo-J-bazquez.wav?rlkey=79nintn3bhle2lyye1nb249e6&st=tf6f6kaj&raw=1' },
-        { id: "14 de febrero", title: "14 de febrero", artist: "J Vazquez", category: "Reggeton", url: 'https://i.postimg.cc/XNP1xdB2/IMG-20260207-WA0000.jpg', music: 'https://www.dropbox.com/scl/fi/igoyb7x8feuz6otf67ddt/JBazques14deFrebreroOficial.wav?rlkey=vbgyvxlgyk5t1pl6kojif7w65&st=x1vzpuib&raw=1' }
+        { id: "Todo acabo Emsek", title: "Todo acabo", artist: "Emsek", category: "Rap", url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1', music: 'https://www.dropbox.com/scl/fi/8rxh1zmz1jnbw3jnyw30u/Todo-se-Acabo-Emsek.wav?rlkey=gdjt2d5ixehg02f66zrmn2oo4&st=11wubvyf&raw=1' },
       ];
 
       // ==================== ESTADO ====================
@@ -681,6 +742,7 @@
       const toggleSuggestionsBtn = document.getElementById('toggleSuggestionsBtn');
       const suggestionsTrack = document.getElementById('playerSuggestionsTrack');
       const toast = document.getElementById('toast');
+      const albumCoverImg = document.getElementById('albumCoverImg');
 
       // ==================== TOAST ====================
       let toastTimeout = null;
@@ -710,12 +772,12 @@
         return `${m}:${s < 10 ? '0' : ''}${s}`;
       }
 
-      // ===== CONTADOR DE REPRODUCCIONES (Firebase) =====
+      // ===== CONTADOR DE REPRODUCCIONES (Firebase con caducidad) =====
       async function incrementPlayCount(songId) {
         if (window.incrementarReproduccion) {
           const nuevoValor = await window.incrementarReproduccion(songId);
           if (nuevoValor !== null) {
-            console.log(`📊 Usuarios únicos de la canción: ${nuevoValor}`);
+            console.log(`📊 Usuarios únicos de "${currentSong.title}" (últimos 3 meses): ${nuevoValor}`);
           }
         } else {
           console.warn('Función incrementarReproduccion no disponible');
@@ -761,11 +823,23 @@
 
       function updateUI() {
         if (!currentSong) return;
+
+        // Actualizar fondo de la página con overlay oscuro
+        document.body.style.backgroundImage = 
+          `linear-gradient(rgba(10, 14, 26, 0.85), rgba(10, 14, 26, 0.85)), url("${currentSong.url}")`;
+
+        // Actualizar portada principal
+        albumCoverImg.src = currentSong.url;
+
+        // Actualizar reproductor completo
         fullCover.src = currentSong.url;
         fullTitle.textContent = currentSong.title;
         fullCategory.textContent = currentSong.category || '';
+
+        // Actualizar mini reproductor
         miniCover.src = currentSong.url;
         miniTitle.textContent = currentSong.title;
+
         updatePlayPauseIcon();
         updateRepeatButton();
       }
@@ -917,17 +991,14 @@
         updatePlayPauseIcon();
       });
 
-      // ===== NUEVO COMPORTAMIENTO AL TERMINAR =====
+      // ===== COMPORTAMIENTO AL TERMINAR =====
       audio.addEventListener('ended', () => {
         if (repeatMode === 'one') {
-          // Repetir la misma canción
           audio.currentTime = 0;
           audio.play().catch(() => {});
         } else if (repeatMode === 'all') {
-          // Avanzar a la siguiente (con loop al final)
           nextTrack();
         } else {
-          // 'none': avanzar a la siguiente si existe, sino detenerse
           if (currentIndex < queue.length - 1) {
             nextTrack();
           } else {
@@ -969,7 +1040,7 @@
       }
       miniPlayer.classList.add('show');
 
-      console.log('🎵 Reproductor con Firebase activo (contador único por usuario)');
+      console.log('🎵 Reproductor con Firebase (caducidad 3 meses) activo.');
     })();
   </script>
 
