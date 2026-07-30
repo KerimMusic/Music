@@ -363,7 +363,7 @@
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // ─── CONFIGURACIÓN DE FIREBASE ──────────────────────────────────
+        // ─── CONFIGURACIÓN DE FIREBASE (NO MODIFICAR) ──────────────────
         const firebaseConfig = {
             apiKey: "AIzaSyC5R9mPw1PQMjYIqWpz5w3W7BvGmZV4tX8",
             authDomain: "kerim-music-a9c46.firebaseapp.com",
@@ -379,8 +379,29 @@
 
         const CAMPO = "reproducciones";
 
-        // ─── LISTA DE ÁLBUMES (ESTRUCTURA UNIFICADA) ──────────────────
+        // ─── LISTA DE ÁLBUMES (ESTRUCTURA UNIFICADA EN EL CÓDIGO) ──────
         const albumes = [
+            // =============== Aizber ==============
+            { 
+                id: "Sigo Vivo Aizber",
+                url: 'https://www.dropbox.com/scl/fi/9xqi6k1g5cnbior62dh0l/800x800-7986476-B8AD12F4-560F-4E85-8EE3DD6C45025D0E-0-565367-Picsart260207195632530.jpg?rlkey=zjttay9r0myk8r0h1x2074pnj&st=rqbn5ts8&raw=1',
+                category: 'Rap',
+                album: 'Kerim Music',
+                title: 'Sigo Vivo Aicber',
+                coleccion: "Radio Muisc",
+                music: 'https://www.dropbox.com/scl/fi/0y977tgyjp66og2ze36uh/SIgoVivoIazberMp3.wav?rlkey=6vdswfh8f3wtqa66seeugc480&st=rj9g6llz&raw=1',
+                artist: 'Aiciber'
+            },
+            { 
+                id: "Recuerdos Aizber",
+                url: 'https://www.dropbox.com/scl/fi/kk1f1fdpsgx7noxb5lly9/800x800-7986476-70C18BD7-1A24-4B1E-9D524972181DB7D1-0-663215-FBIMG17490012695773000x3000.jpg?rlkey=0exgl54ffel1k27ncua1j7kd2&st=xwg464eg&raw=1',
+                category: 'Rap',
+                album: 'Kerim Music',
+                title: 'Recuerdos Aicber',
+                coleccion: "Radio Muisc",
+                music: 'https://www.dropbox.com/scl/fi/bozqu6d4xdeydcx7dl03i/Recuedos-Aizber-Kerim-Music.mp3?rlkey=t8npubztez45kt79vbt3fidst&st=dbx2f1a4&raw=1',
+                artist: 'Aiciber'
+            },
             // =============== Emsek ==============
             {
                 id: "Entre tus redes Emsek",
@@ -405,7 +426,7 @@
             },
             {
                 id: "No fue lo mismo Emsek",
-                nombre: "No fue los mismo",
+                nombre: "No fue lo mismo",
                 imagen: "https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1",
                 coleccion: "Radio Muisc",
                 documento: "No fue lo mismo Emsek"
@@ -570,17 +591,21 @@
             }
         }
 
-        // ─── GENERAR HTML DE LAS TARJETAS ────────────────────────────────
+        // ─── GENERAR HTML DE LAS TARJETAS (NORMALIZADO) ────────────────
         albumes.forEach(album => {
-            const { id, nombre, imagen, coleccion, documento } = album;
+            // Normalizar campos: nombre, imagen y documento
+            const nombre = album.nombre || album.title || 'Sin nombre';
+            const imagen = album.imagen || album.url || '';
+            const documento = album.documento || album.id; // Usar id como fallback
 
-            const ref = doc(db, coleccion, documento);
-            refs[id] = ref;
-            valores[id] = 0;
+            // Crear referencia a Firestore
+            const ref = doc(db, album.coleccion, documento);
+            refs[album.id] = ref;
+            valores[album.id] = 0;
 
             const card = document.createElement('div');
             card.className = 'usuario-card';
-            card.dataset.id = id;
+            card.dataset.id = album.id;
 
             const img = document.createElement('img');
             img.src = imagen;
@@ -597,13 +622,13 @@
             const insigniaSpan = document.createElement('span');
             insigniaSpan.className = 'insignia';
             insigniaSpan.textContent = '';
-            insigniaSpan.dataset.id = id;
+            insigniaSpan.dataset.id = album.id;
 
             const contadorDiv = document.createElement('span');
             contadorDiv.className = 'contador';
             const numeroSpan = document.createElement('span');
             numeroSpan.className = 'numero';
-            numeroSpan.id = `total-${id}`;
+            numeroSpan.id = `total-${album.id}`;
             numeroSpan.textContent = '0';
             contadorDiv.appendChild(numeroSpan);
 
@@ -614,32 +639,32 @@
             card.appendChild(info);
             tarjetasContainer.appendChild(card);
 
-            spans[id] = numeroSpan;
-            insignias[id] = insigniaSpan;
-            cardElements[id] = card;
+            spans[album.id] = numeroSpan;
+            insignias[album.id] = insigniaSpan;
+            cardElements[album.id] = card;
         });
 
         // ─── FUNCIONES DEL CONTADOR (solo lectura) ──────────────────────
 
-        async function inicializarDocumento(ref, nombre) {
+        async function inicializarDocumento(ref, nombreDoc) {
             try {
                 const docSnap = await getDoc(ref);
                 if (!docSnap.exists()) {
                     await setDoc(ref, { [CAMPO]: 0 });
-                    console.log(`📄 Documento ${nombre} creado con valor 0`);
+                    console.log(`📄 Documento ${nombreDoc} creado con valor 0`);
                 } else {
                     const data = docSnap.data();
                     if (!(CAMPO in data)) {
                         await setDoc(ref, { [CAMPO]: 0 }, { merge: true });
-                        console.log(`📄 Campo "${CAMPO}" añadido en ${nombre}`);
+                        console.log(`📄 Campo "${CAMPO}" añadido en ${nombreDoc}`);
                     }
                 }
             } catch (error) {
-                console.error(`❌ Error al inicializar ${nombre}:`, error);
+                console.error(`❌ Error al inicializar ${nombreDoc}:`, error);
             }
         }
 
-        function escucharContador(ref, spanElement, insigniaElement, nombre, clave) {
+        function escucharContador(ref, spanElement, insigniaElement, nombreDoc, clave) {
             return onSnapshot(ref, (docSnap) => {
                 if (docSnap.exists()) {
                     const valor = docSnap.data()[CAMPO] ?? 0;
@@ -650,41 +675,41 @@
                     const badge = obtenerInsignia(valor);
                     if (badge) {
                         insigniaElement.textContent = badge.texto;
-                        // Eliminar todas las clases de insignia y añadir la nueva
                         insigniaElement.className = 'insignia visible ' + badge.clase;
                     } else {
-                        insigniaElement.className = 'insignia'; // oculta y sin texto
+                        insigniaElement.className = 'insignia';
                         insigniaElement.textContent = '';
                     }
 
                     actualizarDestacado();
                     reordenarTarjetas();
                 } else {
-                    inicializarDocumento(ref, nombre);
+                    inicializarDocumento(ref, nombreDoc);
                 }
             }, (error) => {
-                console.error(`❌ Error en listener de ${nombre}:`, error);
+                console.error(`❌ Error en listener de ${nombreDoc}:`, error);
             });
         }
 
         // ─── ACTUALIZAR TARJETA DESTACADA ──────────────────────────────
 
         function actualizarDestacado() {
-            let maxNombre = '';
+            let maxId = null;
             let maxValor = -1;
             for (const [id, valor] of Object.entries(valores)) {
                 if (valor > maxValor) {
                     maxValor = valor;
-                    maxNombre = id;
+                    maxId = id;
                 }
             }
 
-            const ganador = albumes.find(a => a.id === maxNombre);
-
+            const ganador = albumes.find(a => a.id === maxId);
             if (ganador && maxValor >= 0) {
-                imgDestacado.src = ganador.imagen;
-                imgDestacado.alt = ganador.nombre;
-                nombreDestacado.textContent = ganador.nombre;
+                const nombre = ganador.nombre || ganador.title || 'Sin nombre';
+                const imagen = ganador.imagen || ganador.url || '';
+                imgDestacado.src = imagen;
+                imgDestacado.alt = nombre;
+                nombreDestacado.textContent = nombre;
                 visitasDestacado.textContent = maxValor;
                 wrapper.classList.add('visible');
             } else {
@@ -727,7 +752,8 @@
             // Inicializar todos los documentos y luego escuchar
             const promesas = albumes.map(async (album) => {
                 const ref = refs[album.id];
-                await inicializarDocumento(ref, album.nombre);
+                const nombreDoc = album.nombre || album.title || album.id;
+                await inicializarDocumento(ref, nombreDoc);
             });
             await Promise.all(promesas);
 
@@ -736,7 +762,8 @@
                 const ref = refs[album.id];
                 const span = spans[album.id];
                 const insignia = insignias[album.id];
-                escucharContador(ref, span, insignia, album.nombre, album.id);
+                const nombreDoc = album.nombre || album.title || album.id;
+                escucharContador(ref, span, insignia, nombreDoc, album.id);
             });
         });
     </script>
