@@ -80,7 +80,7 @@
             border-radius: 24px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .destacado-card:hover {
             transform: translateY(-2px);
@@ -172,6 +172,7 @@
             transition: all 0.2s ease;
             border: 1px solid rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(4px);
+            cursor: pointer;
         }
         .usuario-card:hover {
             transform: translateY(-3px);
@@ -276,10 +277,10 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="titulo"><span>Kerim Music+ Albunes</span></div>
+    <div class="container" id="appContainer">
+        <div class="titulo"><span>Kerim Music+ Álbumes</span></div>
 
-        <!-- TARJETA DE ÁLBUM DESTACADO (oculta hasta superar 100) -->
+        <!-- Tarjeta de álbum destacado (siempre visible si hay datos) -->
         <div class="destacado-wrapper" id="destacadoWrapper">
             <div class="destacado-card">
                 <img class="destacado-imagen" id="destacadoImagen" src="" alt="Portada destacada" />
@@ -296,44 +297,10 @@
             </div>
         </div>
 
-        <!-- Usuario 1: Emsek -->
-        <div class="usuario-card">
-            <img src="https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=srurysqy&raw=1" alt="Emsek" />
-            <div class="info">
-                <span class="nombre">Emsek</span>
-                <span class="contador"><span class="numero" id="totalEmsek">0</span></span>
-            </div>
-        </div>
-
-        <!-- Usuario 2: J Vazquez -->
-        <div class="usuario-card">
-            <img src="https://www.dropbox.com/scl/fi/bv6fo6j2vmnp2esqd4ula/800x800-7986476-700B12B5-E66A-4DC7-B44D0B4ABA4553B2-0-483095-Picsart251220185548595.jpg?rlkey=r6plwuux7kuee6uw307l1isar&st=61s02yro&raw=1" alt="J Vazquez" />
-            <div class="info">
-                <span class="nombre">J Vazquez</span>
-                <span class="contador"><span class="numero" id="totalJvazquez">0</span></span>
-            </div>
-        </div>
-
-        <!-- Usuario 3: Dany Zm -->
-        <div class="usuario-card">
-            <img src="https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=32pukmtf&raw=1" alt="Dany Zm" />
-            <div class="info">
-                <span class="nombre">Dany Zm</span>
-                <span class="contador"><span class="numero" id="totalDanyZm">0</span></span>
-            </div>
-        </div>
-
-        <!-- Usuario 4: Radio Muisc -->
-        <div class="usuario-card">
-            <img src="https://www.dropbox.com/scl/fi/ic181hn9urht5rpwq59i8/Kerim-Music.png?rlkey=yrsuxjx4nppskluqn50vwyo6q&st=rkfz6q4w&raw=1" alt="Radio Muisc" />
-            <div class="info">
-                <span class="nombre">Radio Music</span>
-                <span class="contador"><span class="numero" id="totalRadioMuisc">0</span></span>
-            </div>
-        </div>
+        <!-- Aquí se inyectarán dinámicamente las tarjetas de los álbumes -->
+        <div id="tarjetasContainer"></div>
     </div>
 
-    <!-- Firebase módulos -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import {
@@ -346,7 +313,7 @@
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // Configuración real de Firebase
+        // ─── CONFIGURACIÓN DE FIREBASE ──────────────────────────────────
         const firebaseConfig = {
             apiKey: "AIzaSyC5R9mPw1PQMjYIqWpz5w3W7BvGmZV4tX8",
             authDomain: "kerim-music-a9c46.firebaseapp.com",
@@ -360,63 +327,111 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // Referencias a documentos
-        const refEmsek = doc(db, "AlbunEmsek", "emsek-album");
-        const refJvazquez = doc(db, "Albunes", "Jvazquez");
-        const refDanyZm = doc(db, "Albun Dany Zm", "danyzm-album");
-        const refRadioMuisc = doc(db, "Radio Muisc", "Kerim Music+");
         const CAMPO = "total";
 
-        // Elementos DOM
-        const spanEmsek = document.getElementById("totalEmsek");
-        const spanJvazquez = document.getElementById("totalJvazquez");
-        const spanDanyZm = document.getElementById("totalDanyZm");
-        const spanRadioMuisc = document.getElementById("totalRadioMuisc");
-
-        const wrapper = document.getElementById("destacadoWrapper");
-        const imgDestacado = document.getElementById("destacadoImagen");
-        const nombreDestacado = document.getElementById("destacadoArtista");
-        const visitasDestacado = document.getElementById("destacadoVisitas");
-
-        // Mapeo de imágenes por nombre
-        const IMAGENES = {
-            Emsek: "https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=srurysqy&raw=1",
-            Jvazquez: "https://www.dropbox.com/scl/fi/bv6fo6j2vmnp2esqd4ula/800x800-7986476-700B12B5-E66A-4DC7-B44D0B4ABA4553B2-0-483095-Picsart251220185548595.jpg?rlkey=r6plwuux7kuee6uw307l1isar&st=61s02yro&raw=1",
-            DanyZm: "https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=32pukmtf&raw=1",
-            RadioMuisc: "https://www.dropbox.com/scl/fi/ic181hn9urht5rpwq59i8/Kerim-Music.png?rlkey=yrsuxjx4nppskluqn50vwyo6q&st=rkfz6q4w&raw=1"
-        };
-
-        // Estado de los valores
-        const valores = {
-            Emsek: 0,
-            Jvazquez: 0,
-            DanyZm: 0,
-            RadioMuisc: 0
-        };
-
-        // Actualizar la tarjeta destacada
-        function actualizarDestacado() {
-            let maxNombre = '';
-            let maxValor = 0;
-            for (const [nombre, valor] of Object.entries(valores)) {
-                if (valor > maxValor) {
-                    maxValor = valor;
-                    maxNombre = nombre;
-                }
+        // ─── LISTA DE ÁLBUMES ──────────────────────────────────────────
+        const albumes = [
+            {
+                id: 'Emsek',
+                nombre: 'Emsek',
+                imagen: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=srurysqy&raw=1',
+                coleccion: 'AlbunEmsek',
+                documento: 'emsek-album'
+            },
+            {
+                id: 'Jvazquez',
+                nombre: 'J Vazquez',
+                imagen: 'https://www.dropbox.com/scl/fi/bv6fo6j2vmnp2esqd4ula/800x800-7986476-700B12B5-E66A-4DC7-B44D0B4ABA4553B2-0-483095-Picsart251220185548595.jpg?rlkey=r6plwuux7kuee6uw307l1isar&st=61s02yro&raw=1',
+                coleccion: 'Albunes',
+                documento: 'Jvazquez'
+            },
+            {
+                id: 'DanyZm',
+                nombre: 'Dany Zm',
+                imagen: 'https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=32pukmtf&raw=1',
+                coleccion: 'Albun Dany Zm',
+                documento: 'danyzm-album'
+            },
+            {
+                id: 'Escribo',
+                nombre: 'Escribo',
+                imagen: 'https://www.dropbox.com/scl/fi/cc8365qf2ie3rjdlkwp0f/Escribo.jpg?rlkey=je5mgu7vxre0psjxaent3a1zd&st=m946ohmb&raw=1',
+                coleccion: 'Albun Escribo',
+                documento: 'Escribo'
+            },
+            {
+                id: 'RadioMuisc',
+                nombre: 'Radio Music',
+                imagen: 'https://www.dropbox.com/scl/fi/ic181hn9urht5rpwq59i8/Kerim-Music.png?rlkey=yrsuxjx4nppskluqn50vwyo6q&st=rkfz6q4w&raw=1',
+                coleccion: 'Radio Muisc',
+                documento: 'Kerim Music+'
             }
+        ];
 
-            if (maxValor > 100 && maxNombre) {
-                imgDestacado.src = IMAGENES[maxNombre] || '';
-                imgDestacado.alt = maxNombre;
-                nombreDestacado.textContent = maxNombre;
-                visitasDestacado.textContent = maxValor;
-                wrapper.classList.add('visible');
-            } else {
-                wrapper.classList.remove('visible');
-            }
-        }
+        // ─── REFERENCIAS Y ELEMENTOS DINÁMICOS ──────────────────────────
+        const tarjetasContainer = document.getElementById('tarjetasContainer');
+        const wrapper = document.getElementById('destacadoWrapper');
+        const imgDestacado = document.getElementById('destacadoImagen');
+        const nombreDestacado = document.getElementById('destacadoArtista');
+        const visitasDestacado = document.getElementById('destacadoVisitas');
 
-        // Inicializar documento en Firestore
+        // Objeto para almacenar los valores actuales de cada álbum
+        const valores = {};
+        // Objeto para guardar los spans de cada contador
+        const spans = {};
+        // Objeto para guardar las referencias de Firestore
+        const refs = {};
+        // Almacenar los elementos de las tarjetas para reordenar
+        const cardElements = {};
+
+        // ─── GENERAR HTML DE LAS TARJETAS ──────────────────────────────
+        albumes.forEach(album => {
+            const { id, nombre, imagen, coleccion, documento } = album;
+
+            const ref = doc(db, coleccion, documento);
+            refs[id] = ref;
+            valores[id] = 0;
+
+            const card = document.createElement('div');
+            card.className = 'usuario-card';
+            card.dataset.id = id;   // para identificar al ordenar
+
+            const img = document.createElement('img');
+            img.src = imagen;
+            img.alt = nombre;
+
+            const info = document.createElement('div');
+            info.className = 'info';
+
+            const nombreSpan = document.createElement('span');
+            nombreSpan.className = 'nombre';
+            nombreSpan.textContent = nombre;
+
+            const contadorDiv = document.createElement('span');
+            contadorDiv.className = 'contador';
+            const numeroSpan = document.createElement('span');
+            numeroSpan.className = 'numero';
+            numeroSpan.id = `total-${id}`;
+            numeroSpan.textContent = '0';
+            contadorDiv.appendChild(numeroSpan);
+
+            info.appendChild(nombreSpan);
+            info.appendChild(contadorDiv);
+            card.appendChild(img);
+            card.appendChild(info);
+            tarjetasContainer.appendChild(card);
+
+            spans[id] = numeroSpan;
+            cardElements[id] = card;
+
+            // Al hacer clic en la tarjeta, incrementar el contador
+            card.addEventListener('click', () => {
+                incrementarCampo(ref, nombre);
+            });
+        });
+
+        // ─── FUNCIONES DEL CONTADOR ──────────────────────────────────────
+
         async function inicializarDocumento(ref, nombre) {
             try {
                 const docSnap = await getDoc(ref);
@@ -435,14 +450,15 @@
             }
         }
 
-        // Listener en tiempo real
         function escucharContador(ref, spanElement, nombre, clave) {
             return onSnapshot(ref, (docSnap) => {
                 if (docSnap.exists()) {
                     const valor = docSnap.data()[CAMPO] ?? 0;
                     spanElement.textContent = valor;
                     valores[clave] = valor;
+                    // Actualizar destacado y reordenar
                     actualizarDestacado();
+                    reordenarTarjetas();
                 } else {
                     inicializarDocumento(ref, nombre);
                 }
@@ -451,7 +467,6 @@
             });
         }
 
-        // Función para incrementar manualmente (desde consola)
         async function incrementarCampo(ref, nombre) {
             try {
                 await runTransaction(db, async (transaction) => {
@@ -469,11 +484,49 @@
             }
         }
 
-        // Exponer funciones globales
-        window.aumentarEmsek = () => incrementarCampo(refEmsek, "Emsek");
-        window.aumentarJvazquez = () => incrementarCampo(refJvazquez, "J Vazquez");
-        window.aumentarDanyZm = () => incrementarCampo(refDanyZm, "Dany Zm");
-        window.aumentarRadioMuisc = () => incrementarCampo(refRadioMuisc, "Radio Muisc");
+        // ─── ACTUALIZAR TARJETA DESTACADA (siempre visible) ──────────────
+
+        function actualizarDestacado() {
+            let maxNombre = '';
+            let maxValor = -1;  // para asegurar que se elija el primero aunque todos sean 0
+            for (const [id, valor] of Object.entries(valores)) {
+                if (valor > maxValor) {
+                    maxValor = valor;
+                    maxNombre = id;
+                }
+            }
+
+            const ganador = albumes.find(a => a.id === maxNombre);
+
+            if (ganador) {
+                imgDestacado.src = ganador.imagen;
+                imgDestacado.alt = ganador.nombre;
+                nombreDestacado.textContent = ganador.nombre;
+                visitasDestacado.textContent = maxValor;
+                wrapper.classList.add('visible');
+            } else {
+                wrapper.classList.remove('visible');
+            }
+        }
+
+        // ─── REORDENAR TARJETAS POR NÚMERO DE REPRODUCCIONES (desc) ──────
+
+        function reordenarTarjetas() {
+            const cards = Array.from(tarjetasContainer.children);
+            cards.sort((a, b) => {
+                const idA = a.dataset.id;
+                const idB = b.dataset.id;
+                return (valores[idB] || 0) - (valores[idA] || 0);
+            });
+            // Reinsertar en el orden correcto
+            cards.forEach(card => tarjetasContainer.appendChild(card));
+        }
+
+        // ─── EXPONER FUNCIONES GLOBALES ──────────────────────────────────
+        albumes.forEach(album => {
+            const funcName = `aumentar${album.id}`;
+            window[funcName] = () => incrementarCampo(refs[album.id], album.nombre);
+        });
 
         // ─── FONDO ALEATORIO (TONOS OSCUROS) ─────────────────────────────
         const palette = [
@@ -485,28 +538,29 @@
             const color = palette[Math.floor(Math.random() * palette.length)];
             document.body.style.backgroundColor = color;
         }
-
-        // Cambiar cada 3 segundos
         setInterval(changeBackground, 3000);
-        // Cambio inicial
         changeBackground();
 
-        // Autenticación
+        // ─── AUTENTICACIÓN (opcional) ────────────────────────────────────
         onAuthStateChanged(auth, (user) => {
             console.log(user ? "✅ Usuario autenticado" : "👤 Usuario no autenticado");
         });
 
-        // Inicio
+        // ─── INICIO ──────────────────────────────────────────────────────
         document.addEventListener("DOMContentLoaded", async () => {
-            await inicializarDocumento(refEmsek, "Emsek");
-            await inicializarDocumento(refJvazquez, "J Vazquez");
-            await inicializarDocumento(refDanyZm, "Dany Zm");
-            await inicializarDocumento(refRadioMuisc, "Radio Muisc");
+            // Inicializar todos los documentos y luego escuchar
+            const promesas = albumes.map(async (album) => {
+                const ref = refs[album.id];
+                await inicializarDocumento(ref, album.nombre);
+            });
+            await Promise.all(promesas);
 
-            escucharContador(refEmsek, spanEmsek, "Emsek", "Emsek");
-            escucharContador(refJvazquez, spanJvazquez, "J Vazquez", "Jvazquez");
-            escucharContador(refDanyZm, spanDanyZm, "Dany Zm", "DanyZm");
-            escucharContador(refRadioMuisc, spanRadioMuisc, "Radio Muisc", "RadioMuisc");
+            // Iniciar listeners
+            albumes.forEach(album => {
+                const ref = refs[album.id];
+                const span = spans[album.id];
+                escucharContador(ref, span, album.nombre, album.id);
+            });
         });
     </script>
 </body>
