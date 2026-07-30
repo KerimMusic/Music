@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>Kerim Music+ · Royal Blue</title>
   <style>
+    /* ===== ESTILOS COMPLETOS (igual que antes) ===== */
     * {
       margin: 0;
       padding: 0;
@@ -108,36 +109,6 @@
       font-size: 0.8rem;
       display: inline-block;
       min-width: 80px;
-    }
-    .upgrade-banner {
-      display: flex;
-      justify-content: center;
-      margin: 0.5rem auto 1.5rem auto;
-    }
-    .upgrade-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      background: linear-gradient(135deg, #1a4fd6, #2b6df6);
-      color: #ffffff;
-      font-weight: 700;
-      font-size: 1rem;
-      padding: 0.7rem 2rem;
-      border-radius: 500px;
-      text-decoration: none;
-      letter-spacing: 0.5px;
-      border: 1px solid rgba(255,255,255,0.15);
-      box-shadow: 0 0 30px rgba(43, 109, 246, 0.25);
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-    .upgrade-btn:hover {
-      transform: scale(1.04);
-      box-shadow: 0 0 50px rgba(43, 109, 246, 0.4);
-      background: linear-gradient(135deg, #2b6df6, #1a4fd6);
-    }
-    .upgrade-btn:active {
-      transform: scale(0.96);
     }
     .top-artists-section {
       margin-bottom: 2rem;
@@ -267,84 +238,6 @@
       height: 100%;
       background: radial-gradient(circle at 20% 40%, rgba(43,109,246,0.08) 0%, rgba(0,0,0,0.6) 100%);
       pointer-events: none;
-    }
-    .portada-fija {
-      width: 100%;
-      border-radius: 12px;
-      overflow: hidden;
-      margin: 0.5rem 0 1.5rem 0;
-      background: #0a0e1a;
-      box-shadow: 0 4px 30px rgba(0,0,0,0.6), 0 0 40px rgba(43,109,246,0.05);
-    }
-    .portada-track {
-      display: flex;
-      gap: 0.75rem;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      padding: 0.75rem 0.5rem;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: thin;
-    }
-    .portada-track::-webkit-scrollbar {
-      height: 4px;
-      background: #111a33;
-    }
-    .portada-track::-webkit-scrollbar-thumb {
-      background: #2b6df6;
-      border-radius: 10px;
-    }
-    .portada-item {
-      flex: 0 0 80%;
-      max-width: 80%;
-      scroll-snap-align: start;
-      border-radius: 10px;
-      overflow: hidden;
-      background: #0d162b;
-      transition: transform 0.2s ease;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid #1a2a5e;
-    }
-    .portada-item a {
-      display: block;
-      width: 100%;
-      height: 100%;
-      text-decoration: none;
-      position: relative;
-    }
-    .portada-item img {
-      width: 100%;
-      height: auto;
-      aspect-ratio: auto;
-      object-fit: contain;
-      display: block;
-      transition: transform 0.3s ease;
-      background: #0a0e1a;
-    }
-    .portada-item:hover img {
-      transform: scale(1.02);
-    }
-    .portada-caption {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(transparent, rgba(10,14,26,0.85));
-      padding: 1rem 0.8rem 0.6rem;
-      color: #e8ecf4;
-      font-size: 0.8rem;
-      font-weight: 500;
-      letter-spacing: 0.3px;
-      pointer-events: none;
-    }
-    @media (min-width: 640px) {
-      .portada-item { flex: 0 0 55%; max-width: 55%; }
-    }
-    @media (min-width: 1024px) {
-      .portada-item { flex: 0 0 32%; max-width: 32%; }
     }
     .gallery-grid {
       display: grid;
@@ -491,6 +384,12 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    .card-plays {
+      font-size: 0.65rem;
+      color: #5a7fc7;
+      padding: 0 0.5rem 0.5rem 0.5rem;
+      font-weight: 400;
+    }
     @media (min-width: 500px) {
       .gallery-grid:not(.list-view) { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
     }
@@ -595,31 +494,6 @@
       align-items: center;
       gap: 1.5rem;
       margin-top: 0.8rem;
-    }
-    .fav-btn-player {
-      background: transparent;
-      border: none;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      font-size: 1.4rem;
-      cursor: pointer;
-      transition: 0.2s;
-      color: #5a7fc7;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .fav-btn-player.active { color: #2b6df6; }
-    .fav-btn-player:hover { color: #e8ecf4; transform: scale(1.05); }
-    .fav-btn-player.locked {
-      color: #3a4a6a;
-      cursor: not-allowed;
-      opacity: 0.5;
-    }
-    .fav-btn-player.locked:hover {
-      color: #3a4a6a;
-      transform: none;
     }
     .ctrl-btn.shuffle-btn-player {
       background: transparent;
@@ -998,7 +872,7 @@
   <div class="mini-progress-bg"><div class="mini-progress-fill" id="miniProgressFill"></div></div>
 </div>
 
-<!-- ========== CONTADOR CON FIREBASE (MÓDULO) – VISITAS ÚNICAS ========== -->
+<!-- ========== CONTADOR GLOBAL Y POR CANCIÓN (MÓDULO) ========== -->
 <script type="importmap">
   {
     "imports": {
@@ -1017,6 +891,8 @@
     getDoc,
     setDoc,
     runTransaction,
+    arrayUnion,
+    updateDoc
   } from "firebase/firestore";
 
   const firebaseConfig = {
@@ -1031,11 +907,11 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
+  // ---- CONTADOR GLOBAL DE VISITAS (único) ----
   const contadorRef = doc(db, "Radio Muisc", "Kerim Music+");
   const CAMPO_CONTADOR = "total";
   const contadorSpan = document.getElementById("contador");
 
-  // ---------- Obtener / crear ID de usuario ----------
   let userId = localStorage.getItem('visitor_id_kerim');
   if (!userId) {
     userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -1043,72 +919,122 @@
   }
   const userRef = doc(collection(contadorRef, 'usuarios'), userId);
 
-  // ---------- Funciones del contador ----------
-  async function obtenerValor() {
+  async function obtenerValorGlobal() {
     try {
       const docSnap = await getDoc(contadorRef);
-      if (docSnap.exists()) {
-        return docSnap.data()[CAMPO_CONTADOR] || 0;
+      if (docSnap.exists()) return docSnap.data()[CAMPO_CONTADOR] || 0;
+      else { await setDoc(contadorRef, { [CAMPO_CONTADOR]: 0 }); return 0; }
+    } catch (e) { console.error(e); return 0; }
+  }
+  async function actualizarInterfazGlobal() {
+    const valor = await obtenerValorGlobal();
+    if (contadorSpan) contadorSpan.textContent = valor;
+  }
+  async function inicializarContadorGlobal() {
+    await actualizarInterfazGlobal();
+    try {
+      const userSnap = await getDoc(userRef);
+      if (!userSnap.exists()) {
+        await runTransaction(db, async (transaction) => {
+          const docSnap = await transaction.get(contadorRef);
+          const nuevoTotal = (docSnap.exists() ? docSnap.data()[CAMPO_CONTADOR] : 0) + 1;
+          if (!docSnap.exists()) transaction.set(contadorRef, { [CAMPO_CONTADOR]: nuevoTotal });
+          else transaction.update(contadorRef, { [CAMPO_CONTADOR]: nuevoTotal });
+        });
+        await setDoc(userRef, { fecha: new Date().toISOString(), userAgent: navigator.userAgent.slice(0, 200), canciones_escuchadas: [] });
+        await actualizarInterfazGlobal();
+        console.log("✅ Nuevo usuario registrado. Contador global incrementado.");
       } else {
-        await setDoc(contadorRef, { [CAMPO_CONTADOR]: 0 });
-        return 0;
+        console.log("👤 Usuario ya registrado. No se incrementa.");
       }
+    } catch (error) { console.error("Error al verificar/registrar usuario:", error); }
+  }
+
+  // ---- CONTADOR POR CANCIÓN (reproducciones ÚNICAS por usuario) ----
+  async function obtenerCancionesEscuchadas() {
+    try {
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        return userSnap.data().canciones_escuchadas || [];
+      }
+      return [];
     } catch (error) {
-      console.error("Error al leer el contador:", error);
+      console.error("Error al obtener canciones escuchadas:", error);
+      return [];
+    }
+  }
+
+  async function obtenerReproducciones(songId) {
+    try {
+      const ref = doc(db, "Radio Muisc", String(songId));
+      const docSnap = await getDoc(ref);
+      if (docSnap.exists()) {
+        return docSnap.data().reproducciones || 0;
+      }
+      return 0;
+    } catch (error) {
+      console.error("Error al obtener reproducciones:", error);
       return 0;
     }
   }
 
-  async function actualizarInterfaz() {
-    const valor = await obtenerValor();
-    if (contadorSpan) contadorSpan.textContent = valor;
-  }
-
-  // ---------- Inicializar contador (solo incrementa si es nuevo usuario) ----------
-  async function inicializarContador() {
-    await actualizarInterfaz();  // muestra el valor actual
-
+  window.incrementarReproduccion = async function(songId) {
+    if (!songId) return null;
     try {
       const userSnap = await getDoc(userRef);
       if (!userSnap.exists()) {
-        // Usuario nuevo: incrementar contador principal y registrar
-        await runTransaction(db, async (transaction) => {
-          const docSnap = await transaction.get(contadorRef);
-          const nuevoTotal = (docSnap.exists() ? docSnap.data()[CAMPO_CONTADOR] : 0) + 1;
-          if (!docSnap.exists()) {
-            transaction.set(contadorRef, { [CAMPO_CONTADOR]: nuevoTotal });
-          } else {
-            transaction.update(contadorRef, { [CAMPO_CONTADOR]: nuevoTotal });
-          }
+        await setDoc(userRef, { 
+          fecha: new Date().toISOString(), 
+          userAgent: navigator.userAgent.slice(0, 200), 
+          canciones_escuchadas: [] 
         });
-        // Crear documento del usuario
-        await setDoc(userRef, {
-          fecha: new Date().toISOString(),
-          userAgent: navigator.userAgent.slice(0, 200)
-        });
-        // Actualizar la interfaz con el nuevo valor
-        await actualizarInterfaz();
-        console.log("✅ Nuevo usuario registrado. Contador incrementado.");
-      } else {
-        console.log("👤 Usuario ya registrado. No se incrementa.");
       }
+      
+      const cancionesEscuchadas = userSnap.exists() ? (userSnap.data().canciones_escuchadas || []) : [];
+      
+      if (cancionesEscuchadas.includes(String(songId))) {
+        console.log(`⏭️ Usuario ya escuchó la canción ${songId}, no se incrementa`);
+        const ref = doc(db, "Radio Muisc", String(songId));
+        const docSnap = await getDoc(ref);
+        return docSnap.exists() ? docSnap.data().reproducciones || 0 : 0;
+      }
+      
+      const ref = doc(db, "Radio Muisc", String(songId));
+      let nuevoValor;
+      await runTransaction(db, async (transaction) => {
+        const docSnap = await transaction.get(ref);
+        const actual = docSnap.exists() ? docSnap.data().reproducciones || 0 : 0;
+        nuevoValor = actual + 1;
+        if (!docSnap.exists()) {
+          transaction.set(ref, { reproducciones: nuevoValor });
+        } else {
+          transaction.update(ref, { reproducciones: nuevoValor });
+        }
+      });
+      
+      await updateDoc(userRef, {
+        canciones_escuchadas: arrayUnion(String(songId))
+      });
+      
+      console.log(`✅ Primera reproducción registrada para usuario ${userId} - canción ${songId}: ${nuevoValor}`);
+      return nuevoValor;
     } catch (error) {
-      console.error("Error al verificar/registrar usuario:", error);
+      console.error("Error al incrementar reproducción:", error);
+      return null;
     }
-  }
-
-  // Ejecutar al cargar la página
-  document.addEventListener("DOMContentLoaded", inicializarContador);
-
-  // (Opcional) exponer función para uso externo – no se usa en el reproductor
-  window.aumentarContador = async () => {
-    console.warn("Incremento manual deshabilitado para visitas únicas.");
   };
 
-  console.log("✅ Contador Firebase con visitas únicas inicializado (Radio Muisc/Kerim Music+)");
+  window.obtenerReproducciones = obtenerReproducciones;
+  window.obtenerCancionesEscuchadas = obtenerCancionesEscuchadas;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    inicializarContadorGlobal();
+  });
+
+  console.log("✅ Módulo Firebase cargado: contador único por usuario listo.");
 </script>
 
-<!-- ========== SCRIPT PRINCIPAL DEL REPRODUCTOR (sin cambios) ========== -->
+<!-- ========== SCRIPT PRINCIPAL DEL REPRODUCTOR ========== -->
 <script>
   (function(){
     // ==================== CONFIGURACIÓN ====================
@@ -1136,114 +1062,117 @@
     let videoElement = null;
     let isVideoAd = false;
     
-    // ==================== CANCIONES  ====================
+    // ==================== DATOS DE CANCIONES ====================
     const originalSongs = [
-      { id: 18, url: 'https://www.dropbox.com/scl/fi/xg2e8wg59t1tos2dhn5ji/img.png?rlkey=zl56z2a68tu96n0nxycrz485f&st=fdi6i3rr&raw=1',
-                category: 'Presentacion', 
-                album: 'Compralo en CD RACK', 
-                title: 'Album Costryendo el Barco Dany Zm',
-                music: 'https://www.dropbox.com/scl/fi/63czt3npjdkz54trajxdf/Presentacion-de-isco-Dany-Zm.wav?rlkey=q7caesruijhiuiil7map3oecn&st=326tvf8c&raw=1' 
-       },
-       // ============================Escribo======================================
-      { id: 17, url: 'https://www.dropbox.com/scl/fi/cc8365qf2ie3rjdlkwp0f/Escribo.jpg?rlkey=je5mgu7vxre0psjxaent3a1zd&st=m946ohmb&raw=1',
-                category: 'Kerim Music', 
-                album: 'Kerim Music', 
-                title: 'Pensando Escribo',
-                music: 'https://www.dropbox.com/scl/fi/7ydiw8abe4r4fxfiiz5ij/Pensando-Escribo.wav?rlkey=elx3ydjh5rkfz2qcqekbgc9yp&st=7yl9y4sl&raw=1' 
-       },
-       { id: 16, url: 'https://www.dropbox.com/scl/fi/cc8365qf2ie3rjdlkwp0f/Escribo.jpg?rlkey=je5mgu7vxre0psjxaent3a1zd&st=m946ohmb&raw=1',
-                category: 'Kerim Music', 
-                album: 'Kerim Music', 
-                title: '?¡ Escribo',
-                music: 'https://www.dropbox.com/scl/fi/xojiflo0c5ydogct9j40v/Escribo.wav?rlkey=wmpwws77lgru2oniwrak9vv8r&st=dwmyadjz&raw=1' 
-       },
-       { id: 15, url: 'https://www.dropbox.com/scl/fi/cc8365qf2ie3rjdlkwp0f/Escribo.jpg?rlkey=je5mgu7vxre0psjxaent3a1zd&st=m946ohmb&raw=1',
-                category: '', 
-                album: 'Kerim Music', 
-                title: 'Cosas de la Vida',
-                music: 'https://www.dropbox.com/scl/fi/dxhc72dtjjadyzrwupddg/Cosas-de-la-vida-Escribo.wav?rlkey=li3bvmvax97t2f4ion1oiffw8&st=fiz71o8v&raw=1' 
-       },
-      // ============================Daniels======================================
-      { id: 14, url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_oCvGsQy98RUU8-nEyum4ovWEcnkJnQNj31uPwj48Bg&s=10',
-                category: 'Trap', 
-                album: 'Kerim Music', 
-                title: 'Daniels',
-                music: 'https://www.dropbox.com/scl/fi/fvmn4j26twgsls5qruhx7/en-la-intimidad-l-daniels.mp3?rlkey=zkj3ddoqmpczehqxzx707saol&st=ivrway15&raw=1' 
-       },
-       // ==========================JvAZQUEZ=============================================
-      { id: 13, url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'Volver',
-                music: 'https://www.dropbox.com/scl/fi/me17xjy18fcpljgr2d3hi/volver-j-vazquez-video-oficial.mp3?rlkey=3h5tiyv9u527pywplvv7sz9x5&st=ftb2yj3b&raw=1' 
-       },
-      { id: 12, url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                category: 'Reggetoon', 
-                album: '2019', 
-                title: 'Tiempo J Vazquez',
-                music: 'https://www.dropbox.com/scl/fi/00twno5l0kdb08ue26non/Tiempo-Cie-campos-ft-J-Vazquez-Kerim-Music-LKN-Records..wav?rlkey=1ryk8nwj93j0nk9pt8pv6t9uv&st=co15tivd&raw=1' 
-       },
-       { id: 11, url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'Que esta pasando J Vazueqez',
-                music: 'https://www.dropbox.com/scl/fi/pc1usnse2fyvesvyppsy6/Que-esta-pasando-J-Vazquez.wav?rlkey=x342bg6l9htpo1p7zckkg6583&st=qqyg4qq7&raw=1' 
-       },
-      { id: 10, url: 'https://www.dropbox.com/scl/fi/ofp26lu2vtmkahpv27261/Pegaoo-J-Vazquez.jpg?rlkey=88v0x6qpgrxmpkdvi2bnkl1lq&st=y4r50695&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'Pegaoo J Vazquez',
-                music: 'https://www.dropbox.com/scl/fi/1h7xgsfdukb0fwz6068bo/Pegaoo-J-Vazquez.wav?rlkey=y2hri9cuhlpmyv21y9br7l5t9&st=cl9lqa7v&raw=1' 
-       },
-       { id: 8, url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'Obcesion J Vazquez',
-                music: 'https://www.dropbox.com/scl/fi/fi7vh0aizey6iod26en48/Obsecion-j-vazquez.wav?rlkey=ch8el1ronylotfeqyv6romnur&st=xumfzh4n&raw=1' 
-       },
-       { id: 7, url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'No eres Juego de Nintendo',
-                music: 'https://www.dropbox.com/scl/fi/3gnc6sadywpb24ps9z4k9/No-eres-juego-de-nintendo-J-bazquez.wav?rlkey=79nintn3bhle2lyye1nb249e6&st=tf6f6kaj&raw=1' 
-       },
-       { id: 6, url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'Me veuelve Loco J Vazquez',
-                music: 'https://www.dropbox.com/scl/fi/5ojo4u3dak6gytmkcy605/j-vazquez-me-vuelve-loco-fusa-company.mp3?rlkey=ickcmbzdf3wi1k012e0mygo8e&st=7virpnfk&raw=1' 
-       },
-      { id: 5, url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'Una Aventura',
-                music: 'https://www.dropbox.com/scl/fi/dwovntv7djswyqmguk8yd/j-vazquez-aventura-ft-cie-campos-video-liryc.mp3?rlkey=3durnbujd9955pikh47jgyjob&st=xc0vklla&raw=1' 
-       },
-       { id: 4, url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=k9w3fdxx&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'Foto J Vazquez',
-                music: 'https://www.dropbox.com/scl/fi/5mnj6mb2evikxph4wlbyq/j-vazquez-FOTO.wav?rlkey=s1q4uliexbe4bvrtcdrxzm1b2&st=8tu1szip&raw=1' 
-       },
-      { id: 3, url: 'https://www.dropbox.com/scl/fi/uwuq0dmdotm4lx00z82r5/800x800-7986476-C4F4AACF-E181-4041-A6075E17315FCA83-0-289400-WhatsAppImage20260206at6.03.47PM.jpg?rlkey=t8wcuqx2xiq5c0bwgtr6dokn3&st=u3gdtb4m&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: '14 de Febrero',
-                music: 'https://www.dropbox.com/scl/fi/igoyb7x8feuz6otf67ddt/JBazques14deFrebreroOficial.wav?rlkey=vbgyvxlgyk5t1pl6kojif7w65&st=x1vzpuib&raw=1' 
-       },
-      { id: 2, url: 'https://www.dropbox.com/scl/fi/w51t3llqpavnpmxxgus83/el-chiris.png?rlkey=leru6o7n7omsn9b455yqcrf4g&st=zv4scg8y&raw=1',
-                category: 'Norteño', 
-                album: '2019', 
-                title: 'El chiris J Vazquez',
-                music: 'https://www.dropbox.com/scl/fi/7gcv8k4ke1mglv3jkya1k/El-Chiris.wav?rlkey=hpgsr66ebcy6tyl6ounf7ii81&st=jxoazn66&raw=1' 
-       },
-       { id: 1, url: 'https://www.dropbox.com/scl/fi/kgnxbl0mdp3q2uivbi4et/800x800-7986476-0F948044-9801-4FC9-8EFF36DDC1873148-0-3542185-Teestoyllamando.jpg?rlkey=jki22g8n7mq0b7ufv138n4wsn&st=10uw8nqx&raw=1',
-                category: 'Reggeton', 
-                album: '2019', 
-                title: 'Te estoy Llamando J Vazquez',
-                music: 'https://www.dropbox.com/scl/fi/97yj1flb0bgaaedaxr9h1/Te_estoy_Llamando_lista.wav?rlkey=cn3oppwsfjv617hhcuy2rcga4&st=715yp09y&raw=1' 
-       }
-    
+      // ====================J Vazquez====================
+      { 
+        id: "Te estoy llamando J Vazquez",
+        url: 'https://www.dropbox.com/scl/fi/kgnxbl0mdp3q2uivbi4et/800x800-7986476-0F948044-9801-4FC9-8EFF36DDC1873148-0-3542185-Teestoyllamando.jpg?rlkey=jki22g8n7mq0b7ufv138n4wsn&st=10uw8nqx&raw=1',
+        category: 'Reggeton',
+        album: '2019',
+        title: 'Te estoy llamando J Vazquez',
+        music: 'https://www.dropbox.com/scl/fi/97yj1flb0bgaaedaxr9h1/Te_estoy_Llamando_lista.wav?rlkey=cn3oppwsfjv617hhcuy2rcga4&st=715yp09y&raw=1',
+        artist: 'JVazquez'
+      },
+      { 
+        id: "El chiris J Vazquez",
+        url: 'https://www.dropbox.com/scl/fi/w51t3llqpavnpmxxgus83/el-chiris.png?rlkey=leru6o7n7omsn9b455yqcrf4g&st=zv4scg8y&raw=1',
+        category: 'Reggeton',
+        album: '2019',
+        title: 'El chiris J Vazquez',
+        music: 'https://www.dropbox.com/scl/fi/7gcv8k4ke1mglv3jkya1k/El-Chiris.wav?rlkey=hpgsr66ebcy6tyl6ounf7ii81&st=jxoazn66&raw=1',
+        artist: 'JVazquez'
+      },
+      { 
+        id: "Foto J Vazquez",
+        url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=k9w3fdxx&raw=1',
+        category: 'Reggeton',
+        album: '2019',
+        title: 'Foto J Vazquez',
+        music: 'https://www.dropbox.com/scl/fi/5mnj6mb2evikxph4wlbyq/j-vazquez-FOTO.wav?rlkey=s1q4uliexbe4bvrtcdrxzm1b2&st=8tu1szip&raw=1',
+        artist: 'JVazquez'
+      },
+      { 
+        id: "Una Aventura J Vazquez",
+        url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
+        category: 'Reggeton',
+        album: '2019',
+        title: 'Una Aventura J Vazquez ft Cie campos',
+        music: 'https://www.dropbox.com/scl/fi/dwovntv7djswyqmguk8yd/j-vazquez-aventura-ft-cie-campos-video-liryc.mp3?rlkey=3durnbujd9955pikh47jgyjob&st=xc0vklla&raw=1',
+        artist: 'JVazquez'
+      },
+      { 
+        id: "Me vuelve loco J Vazquez",
+        url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
+        category: 'Reggeton',
+        album: '2019',
+        title: 'Me vuelve loco J Vazquez',
+        music: 'https://www.dropbox.com/scl/fi/5ojo4u3dak6gytmkcy605/j-vazquez-me-vuelve-loco-fusa-company.mp3?rlkey=ickcmbzdf3wi1k012e0mygo8e&st=7virpnfk&raw=1',
+        artist: 'JVazquez'
+      },
+      { 
+        id: "Obsesion J Vazquez",
+        url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
+        category: 'Reggeton',
+        album: '2019',
+        title: 'Obsesion J Vazquez',
+        music: 'https://www.dropbox.com/scl/fi/fi7vh0aizey6iod26en48/Obsecion-j-vazquez.wav?rlkey=ch8el1ronylotfeqyv6romnur&st=xumfzh4n&raw=1',
+        artist: 'JVazquez'
+      },
+      { 
+        id: "Que esta pasando J Vazquez",
+        url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
+        category: 'Reggeton',
+        album: '2019',
+        title: 'Que esta pasando J Vazquez',
+        music: 'https://www.dropbox.com/scl/fi/pc1usnse2fyvesvyppsy6/Que-esta-pasando-J-Vazquez.wav?rlkey=x342bg6l9htpo1p7zckkg6583&st=qqyg4qq7&raw=1',
+        artist: 'JVazquez'
+      },
+      { 
+        id: "Tiempo J Vazquez",
+        url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
+        category: 'Reggeton',
+        album: '2019',
+        title: 'Tiempo J Vazquez',
+        music: 'https://www.dropbox.com/scl/fi/00twno5l0kdb08ue26non/Tiempo-Cie-campos-ft-J-Vazquez-Kerim-Music-LKN-Records..wav?rlkey=1ryk8nwj93j0nk9pt8pv6t9uv&st=co15tivd&raw=1',
+        artist: 'JVazquez'
+      },
+      { 
+        id: "Volver",
+        url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
+        category: 'Reggeton',
+        album: '2019',
+        title: 'Volver J Vazquez',
+        music: 'https://www.dropbox.com/scl/fi/me17xjy18fcpljgr2d3hi/volver-j-vazquez-video-oficial.mp3?rlkey=3h5tiyv9u527pywplvv7sz9x5&st=ftb2yj3b&raw=1',
+        artist: 'JVazquez'
+      },
+      { 
+        id: "pegaoo!",
+        url: 'https://www.dropbox.com/scl/fi/ofp26lu2vtmkahpv27261/Pegaoo-J-Vazquez.jpg?rlkey=88v0x6qpgrxmpkdvi2bnkl1lq&st=y4r50695&raw=1',
+        category: 'Reggeton',
+        album: '2019',
+        title: 'Pegaoo J Vazquez',
+        music: 'https://www.dropbox.com/scl/fi/1h7xgsfdukb0fwz6068bo/Pegaoo-J-Vazquez.wav?rlkey=y2hri9cuhlpmyv21y9br7l5t9&st=cl9lqa7v&raw=1',
+        artist: 'JVazquez'
+      },
+      { 
+        id: "No eres juego de nintendo",
+        url: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
+        category: 'Reggeton',
+        album: '2019',
+        title: 'No eres juego de nintendo J Vazquez',
+        music: 'https://www.dropbox.com/scl/fi/5ojo4u3dak6gytmkcy605/j-vazquez-me-vuelve-loco-fusa-company.mp3?rlkey=ickcmbzdf3wi1k012e0mygo8e&st=7virpnfk&raw=1',
+        artist: 'JVazquez'
+      },
+      { 
+        id: "14 de febrero",
+        url: 'https://i.postimg.cc/XNP1xdB2/IMG-20260207-WA0000.jpg',
+        category: 'Reggeton',
+        album: '2024',
+        title: '14 de febrero',
+        music: 'https://www.dropbox.com/scl/fi/igoyb7x8feuz6otf67ddt/JBazques14deFrebreroOficial.wav?rlkey=vbgyvxlgyk5t1pl6kojif7w65&st=x1vzpuib&raw=1',
+        artist: 'JVazquez'
+      }
     ];
     
     // ==================== FUNCIONES AUXILIARES ====================
@@ -1256,7 +1185,7 @@
       return array;
     }
     
-    function escapeHtml(str){ return str ? str.replace(/[&<>]/g, m => ({'&':'&', '<':'<', '>':'>'}[m] || m)) : ''; }
+    function escapeHtml(str){ return str ? str.replace(/[&<>]/g, m => ({'&':'&amp;', '<':'&lt;', '>':'&gt;'}[m] || m)) : ''; }
     
     function formatTime(sec){ if(isNaN(sec)) return '0:00'; let m=Math.floor(sec/60), s=Math.floor(sec%60); return `${m}:${s<10?'0':''}${s}`; }
     
@@ -1276,13 +1205,14 @@
     let masterSongs = [...shuffledSongs];
     const allSongs = [...originalSongs];
     
-    let playCount = new Map();
+    let playCount = new Map();      // <-- local (solo para estadísticas personales)
     let artistPlayCount = new Map();
+    let firestorePlays = new Map(); // <-- contador de usuarios únicos (Firestore)
     
-    // Cargar datos guardados
+    // Cargar datos guardados (localStorage)
     try{ 
       let savedCounts = localStorage.getItem('kerim_play_counts');
-      if(savedCounts){ let parsed = JSON.parse(savedCounts); for(let [k,v] of Object.entries(parsed)) playCount.set(Number(k), v); }
+      if(savedCounts){ let parsed = JSON.parse(savedCounts); for(let [k,v] of Object.entries(parsed)) playCount.set(String(k), v); }
     } catch(e){}
     
     // ==================== FUNCIONES DE ESTADO ====================
@@ -1292,18 +1222,34 @@
       let song = masterSongs.find(s => s.id === songId) || allSongs.find(s => s.id === songId);
       if(song) {
         let artist = song.artist || 'Artista';
-        let newCount = (playCount.get(songId) || 0) + 1;
-        playCount.set(songId, newCount);
+        let newCount = (playCount.get(String(songId)) || 0) + 1;
+        playCount.set(String(songId), newCount);
         artistPlayCount.set(artist, (artistPlayCount.get(artist) || 0) + 1);
         savePlayCounts();
       } else {
-        playCount.set(songId, (playCount.get(songId) || 0) + 1);
+        playCount.set(String(songId), (playCount.get(String(songId)) || 0) + 1);
         savePlayCounts();
       }
     }
     
+    async function obtenerReproduccionesFirestore(songId) {
+      try {
+        if (window.obtenerReproducciones) {
+          const count = await window.obtenerReproducciones(songId);
+          return count || 0;
+        }
+        return 0;
+      } catch (e) {
+        return 0;
+      }
+    }
+    
+    // ===== Sugerencias basadas en el contador GLOBAL (Firestore) =====
     function getLeastPlayedSuggestions(limit = 6){ 
-      let songsWithCount = masterSongs.map(song => ({...song, plays: playCount.get(song.id) || 0})); 
+      let songsWithCount = masterSongs.map(song => ({
+        ...song, 
+        plays: firestorePlays.get(String(song.id)) || 0   // <-- solo usuarios únicos
+      })); 
       songsWithCount.sort((a,b) => a.plays - b.plays); 
       return songsWithCount.slice(0, limit); 
     }
@@ -1711,7 +1657,7 @@
       playSongInternal(song, customQueue);
     }
     
-    function playSongInternal(song, customQueue = null) {
+    async function playSongInternal(song, customQueue = null) {
       if (!song) return;
       if (isAdPlaying) return;
       currentSong = song;
@@ -1720,7 +1666,19 @@
       if (progressArea) progressArea.style.display = 'block';
       
       if (!song.isAd) {
+        // Contador local (estadísticas personales)
         incrementPlayCount(song.id);
+        
+        // Contador en Firestore (ÚNICO por usuario)
+        if (window.incrementarReproduccion) {
+          const nuevoValor = await window.incrementarReproduccion(song.id);
+          if (nuevoValor !== null) {
+            firestorePlays.set(String(song.id), nuevoValor);
+            console.log(`📊 Usuarios únicos de "${song.title}": ${nuevoValor}`);
+          }
+        } else {
+          console.warn('Función incrementarReproduccion no disponible');
+        }
         renderSuggestions();
         renderTopArtists();
         fullSongCategory.innerHTML = song.category || '';
@@ -1756,6 +1714,7 @@
       updatePlayPauseIcon();
       triggerBackgroundRefresh();
       renderPlayerSuggestions();
+      renderContent();
     }
     
     function updateUIWithSong(song){ 
@@ -1823,15 +1782,13 @@
       if(leastPlayed.length === 0){ suggestionsContainer.innerHTML = ''; return; } 
       let html = `<div class="suggestions-horizontal">`; 
       leastPlayed.forEach(song => { 
-        const plays = (playCount.get(song.id) || 0); 
-        const inviteMsg = plays === 0 ? 'Sin estrenar' : `🎧 ${plays} reproducción${plays !== 1 ? 'es' : ''}`; 
-        html += `<div class="suggestion-card" data-id="${song.id}"><img src="${song.url}" loading="lazy"><div class="suggestion-info"><div class="suggestion-title">${escapeHtml(song.title)}</div><div class="suggestion-badge">${song.category}</div><div class="suggestion-invite"><span>▶</span> ${inviteMsg}</div></div></div>`; 
+        html += `<div class="suggestion-card" data-id="${song.id}"><img src="${song.url}" loading="lazy"><div class="suggestion-info"><div class="suggestion-title">${escapeHtml(song.title)}</div><div class="suggestion-badge">${song.category}</div></div></div>`; 
       }); 
       html += `</div>`; 
       suggestionsContainer.innerHTML = html; 
       document.querySelectorAll('.suggestion-card').forEach(card => { 
         card.addEventListener('click', () => { 
-          const id = parseInt(card.dataset.id); 
+          const id = card.dataset.id; 
           const found = masterSongs.find(s => s.id === id) || allSongs.find(s => s.id === id); 
           if(found){ updateQueueAndMode(); playSong(found); } 
         }); 
@@ -1857,12 +1814,11 @@
       if (suggestions.length === 0) { suggestionsTrack.innerHTML = '<div style="color:#5a7fc7; text-align:center; font-size:0.7rem;">No hay sugerencias disponibles</div>'; return; }
       let html = '';
       suggestions.forEach(song => {
-        const plays = playCount.get(song.id) || 0;
-        html += `<div class="player-suggestion-item" data-id="${song.id}"><img class="player-suggestion-img" src="${song.url}" loading="lazy"><div class="player-suggestion-info"><div class="player-suggestion-title">${escapeHtml(song.title.length > 12 ? song.title.substring(0,10)+'...' : song.title)}</div><div class="player-suggestion-plays">${plays} escuchas</div></div></div>`;
+        html += `<div class="player-suggestion-item" data-id="${song.id}"><img class="player-suggestion-img" src="${song.url}" loading="lazy"><div class="player-suggestion-info"><div class="player-suggestion-title">${escapeHtml(song.title.length > 12 ? song.title.substring(0,10)+'...' : song.title)}</div></div></div>`;
       });
       suggestionsTrack.innerHTML = html;
       if (suggestionsHidden) { suggestionsTrack.classList.add('hidden-suggestions'); if(toggleBtn) toggleBtn.innerText = 'Mostrar'; } else { suggestionsTrack.classList.remove('hidden-suggestions'); if(toggleBtn) toggleBtn.innerText = 'Ocultar'; }
-      document.querySelectorAll('#playerSuggestionsTrack .player-suggestion-item').forEach(item => { item.addEventListener('click', (e) => { e.stopPropagation(); const id = parseInt(item.getAttribute('data-id')); const found = masterSongs.find(s => s.id === id) || allSongs.find(s => s.id === id); if(found) { updateQueueAndMode(); playSong(found); } }); });
+      document.querySelectorAll('#playerSuggestionsTrack .player-suggestion-item').forEach(item => { item.addEventListener('click', (e) => { e.stopPropagation(); const id = item.getAttribute('data-id'); const found = masterSongs.find(s => s.id === id) || allSongs.find(s => s.id === id); if(found) { updateQueueAndMode(); playSong(found); } }); });
     }
     
     function toggleSuggestions() {
@@ -1889,7 +1845,7 @@
       }
       let html = '';
       topArtists.forEach(artist => {
-        html += `<div class="artist-circle-card" data-artist="${escapeHtml(artist.name)}"><img class="artist-avatar" src="${artist.image}" alt="${escapeHtml(artist.name)}" loading="lazy"><div class="artist-name">${escapeHtml(artist.name.length > 15 ? artist.name.substring(0,12)+'...' : artist.name)}</div><div class="artist-plays">${artist.plays} reproducción${artist.plays !== 1 ? 'es' : ''}</div></div>`;
+        html += `<div class="artist-circle-card" data-artist="${escapeHtml(artist.name)}"><img class="artist-avatar" src="${artist.image}" alt="${escapeHtml(artist.name)}" loading="lazy"><div class="artist-name">${escapeHtml(artist.name.length > 15 ? artist.name.substring(0,12)+'...' : artist.name)}</div></div>`;
       });
       artistsContainer.innerHTML = html;
     }
@@ -1903,7 +1859,7 @@
       } 
     }
     
-    function renderContent(){ 
+    async function renderContent(){ 
       updateCounterVisibility(); 
       renderTopArtists();
       const items = getActiveListForQueue();
@@ -1917,17 +1873,34 @@
         return; 
       } 
       
+      // Obtener contadores de Firestore para todas las canciones (si no están en caché)
+      for (let song of items) {
+        if (!firestorePlays.has(String(song.id))) {
+          const plays = await obtenerReproduccionesFirestore(song.id);
+          firestorePlays.set(String(song.id), plays);
+        }
+      }
+      
       let gridClass = 'gallery-grid' + (isSearching ? ' list-view' : ''); 
       let html = `<div class="${gridClass}">`; 
       items.forEach(song => { 
-        if(isSearching) html += `<div class="image-card" data-id="${song.id}"><img src="${song.url}" loading="lazy"><div class="card-title">${escapeHtml(song.title)}<span style="font-size:0.7rem; color:#5a7fc7;"> · ${song.category}</span></div></div>`; 
-        else html += `<div class="image-card" data-id="${song.id}"><img src="${song.url}" loading="lazy"><div class="card-title">${escapeHtml(song.title)}</div></div>`; 
+        if(isSearching) {
+          html += `<div class="image-card" data-id="${song.id}">
+                    <img src="${song.url}" loading="lazy">
+                    <div class="card-title">${escapeHtml(song.title)}<span style="font-size:0.7rem; color:#5a7fc7;"> · ${song.category}</span></div>
+                  </div>`; 
+        } else {
+          html += `<div class="image-card" data-id="${song.id}">
+                    <img src="${song.url}" loading="lazy">
+                    <div class="card-title">${escapeHtml(song.title)}</div>
+                  </div>`; 
+        }
       }); 
       html += `</div>`; 
       contentContainer.innerHTML = html; 
       document.querySelectorAll('.image-card').forEach(card => { 
         card.addEventListener('click', () => { 
-          const id = parseInt(card.dataset.id); 
+          const id = card.dataset.id; 
           const found = masterSongs.find(s => s.id === id) || allSongs.find(s => s.id === id); 
           if(found){ updateQueueAndMode(); playSong(found); } 
         }); 
@@ -1961,22 +1934,19 @@
       else document.querySelector('.chip-sort[data-sort="default"]')?.classList.add('active'); 
     }
     
-    // ==================== BÚSQUEDA ====================
-    // La búsqueda ahora se activa con un input oculto, pero mantenemos la funcionalidad
-    // para que el código no se rompa. Se ha eliminado el contenedor de búsqueda visual.
-    
     // ==================== EVENTOS ====================
     const homeBtn = document.querySelector('[data-view="home"]');
-    const likesBtn = document.querySelector('[data-view="likes"]');
     
-    homeBtn.addEventListener('click', () => {
-      homeBtn.classList.add('active');
-      isPlaylistsMode = false;
-      updateSortChipsVisibility();
-      renderContent();
-      renderSuggestions();
-      updateQueueAndMode();
-    });
+    if (homeBtn) {
+      homeBtn.addEventListener('click', () => {
+        homeBtn.classList.add('active');
+        isPlaylistsMode = false;
+        updateSortChipsVisibility();
+        renderContent();
+        renderSuggestions();
+        updateQueueAndMode();
+      });
+    }
     
     // ==================== AUDIO EVENTOS ====================
     audio.addEventListener('timeupdate',()=>{ 
@@ -2000,26 +1970,30 @@
     });
     
     // ==================== PROGRESS BAR ====================
-    progressBarBg.addEventListener('click',(e)=>{ 
-      if(audio.duration){ 
-        let rect = progressBarBg.getBoundingClientRect(); 
-        let perc = (e.clientX - rect.left)/rect.width; 
-        audio.currentTime = perc * audio.duration; 
-      } 
-    });
+    if (progressBarBg) {
+      progressBarBg.addEventListener('click',(e)=>{ 
+        if(audio.duration){ 
+          let rect = progressBarBg.getBoundingClientRect(); 
+          let perc = (e.clientX - rect.left)/rect.width; 
+          audio.currentTime = perc * audio.duration; 
+        } 
+      });
+    }
     
     // ==================== CONTROLES ====================
-    fullPlayPause.addEventListener('click', togglePlayPause);
-    fullNext.addEventListener('click', nextTrack);
-    fullPrev.addEventListener('click', prevTrack);
-    miniPlayPause.addEventListener('click', togglePlayPause);
-    miniNext.addEventListener('click', nextTrack);
-    miniPrev.addEventListener('click', prevTrack);
+    if (fullPlayPause) fullPlayPause.addEventListener('click', togglePlayPause);
+    if (fullNext) fullNext.addEventListener('click', nextTrack);
+    if (fullPrev) fullPrev.addEventListener('click', prevTrack);
+    if (miniPlayPause) miniPlayPause.addEventListener('click', togglePlayPause);
+    if (miniNext) miniNext.addEventListener('click', nextTrack);
+    if (miniPrev) miniPrev.addEventListener('click', prevTrack);
     
-    miniPlayerDiv.addEventListener('click',(e)=>{ if(!e.target.closest('.mini-btn')) fullPlayer.classList.add('show'); });
-    closePlayerBtn.addEventListener('click',()=>fullPlayer.classList.remove('show'));
+    if (miniPlayerDiv) {
+      miniPlayerDiv.addEventListener('click',(e)=>{ if(!e.target.closest('.mini-btn')) fullPlayer.classList.add('show'); });
+    }
+    if (closePlayerBtn) closePlayerBtn.addEventListener('click',()=>fullPlayer.classList.remove('show'));
     
-    shuffleBtnPlayer.addEventListener('click', toggleShuffle);
+    if (shuffleBtnPlayer) shuffleBtnPlayer.addEventListener('click', toggleShuffle);
     if (toggleSuggestionsBtnElem) toggleSuggestionsBtnElem.addEventListener('click', toggleSuggestions);
     
     // ==================== WELCOME MODAL ====================
@@ -2041,16 +2015,18 @@
     currentSearch = '';
     updateSortChipsVisibility();
     initChipsSortEvents();
-    renderContent(); 
-    renderSuggestions(); 
-    updateQueueAndMode(); 
-    renderTopArtists();
-    if(masterSongs.length) currentSong = masterSongs[0];
-    audio.volume = 0.9;
+    
+    renderContent().then(() => {
+      renderSuggestions(); 
+      updateQueueAndMode(); 
+      renderTopArtists();
+      if(masterSongs.length) currentSong = masterSongs[0];
+      audio.volume = 0.9;
+    });
     
     console.log('🎵 Kerim Music+ iniciado correctamente');
-    console.log('🔀 Modo Aleatorio: haz clic en 🔀 para activarlo/desactivarlo');
-    console.log('📺 Los anuncios con video se reproducirán en el reproductor');
+    console.log('📊 Contador de reproducciones ÚNICO por usuario en Firestore (colección "Radio Muisc")');
+    console.log('👤 Cada usuario solo cuenta 1 vez por canción');
     
   })();
 </script>
