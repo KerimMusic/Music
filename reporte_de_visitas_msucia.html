@@ -137,6 +137,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            flex-wrap: wrap;
         }
         .destacado-visitas .numero {
             color: #ffffff;
@@ -159,7 +160,7 @@
             box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
         }
 
-        /* ---------- Tarjetas de usuarios (sin interacción) ---------- */
+        /* ---------- Tarjetas de usuarios ---------- */
         .usuario-card {
             display: flex;
             align-items: center;
@@ -172,7 +173,7 @@
             transition: all 0.2s ease;
             border: 1px solid rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(4px);
-            cursor: default; /* ← sin cursor de click */
+            cursor: default;
         }
         .usuario-card:hover {
             transform: translateY(-3px);
@@ -196,6 +197,7 @@
             justify-content: space-between;
             flex: 1;
             flex-wrap: wrap;
+            gap: 8px;
         }
 
         .nombre {
@@ -203,6 +205,7 @@
             font-weight: 600;
             color: #f0f0f0;
             letter-spacing: -0.3px;
+            word-break: break-word;
         }
 
         .contador {
@@ -328,91 +331,163 @@
 
         const CAMPO = "reproducciones";
 
-        // ─── LISTA DE ÁLBUMES CON IDs ÚNICOS ────────────────────────────
+        // ─── LISTA DE ÁLBUMES (ESTRUCTURA UNIFICADA) ──────────────────
         const albumes = [
+            // =============== Emsek ==============
             {
-                id: 'jvazquez12',
-                nombre: 'Una Aventura J Vazquez',
-                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                coleccion: 'Radio Muisc',
-                documento: 'Una Aventura J Vazquez'
+                id: "Entre tus redes Emsek",
+                nombre: "Entre tus redes",
+                imagen: "https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "Entre tus redes Emsek"
             },
             {
-                id: 'jvazquez11',
-                nombre: 'Me vuelve loco J Vazquez',
-                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                coleccion: 'Radio Muisc',
-                documento: 'Me vuelve loco J Vazquez'
+                id: "El fin de la historia Emsek",
+                nombre: "El fin de la historia",
+                imagen: "https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "El fin de la historia Emsek"
             },
             {
-                id: 'jvazquez10',
-                nombre: 'Obsesion J Vazquez',
-                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                coleccion: 'Radio Muisc',
-                documento: 'Obsesion J Vazquez'
+                id: "En busca de la victoria Emsek",
+                nombre: "En busca de la victoria",
+                imagen: "https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "En busca de la victoria Emsek"
             },
             {
-                id: 'jvazquez9',
-                nombre: 'Que esta pasando J Vazquez',
-                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                coleccion: 'Radio Muisc',
-                documento: 'Que esta pasando J Vazquez'
+                id: "No fue lo mismo Emsek",
+                nombre: "No fue los mismo",
+                imagen: "https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "No fue lo mismo Emsek"
             },
             {
-                id: 'jvazquez8',
-                nombre: 'Tiempo J Vazquez',
-                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                coleccion: 'Radio Muisc',
-                documento: 'Tiempo J Vazquez'
+                id: "Tus errores Emsek",
+                nombre: "Tus Errores",
+                imagen: "https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "Tus errores Emsek"
             },
             {
-                id: 'jvazquez7',
-                nombre: 'Volver J Vazquez',
-                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                coleccion: 'Radio Muisc',
-                documento: 'Volver'
+                id: "Los tiempos cambian Emsek",
+                nombre: "Los tiempos cambian",
+                imagen: "https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "Los tiempos cambian Emsek"
             },
             {
-                id: 'jvazquez6',
-                nombre: 'Te estoy llamando J Vazquez',
-                imagen: 'https://www.dropbox.com/scl/fi/kgnxbl0mdp3q2uivbi4et/800x800-7986476-0F948044-9801-4FC9-8EFF36DDC1873148-0-3542185-Teestoyllamando.jpg?rlkey=jki22g8n7mq0b7ufv138n4wsn&st=10uw8nqx&raw=1',
-                coleccion: 'Radio Muisc',
-                documento: 'Te estoy llamando J Vazquez'
+                id: "Musa Emsek",
+                nombre: "Musa",
+                imagen: "https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "Musa Emsek"
             },
             {
-                id: 'jvazquez5',
-                nombre: 'Foto J Vazquez',
-                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=k9w3fdxx&raw=1',
-                coleccion: 'Radio Muisc',
-                documento: 'Foto J Vazquez'
+                id: "Dada es sencillo Emsek",
+                nombre: "Nada es sencillo",
+                imagen: "https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "Dada es sencillo Emsek"
             },
             {
-                id: 'jvazquez1',
-                nombre: 'pegaoo!',
-                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                coleccion: 'Radio Muisc',
-                documento: 'pegaoo!'
-            },
-             {
-                id: 'jvazquez3',
-                nombre: 'No eres juego de nintendo',
-                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
-                coleccion: 'Radio Muisc',
-                documento: 'No eres juego de nintendo'
+                id: "Perdoname Esmek",
+                nombre: "Perdoname",
+                imagen: "https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "Perdoname Esmek"
             },
             {
-                id: 'jvazquez4',
-                nombre: 'El chiris J Vazquez',
-                imagen: 'https://www.dropbox.com/scl/fi/w51t3llqpavnpmxxgus83/el-chiris.png?rlkey=leru6o7n7omsn9b455yqcrf4g&st=zv4scg8y&raw=1',
-                coleccion: 'Radio Muisc',
-                documento: 'El chiris J Vazquez'
+                id: "Todo acabo Emsek",
+                nombre: "Todo acabo",
+                imagen: "https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "Todo acabo Emsek"
+            },
+            // =============== JVazquez ==============
+            {
+                id: "jvazquez12",
+                nombre: "Una Aventura J Vazquez",
+                imagen: "https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "Una Aventura J Vazquez"
             },
             {
-                id: 'jvazquez2',
-                nombre: '14 de febrero',
-                imagen: 'https://www.dropbox.com/scl/fi/uwuq0dmdotm4lx00z82r5/800x800-7986476-C4F4AACF-E181-4041-A6075E17315FCA83-0-289400-WhatsAppImage20260206at6.03.47PM.jpg?rlkey=t8wcuqx2xiq5c0bwgtr6dokn3&st=u3gdtb4m&raw=1',
-                coleccion: 'Radio Muisc',
-                documento: '14 de febrero'
+                id: "jvazquez11",
+                nombre: "Me vuelve loco J Vazquez",
+                imagen: "https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "Me vuelve loco J Vazquez"
+            },
+            {
+                id: "jvazquez10",
+                nombre: "Obsesion J Vazquez",
+                imagen: "https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "Obsesion J Vazquez"
+            },
+            {
+                id: "jvazquez9",
+                nombre: "Que esta pasando J Vazquez",
+                imagen: "https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "Que esta pasando J Vazquez"
+            },
+            {
+                id: "jvazquez8",
+                nombre: "Tiempo J Vazquez",
+                imagen: "https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "Tiempo J Vazquez"
+            },
+            {
+                id: "jvazquez7",
+                nombre: "Volver J Vazquez",
+                imagen: "https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "Volver"
+            },
+            {
+                id: "jvazquez6",
+                nombre: "Te estoy llamando J Vazquez",
+                imagen: "https://www.dropbox.com/scl/fi/kgnxbl0mdp3q2uivbi4et/800x800-7986476-0F948044-9801-4FC9-8EFF36DDC1873148-0-3542185-Teestoyllamando.jpg?rlkey=jki22g8n7mq0b7ufv138n4wsn&st=10uw8nqx&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "Te estoy llamando J Vazquez"
+            },
+            {
+                id: "jvazquez5",
+                nombre: "Foto J Vazquez",
+                imagen: "https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=k9w3fdxx&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "Foto J Vazquez"
+            },
+            {
+                id: "jvazquez1",
+                nombre: "pegaoo!",
+                imagen: "https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "pegaoo!"
+            },
+            {
+                id: "jvazquez3",
+                nombre: "No eres juego de nintendo",
+                imagen: "https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "No eres juego de nintendo"
+            },
+            {
+                id: "jvazquez4",
+                nombre: "El chiris J Vazquez",
+                imagen: "https://www.dropbox.com/scl/fi/w51t3llqpavnpmxxgus83/el-chiris.png?rlkey=leru6o7n7omsn9b455yqcrf4g&st=zv4scg8y&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "El chiris J Vazquez"
+            },
+            {
+                id: "jvazquez2",
+                nombre: "14 de febrero",
+                imagen: "https://www.dropbox.com/scl/fi/uwuq0dmdotm4lx00z82r5/800x800-7986476-C4F4AACF-E181-4041-A6075E17315FCA83-0-289400-WhatsAppImage20260206at6.03.47PM.jpg?rlkey=t8wcuqx2xiq5c0bwgtr6dokn3&st=u3gdtb4m&raw=1",
+                coleccion: "Radio Muisc",
+                documento: "14 de febrero"
             }
         ];
 
@@ -432,7 +507,7 @@
         // Almacenar los elementos de las tarjetas para reordenar
         const cardElements = {};
 
-        // ─── GENERAR HTML DE LAS TARJETAS (sin eventos click) ────────────
+        // ─── GENERAR HTML DE LAS TARJETAS ────────────────────────────────
         albumes.forEach(album => {
             const { id, nombre, imagen, coleccion, documento } = album;
 
@@ -471,8 +546,6 @@
 
             spans[id] = numeroSpan;
             cardElements[id] = card;
-
-            // ❌ NO se añade ningún evento click → sin interacción
         });
 
         // ─── FUNCIONES DEL CONTADOR (solo lectura) ──────────────────────
@@ -501,7 +574,6 @@
                     const valor = docSnap.data()[CAMPO] ?? 0;
                     spanElement.textContent = valor;
                     valores[clave] = valor;
-                    // Actualizar destacado y reordenar
                     actualizarDestacado();
                     reordenarTarjetas();
                 } else {
