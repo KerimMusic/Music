@@ -159,7 +159,7 @@
             box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
         }
 
-        /* ---------- Tarjetas de usuarios ---------- */
+        /* ---------- Tarjetas de usuarios (sin interacción) ---------- */
         .usuario-card {
             display: flex;
             align-items: center;
@@ -172,7 +172,7 @@
             transition: all 0.2s ease;
             border: 1px solid rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(4px);
-            cursor: pointer;
+            cursor: default; /* ← sin cursor de click */
         }
         .usuario-card:hover {
             transform: translateY(-3px);
@@ -280,7 +280,7 @@
     <div class="container" id="appContainer">
         <div class="titulo"><span>Kerim Music+</span></div>
 
-        <!-- Tarjeta de álbum destacado (siempre visible cuando hay datos) -->
+        <!-- Tarjeta de álbum destacado -->
         <div class="destacado-wrapper" id="destacadoWrapper">
             <div class="destacado-card">
                 <img class="destacado-imagen" id="destacadoImagen" src="" alt="Portada destacada" />
@@ -308,7 +308,6 @@
             doc,
             getDoc,
             setDoc,
-            runTransaction,
             onSnapshot
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -433,7 +432,7 @@
         // Almacenar los elementos de las tarjetas para reordenar
         const cardElements = {};
 
-        // ─── GENERAR HTML DE LAS TARJETAS ──────────────────────────────
+        // ─── GENERAR HTML DE LAS TARJETAS (sin eventos click) ────────────
         albumes.forEach(album => {
             const { id, nombre, imagen, coleccion, documento } = album;
 
@@ -443,7 +442,7 @@
 
             const card = document.createElement('div');
             card.className = 'usuario-card';
-            card.dataset.id = id;   // para identificar al ordenar
+            card.dataset.id = id;
 
             const img = document.createElement('img');
             img.src = imagen;
@@ -473,12 +472,10 @@
             spans[id] = numeroSpan;
             cardElements[id] = card;
 
-            card.addEventListener('click', () => {
-                incrementarCampo(ref, nombre);
-            });
+            // ❌ NO se añade ningún evento click → sin interacción
         });
 
-        // ─── FUNCIONES DEL CONTADOR ──────────────────────────────────────
+        // ─── FUNCIONES DEL CONTADOR (solo lectura) ──────────────────────
 
         async function inicializarDocumento(ref, nombre) {
             try {
@@ -515,24 +512,7 @@
             });
         }
 
-        async function incrementarCampo(ref, nombre) {
-            try {
-                await runTransaction(db, async (transaction) => {
-                    const docSnap = await transaction.get(ref);
-                    if (!docSnap.exists()) {
-                        transaction.set(ref, { [CAMPO]: 1 });
-                        return;
-                    }
-                    const valorActual = docSnap.data()[CAMPO] ?? 0;
-                    transaction.update(ref, { [CAMPO]: valorActual + 1 });
-                });
-                console.log(`✅ Incrementado ${nombre}`);
-            } catch (error) {
-                console.error(`❌ Error al incrementar ${nombre}:`, error);
-            }
-        }
-
-        // ─── ACTUALIZAR TARJETA DESTACADA (siempre visible) ──────────────
+        // ─── ACTUALIZAR TARJETA DESTACADA ──────────────────────────────
 
         function actualizarDestacado() {
             let maxNombre = '';
@@ -566,15 +546,8 @@
                 const idB = b.dataset.id;
                 return (valores[idB] || 0) - (valores[idA] || 0);
             });
-            // Reinsertar en el orden correcto
             cards.forEach(card => tarjetasContainer.appendChild(card));
         }
-
-        // ─── EXPONER FUNCIONES GLOBALES (para consola) ──────────────────
-        albumes.forEach(album => {
-            const funcName = `aumentar${album.id}`;
-            window[funcName] = () => incrementarCampo(refs[album.id], album.nombre);
-        });
 
         // ─── FONDO ALEATORIO (TONOS OSCUROS) ─────────────────────────────
         const palette = [
@@ -603,7 +576,7 @@
             });
             await Promise.all(promesas);
 
-            // Iniciar listeners
+            // Iniciar listeners (solo lectura en tiempo real)
             albumes.forEach(album => {
                 const ref = refs[album.id];
                 const span = spans[album.id];
