@@ -1125,7 +1125,7 @@
   console.log("✅ Módulo Firebase actualizado: contador por canción con caducidad de 3 meses.");
 </script>
 
-<!-- ========== SCRIPT PRINCIPAL DEL REPRODUCTOR ========== -->
+<!-- ========== SCRIPT PRINCIPAL DEL REPRODUCTOR (MODIFICADO) ========== -->
 <script>
   (function(){
     // ==================== CONFIGURACIÓN ====================
@@ -1408,6 +1408,10 @@
     
     // ==================== REPRODUCCIÓN ====================
     let currentPlayQueue = [], currentQueueIndex = 0, currentSong = null, audio = new Audio(), isPlaying = false, currentSearch = '', shuffleActive = false, originalQueue = [], isPlaylistsMode = false;
+    
+    // *** NUEVAS VARIABLES PARA CONTAR SOLO AL FINAL ***
+    let pendingCount = false;
+    let pendingSongId = null;
     
     // ==================== ELEMENTOS DOM ====================
     const contentContainer = document.getElementById('contentContainer');
@@ -1778,32 +1782,34 @@
       playSongInternal(song, customQueue);
     }
     
+    // *** FUNCIÓN INTERNA MODIFICADA ***
     async function playSongInternal(song, customQueue = null) {
       if (!song) return;
       if (isAdPlaying) return;
+      
+      // Cancelar cualquier conteo pendiente de la canción anterior (no se completó)
+      if (pendingCount) {
+        pendingCount = false;
+        pendingSongId = null;
+      }
+      
       currentSong = song;
       
       hideVideoFromPlayer();
       if (progressArea) progressArea.style.display = 'block';
       
+      // Si no es anuncio, marcar como pendiente para contar al final
       if (!song.isAd) {
-        // Contador local (estadísticas personales)
-        incrementPlayCount(song.id);
-        
-        // Contador en Firestore (ÚNICO por usuario, con caducidad de 3 meses)
-        if (window.incrementarReproduccion) {
-          const nuevoValor = await window.incrementarReproduccion(song.id);
-          if (nuevoValor !== null) {
-            firestorePlays.set(String(song.id), nuevoValor);
-            console.log(`📊 Usuarios únicos de "${song.title}" (últimos 3 meses): ${nuevoValor}`);
-          }
-        } else {
-          console.warn('Función incrementarReproduccion no disponible');
-        }
-        renderSuggestions();
-        renderTopArtists();
+        pendingCount = true;
+        pendingSongId = song.id;
+        // Mostrar categoría (se actualizará al final)
         fullSongCategory.innerHTML = song.category || '';
+      } else {
+        // Anuncios no se cuentan
+        pendingCount = false;
+        pendingSongId = null;
       }
+      
       if (customQueue) {
         currentPlayQueue = customQueue;
         if (shuffleActive) {
@@ -1821,6 +1827,7 @@
         let idx = currentPlayQueue.findIndex(s => s.id === song.id);
         if (idx !== -1) currentQueueIndex = idx;
       }
+      
       if (song.music) {
         audio.src = song.music;
         audio.play().catch(e => console.log('Error al reproducir:', e));
@@ -1829,6 +1836,7 @@
         audio.pause();
         isPlaying = false;
       }
+      
       updateUIWithSong(song);
       fullPlayer.classList.add('show');
       miniPlayerDiv.classList.add('show');
@@ -2085,9 +2093,38 @@
     audio.addEventListener('play',()=>{ isPlaying=true; updatePlayPauseIcon(); });
     audio.addEventListener('pause',()=>{ isPlaying=false; updatePlayPauseIcon(); });
     
-    audio.addEventListener('ended',()=>{ 
+    // *** EVENTO ENDED MODIFICADO: contar solo si la canción terminó completa ***
+    audio.addEventListener('ended', () => {
       if (isAdPlaying) return;
-      nextTrack(); 
+      
+      // Si hay un pendiente y coincide con la canción actual, contar la reproducción
+      if (pendingCount && pendingSongId === currentSong?.id && !currentSong?.isAd) {
+        const songId = pendingSongId;
+        // Contar localmente (estadísticas personales)
+        incrementPlayCount(songId);
+        // Contar en Firestore (usuarios únicos con caducidad)
+        if (window.incrementarReproduccion) {
+          window.incrementarReproduccion(songId)
+            .then(nuevoValor => {
+              if (nuevoValor !== null) {
+                firestorePlays.set(String(songId), nuevoValor);
+                console.log(`📊 Usuarios únicos de "${currentSong?.title}" (últimos 3 meses): ${nuevoValor}`);
+                // Actualizar sugerencias y artistas si es necesario
+                renderSuggestions();
+                renderTopArtists();
+              }
+            })
+            .catch(e => console.error('Error al incrementar reproducción:', e));
+        } else {
+          console.warn('Función incrementarReproduccion no disponible');
+        }
+        // Reiniciar bandera de pendiente
+        pendingCount = false;
+        pendingSongId = null;
+      }
+      
+      // Avanzar a la siguiente canción
+      nextTrack();
     });
     
     // ==================== PROGRESS BAR ====================
@@ -2148,6 +2185,7 @@
     console.log('🎵 Kerim Music+ iniciado correctamente');
     console.log('📊 Contador de reproducciones ÚNICO por usuario con caducidad de 3 meses (Firestore)');
     console.log('⏳ Las reproducciones expiran automáticamente si el usuario no escucha ese tema en 3 meses.');
+    console.log('✅ Las reproducciones solo se cuentan cuando la canción se escucha COMPLETA.');
     
   })();
 </script>
