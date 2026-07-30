@@ -1125,7 +1125,7 @@
   console.log("✅ Módulo Firebase actualizado: contador por canción con caducidad de 3 meses.");
 </script>
 
-<!-- ========== SCRIPT PRINCIPAL DEL REPRODUCTOR (MODIFICADO) ========== -->
+<!-- ========== SCRIPT PRINCIPAL DEL REPRODUCTOR ========== -->
 <script>
   (function(){
     // ==================== CONFIGURACIÓN ====================
@@ -1155,6 +1155,25 @@
     
     // ==================== DATOS DE CANCIONES ====================
     const originalSongs = [
+      //======================Aizber=====================
+      { 
+        id: "Sigo Vivo Aizber",
+        url: 'https://www.dropbox.com/scl/fi/9xqi6k1g5cnbior62dh0l/800x800-7986476-B8AD12F4-560F-4E85-8EE3DD6C45025D0E-0-565367-Picsart260207195632530.jpg?rlkey=zjttay9r0myk8r0h1x2074pnj&st=rqbn5ts8&raw=1',
+        category: 'Rap',
+        album: 'Kerim Music',
+        title: 'Sigo Vivo Aicber',
+        music: 'https://www.dropbox.com/scl/fi/0y977tgyjp66og2ze36uh/SIgoVivoIazberMp3.wav?rlkey=6vdswfh8f3wtqa66seeugc480&st=rj9g6llz&raw=1',
+        artist: 'Aiciber'
+      },
+      { 
+        id: "Recuerdos Aizber",
+        url: 'https://www.dropbox.com/scl/fi/kk1f1fdpsgx7noxb5lly9/800x800-7986476-70C18BD7-1A24-4B1E-9D524972181DB7D1-0-663215-FBIMG17490012695773000x3000.jpg?rlkey=0exgl54ffel1k27ncua1j7kd2&st=xwg464eg&raw=1',
+        category: 'Rap',
+        album: 'Kerim Music',
+        title: 'Recuerdos Aicber',
+        music: 'https://www.dropbox.com/scl/fi/bozqu6d4xdeydcx7dl03i/Recuedos-Aizber-Kerim-Music.mp3?rlkey=t8npubztez45kt79vbt3fidst&st=dbx2f1a4&raw=1',
+        artist: 'Aiciber'
+      },
       //======================Emsek=======================
         { id: "Entre tus redes Emsek", title: "Entre tus redes", artist: "Emsek", category: "Rap", url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1', music: 'https://www.dropbox.com/scl/fi/thmc7o0uftl3hhvig4lc6/Entre_tus_Redes_-msek__HM___462__Casero_Records_MP3_256kbps_128k.mp3?rlkey=6raowpgc6b5j5a0h21qyo6p34&st=5jws1foy&raw=1' },
         { id: "El fin de la historia Emsek", title: "El fin de la historia", artist: "Emsek", category: "Rap", url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1', music: 'https://www.dropbox.com/scl/fi/jk2c7g0fixoaqv5e5ajri/El-fin-de-hiastoria-EMSEK.wav?rlkey=kxgq808oded0cdhcd6woh3tdz&st=vkmutc4j&raw=1' },
@@ -1389,10 +1408,6 @@
     
     // ==================== REPRODUCCIÓN ====================
     let currentPlayQueue = [], currentQueueIndex = 0, currentSong = null, audio = new Audio(), isPlaying = false, currentSearch = '', shuffleActive = false, originalQueue = [], isPlaylistsMode = false;
-    
-    // *** NUEVAS VARIABLES PARA CONTAR SOLO AL FINAL ***
-    let pendingCount = false;
-    let pendingSongId = null;
     
     // ==================== ELEMENTOS DOM ====================
     const contentContainer = document.getElementById('contentContainer');
@@ -1763,34 +1778,32 @@
       playSongInternal(song, customQueue);
     }
     
-    // *** FUNCIÓN INTERNA MODIFICADA ***
     async function playSongInternal(song, customQueue = null) {
       if (!song) return;
       if (isAdPlaying) return;
-      
-      // Cancelar cualquier conteo pendiente de la canción anterior (no se completó)
-      if (pendingCount) {
-        pendingCount = false;
-        pendingSongId = null;
-      }
-      
       currentSong = song;
       
       hideVideoFromPlayer();
       if (progressArea) progressArea.style.display = 'block';
       
-      // Si no es anuncio, marcar como pendiente para contar al final
       if (!song.isAd) {
-        pendingCount = true;
-        pendingSongId = song.id;
-        // Mostrar categoría (se actualizará al final)
+        // Contador local (estadísticas personales)
+        incrementPlayCount(song.id);
+        
+        // Contador en Firestore (ÚNICO por usuario, con caducidad de 3 meses)
+        if (window.incrementarReproduccion) {
+          const nuevoValor = await window.incrementarReproduccion(song.id);
+          if (nuevoValor !== null) {
+            firestorePlays.set(String(song.id), nuevoValor);
+            console.log(`📊 Usuarios únicos de "${song.title}" (últimos 3 meses): ${nuevoValor}`);
+          }
+        } else {
+          console.warn('Función incrementarReproduccion no disponible');
+        }
+        renderSuggestions();
+        renderTopArtists();
         fullSongCategory.innerHTML = song.category || '';
-      } else {
-        // Anuncios no se cuentan
-        pendingCount = false;
-        pendingSongId = null;
       }
-      
       if (customQueue) {
         currentPlayQueue = customQueue;
         if (shuffleActive) {
@@ -1808,7 +1821,6 @@
         let idx = currentPlayQueue.findIndex(s => s.id === song.id);
         if (idx !== -1) currentQueueIndex = idx;
       }
-      
       if (song.music) {
         audio.src = song.music;
         audio.play().catch(e => console.log('Error al reproducir:', e));
@@ -1817,7 +1829,6 @@
         audio.pause();
         isPlaying = false;
       }
-      
       updateUIWithSong(song);
       fullPlayer.classList.add('show');
       miniPlayerDiv.classList.add('show');
@@ -2074,38 +2085,9 @@
     audio.addEventListener('play',()=>{ isPlaying=true; updatePlayPauseIcon(); });
     audio.addEventListener('pause',()=>{ isPlaying=false; updatePlayPauseIcon(); });
     
-    // *** EVENTO ENDED MODIFICADO: contar solo si la canción terminó completa ***
-    audio.addEventListener('ended', () => {
+    audio.addEventListener('ended',()=>{ 
       if (isAdPlaying) return;
-      
-      // Si hay un pendiente y coincide con la canción actual, contar la reproducción
-      if (pendingCount && pendingSongId === currentSong?.id && !currentSong?.isAd) {
-        const songId = pendingSongId;
-        // Contar localmente (estadísticas personales)
-        incrementPlayCount(songId);
-        // Contar en Firestore (usuarios únicos con caducidad)
-        if (window.incrementarReproduccion) {
-          window.incrementarReproduccion(songId)
-            .then(nuevoValor => {
-              if (nuevoValor !== null) {
-                firestorePlays.set(String(songId), nuevoValor);
-                console.log(`📊 Usuarios únicos de "${currentSong?.title}" (últimos 3 meses): ${nuevoValor}`);
-                // Actualizar sugerencias y artistas si es necesario
-                renderSuggestions();
-                renderTopArtists();
-              }
-            })
-            .catch(e => console.error('Error al incrementar reproducción:', e));
-        } else {
-          console.warn('Función incrementarReproduccion no disponible');
-        }
-        // Reiniciar bandera de pendiente
-        pendingCount = false;
-        pendingSongId = null;
-      }
-      
-      // Avanzar a la siguiente canción
-      nextTrack();
+      nextTrack(); 
     });
     
     // ==================== PROGRESS BAR ====================
@@ -2166,7 +2148,6 @@
     console.log('🎵 Kerim Music+ iniciado correctamente');
     console.log('📊 Contador de reproducciones ÚNICO por usuario con caducidad de 3 meses (Firestore)');
     console.log('⏳ Las reproducciones expiran automáticamente si el usuario no escucha ese tema en 3 meses.');
-    console.log('✅ Las reproducciones solo se cuentan cuando la canción se escucha COMPLETA.');
     
   })();
 </script>
