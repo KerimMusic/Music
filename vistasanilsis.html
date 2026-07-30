@@ -19,8 +19,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            transition: background-color 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            background-color: #1a1a2e;
+            background-color: #1a1a2e; /* color fijo, sin cambios */
         }
 
         .container {
@@ -159,7 +158,7 @@
             box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
         }
 
-        /* ---------- Tarjetas de usuarios ---------- */
+        /* ---------- Tarjetas de usuarios (solo lectura) ---------- */
         .usuario-card {
             display: flex;
             align-items: center;
@@ -169,15 +168,9 @@
             border-radius: 60px;
             margin-bottom: 16px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            transition: all 0.2s ease;
             border: 1px solid rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(4px);
-            cursor: pointer;
-        }
-        .usuario-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.12);
+            /* Sin cursor pointer ni hover interactivo */
         }
 
         .usuario-card img {
@@ -215,10 +208,6 @@
             line-height: 1.5;
             min-width: 70px;
             text-align: center;
-            transition: background 0.2s;
-        }
-        .usuario-card:hover .contador {
-            background: #1a1a2e;
         }
 
         .contador .numero {
@@ -280,7 +269,7 @@
     <div class="container" id="appContainer">
         <div class="titulo"><span>Kerim Music+ Álbumes</span></div>
 
-        <!-- Tarjeta de álbum destacado (siempre visible si hay datos) -->
+        <!-- Tarjeta de álbum destacado (solo lectura) -->
         <div class="destacado-wrapper" id="destacadoWrapper">
             <div class="destacado-card">
                 <img class="destacado-imagen" id="destacadoImagen" src="" alt="Portada destacada" />
@@ -306,12 +295,8 @@
         import {
             getFirestore,
             doc,
-            getDoc,
-            setDoc,
-            runTransaction,
             onSnapshot
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         // ─── CONFIGURACIÓN DE FIREBASE ──────────────────────────────────
         const firebaseConfig = {
@@ -325,7 +310,6 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const auth = getAuth(app);
 
         const CAMPO = "total";
 
@@ -375,26 +359,19 @@
         const nombreDestacado = document.getElementById('destacadoArtista');
         const visitasDestacado = document.getElementById('destacadoVisitas');
 
-        // Objeto para almacenar los valores actuales de cada álbum
+        // Almacenar los valores actuales (para ordenar y destacado)
         const valores = {};
-        // Objeto para guardar los spans de cada contador
+        // Spans de los contadores
         const spans = {};
-        // Objeto para guardar las referencias de Firestore
-        const refs = {};
-        // Almacenar los elementos de las tarjetas para reordenar
-        const cardElements = {};
 
-        // ─── GENERAR HTML DE LAS TARJETAS ──────────────────────────────
+        // ─── GENERAR HTML DE LAS TARJETAS (sin eventos) ──────────────────
         albumes.forEach(album => {
-            const { id, nombre, imagen, coleccion, documento } = album;
-
-            const ref = doc(db, coleccion, documento);
-            refs[id] = ref;
+            const { id, nombre, imagen } = album;
             valores[id] = 0;
 
             const card = document.createElement('div');
             card.className = 'usuario-card';
-            card.dataset.id = id;   // para identificar al ordenar
+            card.dataset.id = id;
 
             const img = document.createElement('img');
             img.src = imagen;
@@ -422,83 +399,22 @@
             tarjetasContainer.appendChild(card);
 
             spans[id] = numeroSpan;
-            cardElements[id] = card;
-
-            // Al hacer clic en la tarjeta, incrementar el contador
-            card.addEventListener('click', () => {
-                incrementarCampo(ref, nombre);
-            });
         });
 
-        // ─── FUNCIONES DEL CONTADOR ──────────────────────────────────────
-
-        async function inicializarDocumento(ref, nombre) {
-            try {
-                const docSnap = await getDoc(ref);
-                if (!docSnap.exists()) {
-                    await setDoc(ref, { [CAMPO]: 0 });
-                    console.log(`📄 Documento ${nombre} creado con valor 0`);
-                } else {
-                    const data = docSnap.data();
-                    if (!(CAMPO in data)) {
-                        await setDoc(ref, { [CAMPO]: 0 }, { merge: true });
-                        console.log(`📄 Campo "${CAMPO}" añadido en ${nombre}`);
-                    }
-                }
-            } catch (error) {
-                console.error(`❌ Error al inicializar ${nombre}:`, error);
-            }
-        }
-
-        function escucharContador(ref, spanElement, nombre, clave) {
-            return onSnapshot(ref, (docSnap) => {
-                if (docSnap.exists()) {
-                    const valor = docSnap.data()[CAMPO] ?? 0;
-                    spanElement.textContent = valor;
-                    valores[clave] = valor;
-                    // Actualizar destacado y reordenar
-                    actualizarDestacado();
-                    reordenarTarjetas();
-                } else {
-                    inicializarDocumento(ref, nombre);
-                }
-            }, (error) => {
-                console.error(`❌ Error en listener de ${nombre}:`, error);
-            });
-        }
-
-        async function incrementarCampo(ref, nombre) {
-            try {
-                await runTransaction(db, async (transaction) => {
-                    const docSnap = await transaction.get(ref);
-                    if (!docSnap.exists()) {
-                        transaction.set(ref, { [CAMPO]: 1 });
-                        return;
-                    }
-                    const valorActual = docSnap.data()[CAMPO] ?? 0;
-                    transaction.update(ref, { [CAMPO]: valorActual + 1 });
-                });
-                console.log(`✅ Incrementado ${nombre}`);
-            } catch (error) {
-                console.error(`❌ Error al incrementar ${nombre}:`, error);
-            }
-        }
-
-        // ─── ACTUALIZAR TARJETA DESTACADA (siempre visible) ──────────────
+        // ─── FUNCIÓN PARA ACTUALIZAR DESTACADO Y REORDENAR ──────────────
 
         function actualizarDestacado() {
-            let maxNombre = '';
-            let maxValor = -1;  // para asegurar que se elija el primero aunque todos sean 0
+            let maxId = null;
+            let maxValor = -1;
             for (const [id, valor] of Object.entries(valores)) {
                 if (valor > maxValor) {
                     maxValor = valor;
-                    maxNombre = id;
+                    maxId = id;
                 }
             }
 
-            const ganador = albumes.find(a => a.id === maxNombre);
-
-            if (ganador) {
+            const ganador = albumes.find(a => a.id === maxId);
+            if (ganador && maxValor > -1) {
                 imgDestacado.src = ganador.imagen;
                 imgDestacado.alt = ganador.nombre;
                 nombreDestacado.textContent = ganador.nombre;
@@ -509,8 +425,6 @@
             }
         }
 
-        // ─── REORDENAR TARJETAS POR NÚMERO DE REPRODUCCIONES (desc) ──────
-
         function reordenarTarjetas() {
             const cards = Array.from(tarjetasContainer.children);
             cards.sort((a, b) => {
@@ -518,50 +432,38 @@
                 const idB = b.dataset.id;
                 return (valores[idB] || 0) - (valores[idA] || 0);
             });
-            // Reinsertar en el orden correcto
             cards.forEach(card => tarjetasContainer.appendChild(card));
         }
 
-        // ─── EXPONER FUNCIONES GLOBALES ──────────────────────────────────
+        // ─── ESCUCHAR CAMBIOS EN FIRESTORE (SOLO LECTURA) ──────────────
+
         albumes.forEach(album => {
-            const funcName = `aumentar${album.id}`;
-            window[funcName] = () => incrementarCampo(refs[album.id], album.nombre);
-        });
+            const { id, nombre, coleccion, documento } = album;
+            const ref = doc(db, coleccion, documento);
 
-        // ─── FONDO ALEATORIO (TONOS OSCUROS) ─────────────────────────────
-        const palette = [
-            '#1a1a2e', '#16213e', '#0f0f1a', '#1e1e2f', '#14142b',
-            '#1c1c30', '#12121f', '#202035', '#18182a', '#1f1f33'
-        ];
+            onSnapshot(ref, (docSnap) => {
+                let valor = 0;
+                if (docSnap.exists()) {
+                    valor = docSnap.data()[CAMPO] ?? 0;
+                }
+                // Actualizar el span
+                const span = spans[id];
+                if (span) span.textContent = valor;
+                valores[id] = valor;
 
-        function changeBackground() {
-            const color = palette[Math.floor(Math.random() * palette.length)];
-            document.body.style.backgroundColor = color;
-        }
-        setInterval(changeBackground, 3000);
-        changeBackground();
-
-        // ─── AUTENTICACIÓN (opcional) ────────────────────────────────────
-        onAuthStateChanged(auth, (user) => {
-            console.log(user ? "✅ Usuario autenticado" : "👤 Usuario no autenticado");
-        });
-
-        // ─── INICIO ──────────────────────────────────────────────────────
-        document.addEventListener("DOMContentLoaded", async () => {
-            // Inicializar todos los documentos y luego escuchar
-            const promesas = albumes.map(async (album) => {
-                const ref = refs[album.id];
-                await inicializarDocumento(ref, album.nombre);
-            });
-            await Promise.all(promesas);
-
-            // Iniciar listeners
-            albumes.forEach(album => {
-                const ref = refs[album.id];
-                const span = spans[album.id];
-                escucharContador(ref, span, album.nombre, album.id);
+                // Reordenar y actualizar destacado
+                reordenarTarjetas();
+                actualizarDestacado();
+            }, (error) => {
+                console.error(`❌ Error al escuchar ${nombre}:`, error);
             });
         });
+
+        // ─── FONDO FIJO (sin cambios automáticos) ────────────────────────
+        // El color ya está definido en CSS (background-color: #1a1a2e)
+        // No se añade ninguna interacción.
+
+        console.log('📊 Panel de contadores (solo lectura) iniciado.');
     </script>
 </body>
 </html>
