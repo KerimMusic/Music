@@ -500,7 +500,7 @@
     </div>
   </div>
 
-  <!-- ========== MÓDULO FIREBASE ========== -->
+  <!-- ========== MÓDULO FIREBASE CON CADUCIDAD DE 3 MESES ========== -->
   <script type="importmap">
     {
       "imports": {
@@ -519,7 +519,6 @@
       getDoc,
       setDoc,
       runTransaction,
-      arrayUnion,
       updateDoc
     } from "firebase/firestore";
 
@@ -535,6 +534,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // ---- CONTADOR GLOBAL DE VISITAS (opcional) ----
     const contadorRef = doc(db, "Radio Muisc", "Kerim Music+");
     const CAMPO_CONTADOR = "total";
     let userId = localStorage.getItem('visitor_id_kerim');
@@ -544,87 +544,155 @@
     }
     const userRef = doc(collection(contadorRef, 'usuarios'), userId);
 
-    async function obtenerValorGlobal() {
-      try {
-        const docSnap = await getDoc(contadorRef);
-        if (docSnap.exists()) return docSnap.data()[CAMPO_CONTADOR] || 0;
-        else { await setDoc(contadorRef, { [CAMPO_CONTADOR]: 0 }); return 0; }
-      } catch (e) { console.error(e); return 0; }
-    }
+    // ================================================================
+    //  NUEVA LÓGICA DE CONTADOR POR CANCIÓN CON CADUCIDAD DE 3 MESES
+    // ================================================================
 
-    async function inicializarContadorGlobal() {
-      try {
-        const userSnap = await getDoc(userRef);
-        if (!userSnap.exists()) {
-          await runTransaction(db, async (transaction) => {
-            const docSnap = await transaction.get(contadorRef);
-            const nuevoTotal = (docSnap.exists() ? docSnap.data()[CAMPO_CONTADOR] : 0) + 1;
-            if (!docSnap.exists()) transaction.set(contadorRef, { [CAMPO_CONTADOR]: nuevoTotal });
-            else transaction.update(contadorRef, { [CAMPO_CONTADOR]: nuevoTotal });
-          });
-          await setDoc(userRef, { fecha: new Date().toISOString(), userAgent: navigator.userAgent.slice(0, 200), canciones_escuchadas: [] });
-          console.log("✅ Nuevo usuario registrado. Contador global incrementado.");
-        } else {
-          console.log("👤 Usuario ya registrado. No se incrementa.");
-        }
-      } catch (error) { console.error("Error al verificar/registrar usuario:", error); }
-    }
+    const TRES_MESES_MS = 3 * 30 * 24 * 60 * 60 * 1000;  // ~ 7.776.000.000 ms
 
-    async function obtenerReproducciones(songId) {
-      try {
-        const ref = doc(db, "Radio Muisc", String(songId));
-        const docSnap = await getDoc(ref);
-        if (docSnap.exists()) return docSnap.data().reproducciones || 0;
-        return 0;
-      } catch (error) {
-        console.error("Error al obtener reproducciones:", error);
-        return 0;
+    /**
+     * Migra el campo antiguo (array) a objeto con fechas actuales.
+     * Se llama una sola vez por usuario si es necesario.
+     */
+    async function migrarSiEsArray(userData) {
+      const historial = userData.canciones_escuchadas;
+      if (Array.isArray(historial)) {
+        console.log('🔄 Migrando historial de array a objeto para usuario', userId);
+        const nuevoMap = {};
+        const ahora = Date.now();
+        historial.forEach(id => { nuevoMap[id] = ahora; });
+        await updateDoc(userRef, { canciones_escuchadas: nuevoMap });
+        return nuevoMap;
       }
+      return historial || {};
     }
 
+    /**
+     * Incrementa la reproducción de una canción para el usuario actual.
+     * Solo cuenta si es la primera vez o han pasado más de 3 meses desde la última escucha.
+     * Además, limpia automáticamente cualquier otra canción expirada del historial del usuario.
+     * @param {string} songId - ID de la canción.
+     * @returns {Promise<number|null>} Nuevo total de reproducciones de la canción, o null si error.
+     */
     window.incrementarReproduccion = async function(songId) {
       if (!songId) return null;
       try {
+        // 1. Asegurar que el usuario existe
         const userSnap = await getDoc(userRef);
         if (!userSnap.exists()) {
           await setDoc(userRef, { 
             fecha: new Date().toISOString(), 
             userAgent: navigator.userAgent.slice(0, 200), 
-            canciones_escuchadas: [] 
+            canciones_escuchadas: {} 
           });
         }
-        const cancionesEscuchadas = userSnap.exists() ? (userSnap.data().canciones_escuchadas || []) : [];
-        if (cancionesEscuchadas.includes(String(songId))) {
-          console.log(`⏭️ Usuario ya escuchó la canción ${songId}, no se incrementa`);
-          const ref = doc(db, "Radio Muisc", String(songId));
-          const docSnap = await getDoc(ref);
-          return docSnap.exists() ? docSnap.data().reproducciones || 0 : 0;
-        }
-        const ref = doc(db, "Radio Muisc", String(songId));
-        let nuevoValor;
+
+        // 2. Obtener datos actuales del usuario
+        const userData = (await getDoc(userRef)).data() || {};
+        let historial = await migrarSiEsArray(userData);
+
+        const ahora = Date.now();
+        const fechaExpiracion = ahora - TRES_MESES_MS;
+
+        // 3. Preparar transacción para actualizar usuario y canción(es)
+        let resultado = null;
+
         await runTransaction(db, async (transaction) => {
-          const docSnap = await transaction.get(ref);
-          const actual = docSnap.exists() ? docSnap.data().reproducciones || 0 : 0;
-          nuevoValor = actual + 1;
-          if (!docSnap.exists()) transaction.set(ref, { reproducciones: nuevoValor });
-          else transaction.update(ref, { reproducciones: nuevoValor });
+          // Leer el documento de la canción
+          const songRef = doc(db, "Radio Muisc", String(songId));
+          const songSnap = await transaction.get(songRef);
+          let currentPlays = songSnap.exists() ? songSnap.data().reproducciones || 0 : 0;
+
+          // --- Manejo de la canción actual ---
+          const lastPlayed = historial[songId] || 0;
+          let incrementar = false;
+
+          if (lastPlayed === 0) {
+            // Nunca escuchada → nueva reproducción
+            incrementar = true;
+          } else if (lastPlayed < fechaExpiracion) {
+            // Expiró → se elimina y se vuelve a contar
+            incrementar = true;
+            // Decrementar el contador porque estaba expirada
+            currentPlays = Math.max(0, currentPlays - 1);
+            delete historial[songId];
+          } else {
+            // Dentro de los 3 meses → solo actualizar fecha, no incrementar
+            incrementar = false;
+          }
+
+          if (incrementar) {
+            currentPlays += 1;
+            historial[songId] = ahora;
+          } else {
+            // Solo actualizar timestamp (reinicia el contador de 3 meses)
+            historial[songId] = ahora;
+          }
+
+          // --- Limpieza de otras canciones expiradas en el historial ---
+          const idsAEliminar = [];
+          for (const [id, timestamp] of Object.entries(historial)) {
+            if (id !== songId && timestamp < fechaExpiracion) {
+              idsAEliminar.push(id);
+            }
+          }
+
+          // Eliminar las expiradas y decrementar sus contadores
+          for (const id of idsAEliminar) {
+            delete historial[id];
+            const ref = doc(db, "Radio Muisc", String(id));
+            const snap = await transaction.get(ref);
+            if (snap.exists()) {
+              const plays = snap.data().reproducciones || 0;
+              const nuevo = Math.max(0, plays - 1);
+              transaction.update(ref, { reproducciones: nuevo });
+            }
+          }
+
+          // Actualizar el documento del usuario
+          transaction.update(userRef, { canciones_escuchadas: historial });
+
+          // Actualizar el documento de la canción actual
+          if (!songSnap.exists()) {
+            transaction.set(songRef, { reproducciones: currentPlays });
+          } else {
+            transaction.update(songRef, { reproducciones: currentPlays });
+          }
+
+          resultado = currentPlays;
         });
-        await updateDoc(userRef, { canciones_escuchadas: arrayUnion(String(songId)) });
-        console.log(`✅ Primera reproducción registrada para usuario ${userId} - canción ${songId}: ${nuevoValor}`);
-        return nuevoValor;
+
+        console.log(`✅ Reproducción registrada para ${userId} - canción ${songId}: ${resultado}`);
+        return resultado;
+
       } catch (error) {
-        console.error("Error al incrementar reproducción:", error);
+        console.error("❌ Error en incrementarReproduccion:", error);
         return null;
       }
     };
 
-    window.obtenerReproducciones = obtenerReproducciones;
+    /**
+     * Obtiene el total de reproducciones de una canción (usuarios únicos en los últimos 3 meses).
+     * Lee el campo `reproducciones` del documento de la canción.
+     */
+    window.obtenerReproducciones = async function(songId) {
+      try {
+        const ref = doc(db, "Radio Muisc", String(songId));
+        const docSnap = await getDoc(ref);
+        if (docSnap.exists()) {
+          return docSnap.data().reproducciones || 0;
+        }
+        return 0;
+      } catch (error) {
+        console.error("Error al obtener reproducciones:", error);
+        return 0;
+      }
+    };
 
+    // ---- Inicialización ----
     document.addEventListener("DOMContentLoaded", () => {
-      inicializarContadorGlobal();
+      console.log("✅ Módulo Firebase con caducidad de 3 meses cargado.");
     });
-
-    console.log("✅ Módulo Firebase cargado: contador único por usuario listo.");
   </script>
 
   <!-- ========== SCRIPT PRINCIPAL DEL REPRODUCTOR ========== -->
@@ -712,12 +780,12 @@
         return `${m}:${s < 10 ? '0' : ''}${s}`;
       }
 
-      // ===== CONTADOR DE REPRODUCCIONES (Firebase) =====
+      // ===== CONTADOR DE REPRODUCCIONES (Firebase con caducidad) =====
       async function incrementPlayCount(songId) {
         if (window.incrementarReproduccion) {
           const nuevoValor = await window.incrementarReproduccion(songId);
           if (nuevoValor !== null) {
-            console.log(`📊 Usuarios únicos de la canción: ${nuevoValor}`);
+            console.log(`📊 Usuarios únicos de "${currentSong?.title || songId}" (últimos 3 meses): ${nuevoValor}`);
           }
         } else {
           console.warn('Función incrementarReproduccion no disponible');
@@ -972,15 +1040,15 @@
       }
       miniPlayer.classList.add('show');
 
-      console.log('🎵 Reproductor con Firebase activo (contador único por usuario)');
+      console.log('🎵 Reproductor con Firebase (caducidad 3 meses) activo.');
     })();
 
     // Generar colores dinámicos basados en la portada (simulación)
-const hue = Math.floor(Math.random() * 360);
-const color1 = `hsl(${hue}, 30%, 8%)`;
-const color2 = `hsl(${(hue + 40) % 360}, 40%, 5%)`;
-document.documentElement.style.setProperty('--overlay-color1', color1);
-document.documentElement.style.setProperty('--overlay-color2', color2);
+    const hue = Math.floor(Math.random() * 360);
+    const color1 = `hsl(${hue}, 30%, 8%)`;
+    const color2 = `hsl(${(hue + 40) % 360}, 40%, 5%)`;
+    document.documentElement.style.setProperty('--overlay-color1', color1);
+    document.documentElement.style.setProperty('--overlay-color2', color2);
   </script>
 
 </body>
