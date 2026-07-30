@@ -695,7 +695,7 @@
     });
   </script>
 
-  <!-- ========== SCRIPT PRINCIPAL DEL REPRODUCTOR ========== -->
+  <!-- ========== SCRIPT PRINCIPAL DEL REPRODUCTOR (MODIFICADO) ========== -->
   <script>
     (function() {
       // ==================== DATOS ====================
@@ -720,6 +720,10 @@
       let shuffleActive = false;
       let originalQueue = [];
       let repeatMode = 'none'; // 'none' | 'all' | 'one'
+
+      // *** NUEVAS VARIABLES PARA CONTAR SOLO AL FINAL ***
+      let pendingCount = false;
+      let pendingSongId = null;
 
       const audio = new Audio();
 
@@ -812,13 +816,23 @@
         });
       }
 
-      // ===== REPRODUCIR CANCIÓN =====
+      // ===== REPRODUCIR CANCIÓN (MODIFICADA) =====
       function playSong(song) {
+        if (!song) return;
+
+        // Cancelar cualquier conteo pendiente de la canción anterior (no se completó)
+        if (pendingCount) {
+          pendingCount = false;
+          pendingSongId = null;
+        }
+
         currentSong = song;
         const idx = queue.findIndex(s => s.id === song.id);
         if (idx !== -1) currentIndex = idx;
 
-        incrementPlayCount(song.id);
+        // Marcar como pendiente para contar al final
+        pendingCount = true;
+        pendingSongId = song.id;
 
         audio.src = song.music;
         audio.play().catch(() => {});
@@ -991,8 +1005,19 @@
         updatePlayPauseIcon();
       });
 
-      // ===== COMPORTAMIENTO AL TERMINAR =====
+      // ===== COMPORTAMIENTO AL TERMINAR (MODIFICADO) =====
       audio.addEventListener('ended', () => {
+        // Si hay un pendiente y coincide con la canción actual, contar la reproducción
+        if (pendingCount && pendingSongId === currentSong?.id) {
+          const songId = pendingSongId;
+          // Contar en Firebase (usuarios únicos con caducidad)
+          incrementPlayCount(songId);
+          // Reiniciar bandera de pendiente
+          pendingCount = false;
+          pendingSongId = null;
+        }
+
+        // Comportamiento de repetición
         if (repeatMode === 'one') {
           audio.currentTime = 0;
           audio.play().catch(() => {});
@@ -1041,6 +1066,7 @@
       miniPlayer.classList.add('show');
 
       console.log('🎵 Reproductor con Firebase (caducidad 3 meses) activo.');
+      console.log('✅ Las reproducciones solo se cuentan cuando la canción se escucha COMPLETA.');
     })();
 
     // Generar colores dinámicos basados en la portada (simulación)
