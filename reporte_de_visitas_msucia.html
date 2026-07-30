@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contadores · Kerim Music+</title>
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: background-color 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            background-color: #1a1a2e;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: rgba(26, 26, 46, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 40px;
+            padding: 30px 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 8px 20px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .titulo {
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #f0f0f0;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.06);
+        }
+        .titulo span {
+            color: #ffffff;
+        }
+
+        /* ---------- TARJETA DE ÁLBUM DESTACADO ---------- */
+        .destacado-wrapper {
+            display: none;
+            margin: 16px 0 24px 0;
+            padding: 0 4px;
+        }
+        .destacado-wrapper.visible {
+            display: block;
+            animation: fadeSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes fadeSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.96);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .destacado-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: #24243a;
+            padding: 18px 24px;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .destacado-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .destacado-imagen {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+            background: #1a1a2e;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .destacado-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .destacado-etiqueta {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #a0a0c0;
+            background: rgba(255, 255, 255, 0.06);
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 20px;
+            width: fit-content;
+        }
+
+        .destacado-nombre {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #f0f0f0;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .destacado-visitas {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #b0b0d0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .destacado-visitas .numero {
+            color: #ffffff;
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .destacado-badge {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #0f0f1a;
+            font-weight: 700;
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            border-radius: 30px;
+            white-space: nowrap;
+            letter-spacing: 0.02em;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        }
+
+        /* ---------- Tarjetas de usuarios ---------- */
+        .usuario-card {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            background: #1e1e32;
+            padding: 16px 22px;
+            border-radius: 60px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(4px);
+            cursor: pointer;
+        }
+        .usuario-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .usuario-card img {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+            background: #12121f;
+        }
+
+        .info {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            flex: 1;
+            flex-wrap: wrap;
+        }
+
+        .nombre {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: #f0f0f0;
+            letter-spacing: -0.3px;
+        }
+
+        .contador {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #f0f0f0;
+            background: #12121f;
+            padding: 0 18px;
+            border-radius: 40px;
+            line-height: 1.5;
+            min-width: 70px;
+            text-align: center;
+            transition: background 0.2s;
+        }
+        .usuario-card:hover .contador {
+            background: #1a1a2e;
+        }
+
+        .contador .numero {
+            color: #ffffff;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px;
+            }
+            .usuario-card {
+                padding: 12px 16px;
+                border-radius: 40px;
+                gap: 12px;
+            }
+            .usuario-card img {
+                width: 44px;
+                height: 44px;
+            }
+            .nombre {
+                font-size: 1.1rem;
+            }
+            .contador {
+                font-size: 1.6rem;
+                min-width: 55px;
+                padding: 0 10px;
+            }
+            .titulo {
+                font-size: 1.4rem;
+            }
+
+            .destacado-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 20px 16px;
+                gap: 14px;
+            }
+            .destacado-imagen {
+                width: 100px;
+                height: 100px;
+                border-radius: 20px;
+            }
+            .destacado-nombre {
+                font-size: 1.4rem;
+                white-space: normal;
+            }
+            .destacado-info {
+                align-items: center;
+            }
+            .destacado-visitas .numero {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="appContainer">
+        <div class="titulo"><span>Kerim Music+</span></div>
+
+        <!-- Tarjeta de álbum destacado (siempre visible cuando hay datos) -->
+        <div class="destacado-wrapper" id="destacadoWrapper">
+            <div class="destacado-card">
+                <img class="destacado-imagen" id="destacadoImagen" src="" alt="Portada destacada" />
+                <div class="destacado-info">
+                    <span class="destacado-etiqueta">🏆 Álbum más escuchado</span>
+                    <div class="destacado-nombre" id="destacadoArtista">—</div>
+                    <div class="destacado-visitas">
+                        <span></span>
+                        <span class="numero" id="destacadoVisitas">0</span>
+                        <span>visitas</span>
+                        <span class="destacado-badge">🔥 TOP</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aquí se inyectarán dinámicamente las tarjetas de los álbumes -->
+        <div id="tarjetasContainer"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            setDoc,
+            runTransaction,
+            onSnapshot
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // ─── CONFIGURACIÓN DE FIREBASE ──────────────────────────────────
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5R9mPw1PQMjYIqWpz5w3W7BvGmZV4tX8",
+            authDomain: "kerim-music-a9c46.firebaseapp.com",
+            projectId: "kerim-music-a9c46",
+            storageBucket: "kerim-music-a9c46.firebasestorage.app",
+            messagingSenderId: "103691719997",
+            appId: "1:103691719997:web:da58ff98f78f1b632b19cb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        const CAMPO = "reproducciones";
+
+        // ─── LISTA DE ÁLBUMES CON IDs ÚNICOS ────────────────────────────
+        const albumes = [
+            {
+                id: 'jvazquez12',
+                nombre: 'Una Aventura J Vazquez',
+                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
+                coleccion: 'Radio Muisc',
+                documento: 'Una Aventura J Vazquez'
+            },
+            {
+                id: 'jvazquez11',
+                nombre: 'Me vuelve loco J Vazquez',
+                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
+                coleccion: 'Radio Muisc',
+                documento: 'Me vuelve loco J Vazquez'
+            },
+            {
+                id: 'jvazquez10',
+                nombre: 'Obsesion J Vazquez',
+                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
+                coleccion: 'Radio Muisc',
+                documento: 'Obsesion J Vazquez'
+            },
+            {
+                id: 'jvazquez9',
+                nombre: 'Que esta pasando J Vazquez',
+                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
+                coleccion: 'Radio Muisc',
+                documento: 'Que esta pasando J Vazquez'
+            },
+            {
+                id: 'jvazquez8',
+                nombre: 'Tiempo J Vazquez',
+                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
+                coleccion: 'Radio Muisc',
+                documento: 'Tiempo J Vazquez'
+            },
+            {
+                id: 'jvazquez7',
+                nombre: 'Volver J Vazquez',
+                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
+                coleccion: 'Radio Muisc',
+                documento: 'Volver'
+            },
+            {
+                id: 'jvazquez6',
+                nombre: 'Te estoy llamando J Vazquez',
+                imagen: 'https://www.dropbox.com/scl/fi/kgnxbl0mdp3q2uivbi4et/800x800-7986476-0F948044-9801-4FC9-8EFF36DDC1873148-0-3542185-Teestoyllamando.jpg?rlkey=jki22g8n7mq0b7ufv138n4wsn&st=10uw8nqx&raw=1',
+                coleccion: 'Radio Muisc',
+                documento: 'Te estoy llamando J Vazquez'
+            },
+            {
+                id: 'jvazquez5',
+                nombre: 'Foto J Vazquez',
+                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=k9w3fdxx&raw=1',
+                coleccion: 'Radio Muisc',
+                documento: 'Foto J Vazquez'
+            },
+            {
+                id: 'jvazquez1',
+                nombre: 'pegaoo!',
+                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
+                coleccion: 'Radio Muisc',
+                documento: 'pegaoo!'
+            },
+             {
+                id: 'jvazquez3',
+                nombre: 'No eres juego de nintendo',
+                imagen: 'https://www.dropbox.com/scl/fi/7pxyk1hvrgtdl9fy94alm/J-Vazqeuz-Album-2022.jpg?rlkey=sfb91d32144hgoijxhf0eqbhz&st=u0jdv66d&raw=1',
+                coleccion: 'Radio Muisc',
+                documento: 'No eres juego de nintendo'
+            },
+            {
+                id: 'jvazquez4',
+                nombre: 'El chiris J Vazquez',
+                imagen: 'https://www.dropbox.com/scl/fi/w51t3llqpavnpmxxgus83/el-chiris.png?rlkey=leru6o7n7omsn9b455yqcrf4g&st=zv4scg8y&raw=1',
+                coleccion: 'Radio Muisc',
+                documento: 'El chiris J Vazquez'
+            },
+            {
+                id: 'jvazquez2',
+                nombre: '14 de febrero',
+                imagen: 'https://www.dropbox.com/scl/fi/uwuq0dmdotm4lx00z82r5/800x800-7986476-C4F4AACF-E181-4041-A6075E17315FCA83-0-289400-WhatsAppImage20260206at6.03.47PM.jpg?rlkey=t8wcuqx2xiq5c0bwgtr6dokn3&st=u3gdtb4m&raw=1',
+                coleccion: 'Radio Muisc',
+                documento: '14 de febrero'
+            }
+        ];
+
+        // ─── REFERENCIAS Y ELEMENTOS DINÁMICOS ──────────────────────────
+        const tarjetasContainer = document.getElementById('tarjetasContainer');
+        const wrapper = document.getElementById('destacadoWrapper');
+        const imgDestacado = document.getElementById('destacadoImagen');
+        const nombreDestacado = document.getElementById('destacadoArtista');
+        const visitasDestacado = document.getElementById('destacadoVisitas');
+
+        // Objeto para almacenar los valores actuales de cada álbum
+        const valores = {};
+        // Objeto para guardar los spans de cada contador
+        const spans = {};
+        // Objeto para guardar las referencias de Firestore
+        const refs = {};
+        // Almacenar los elementos de las tarjetas para reordenar
+        const cardElements = {};
+
+        // ─── GENERAR HTML DE LAS TARJETAS ──────────────────────────────
+        albumes.forEach(album => {
+            const { id, nombre, imagen, coleccion, documento } = album;
+
+            const ref = doc(db, coleccion, documento);
+            refs[id] = ref;
+            valores[id] = 0;
+
+            const card = document.createElement('div');
+            card.className = 'usuario-card';
+            card.dataset.id = id;   // para identificar al ordenar
+
+            const img = document.createElement('img');
+            img.src = imagen;
+            img.alt = nombre;
+
+            const info = document.createElement('div');
+            info.className = 'info';
+
+            const nombreSpan = document.createElement('span');
+            nombreSpan.className = 'nombre';
+            nombreSpan.textContent = nombre;
+
+            const contadorDiv = document.createElement('span');
+            contadorDiv.className = 'contador';
+            const numeroSpan = document.createElement('span');
+            numeroSpan.className = 'numero';
+            numeroSpan.id = `total-${id}`;
+            numeroSpan.textContent = '0';
+            contadorDiv.appendChild(numeroSpan);
+
+            info.appendChild(nombreSpan);
+            info.appendChild(contadorDiv);
+            card.appendChild(img);
+            card.appendChild(info);
+            tarjetasContainer.appendChild(card);
+
+            spans[id] = numeroSpan;
+            cardElements[id] = card;
+
+            card.addEventListener('click', () => {
+                incrementarCampo(ref, nombre);
+            });
+        });
+
+        // ─── FUNCIONES DEL CONTADOR ──────────────────────────────────────
+
+        async function inicializarDocumento(ref, nombre) {
+            try {
+                const docSnap = await getDoc(ref);
+                if (!docSnap.exists()) {
+                    await setDoc(ref, { [CAMPO]: 0 });
+                    console.log(`📄 Documento ${nombre} creado con valor 0`);
+                } else {
+                    const data = docSnap.data();
+                    if (!(CAMPO in data)) {
+                        await setDoc(ref, { [CAMPO]: 0 }, { merge: true });
+                        console.log(`📄 Campo "${CAMPO}" añadido en ${nombre}`);
+                    }
+                }
+            } catch (error) {
+                console.error(`❌ Error al inicializar ${nombre}:`, error);
+            }
+        }
+
+        function escucharContador(ref, spanElement, nombre, clave) {
+            return onSnapshot(ref, (docSnap) => {
+                if (docSnap.exists()) {
+                    const valor = docSnap.data()[CAMPO] ?? 0;
+                    spanElement.textContent = valor;
+                    valores[clave] = valor;
+                    // Actualizar destacado y reordenar
+                    actualizarDestacado();
+                    reordenarTarjetas();
+                } else {
+                    inicializarDocumento(ref, nombre);
+                }
+            }, (error) => {
+                console.error(`❌ Error en listener de ${nombre}:`, error);
+            });
+        }
+
+        async function incrementarCampo(ref, nombre) {
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const docSnap = await transaction.get(ref);
+                    if (!docSnap.exists()) {
+                        transaction.set(ref, { [CAMPO]: 1 });
+                        return;
+                    }
+                    const valorActual = docSnap.data()[CAMPO] ?? 0;
+                    transaction.update(ref, { [CAMPO]: valorActual + 1 });
+                });
+                console.log(`✅ Incrementado ${nombre}`);
+            } catch (error) {
+                console.error(`❌ Error al incrementar ${nombre}:`, error);
+            }
+        }
+
+        // ─── ACTUALIZAR TARJETA DESTACADA (siempre visible) ──────────────
+
+        function actualizarDestacado() {
+            let maxNombre = '';
+            let maxValor = -1;
+            for (const [id, valor] of Object.entries(valores)) {
+                if (valor > maxValor) {
+                    maxValor = valor;
+                    maxNombre = id;
+                }
+            }
+
+            const ganador = albumes.find(a => a.id === maxNombre);
+
+            if (ganador && maxValor >= 0) {
+                imgDestacado.src = ganador.imagen;
+                imgDestacado.alt = ganador.nombre;
+                nombreDestacado.textContent = ganador.nombre;
+                visitasDestacado.textContent = maxValor;
+                wrapper.classList.add('visible');
+            } else {
+                wrapper.classList.remove('visible');
+            }
+        }
+
+        // ─── REORDENAR TARJETAS POR NÚMERO DE REPRODUCCIONES (desc) ──────
+
+        function reordenarTarjetas() {
+            const cards = Array.from(tarjetasContainer.children);
+            cards.sort((a, b) => {
+                const idA = a.dataset.id;
+                const idB = b.dataset.id;
+                return (valores[idB] || 0) - (valores[idA] || 0);
+            });
+            // Reinsertar en el orden correcto
+            cards.forEach(card => tarjetasContainer.appendChild(card));
+        }
+
+        // ─── EXPONER FUNCIONES GLOBALES (para consola) ──────────────────
+        albumes.forEach(album => {
+            const funcName = `aumentar${album.id}`;
+            window[funcName] = () => incrementarCampo(refs[album.id], album.nombre);
+        });
+
+        // ─── FONDO ALEATORIO (TONOS OSCUROS) ─────────────────────────────
+        const palette = [
+            '#1a1a2e', '#16213e', '#0f0f1a', '#1e1e2f', '#14142b',
+            '#1c1c30', '#12121f', '#202035', '#18182a', '#1f1f33'
+        ];
+
+        function changeBackground() {
+            const color = palette[Math.floor(Math.random() * palette.length)];
+            document.body.style.backgroundColor = color;
+        }
+        setInterval(changeBackground, 3000);
+        changeBackground();
+
+        // ─── AUTENTICACIÓN (opcional) ────────────────────────────────────
+        onAuthStateChanged(auth, (user) => {
+            console.log(user ? "✅ Usuario autenticado" : "👤 Usuario no autenticado");
+        });
+
+        // ─── INICIO ──────────────────────────────────────────────────────
+        document.addEventListener("DOMContentLoaded", async () => {
+            // Inicializar todos los documentos y luego escuchar
+            const promesas = albumes.map(async (album) => {
+                const ref = refs[album.id];
+                await inicializarDocumento(ref, album.nombre);
+            });
+            await Promise.all(promesas);
+
+            // Iniciar listeners
+            albumes.forEach(album => {
+                const ref = refs[album.id];
+                const span = spans[album.id];
+                escucharContador(ref, span, album.nombre, album.id);
+            });
+        });
+    </script>
+</body>
+</html>
