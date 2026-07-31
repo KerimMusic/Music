@@ -4,8 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>Kerim Music+ · Royal Blue</title>
+  <!-- Preconexiones para acelerar recursos externos -->
+  <link rel="preconnect" href="https://www.dropbox.com" crossorigin>
+  <link rel="dns-prefetch" href="https://www.dropbox.com">
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://www.gstatic.com">
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com">
   <style>
-    /* ===== ESTILOS OPTIMIZADOS ===== */
+    /* ===== ESTILOS OPTIMIZADOS (sin cambios) ===== */
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     body{background-color:#0a0e1a;color:#e8ecf4;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,sans-serif;line-height:1.4;overflow-x:hidden;width:100%}
     .top-bar{background:#0a0e1a;padding:.5rem 1rem;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap;border-bottom:1px solid #1a2a5e}
@@ -215,7 +222,7 @@
   <div class="mini-progress-bg"><div class="mini-progress-fill" id="miniProgressFill"></div></div>
 </div>
 
-<!-- ========== FIREBASE MODULE OPTIMIZADO ========== -->
+<!-- ========== FIREBASE MODULE (sin cambios) ========== -->
 <script type="importmap">
   {
     "imports": {
@@ -251,7 +258,6 @@
   }
   const userRef = doc(contadorRef, 'usuarios', userId);
 
-  // Cache para reproducciones
   const playCache = new Map();
 
   async function obtenerValorGlobal() {
@@ -303,8 +309,6 @@
 
   window.incrementarReproduccion = async function(songId) {
     if (!songId) return null;
-    
-    // Cache check
     if (playCache.has(songId)) {
       return playCache.get(songId);
     }
@@ -349,7 +353,6 @@
           historial[songId] = ahora;
         }
 
-        // Limpieza optimizada de expiradas
         const idsAEliminar = [];
         for (const [id, timestamp] of Object.entries(historial)) {
           if (id !== songId && timestamp < fechaExpiracion) {
@@ -424,7 +427,7 @@
       { id: 'ad4', url: 'https://www.dropbox.com/scl/fi/zstw4ykjmjh3ljzejuwk5/Anuncio.png?rlkey=pumuamhvcw40nas5biyyrizvo&st=ku13lu66&raw=1', title: 'Anuncio 4', category: 'ANUNCIO', music: 'https://www.dropbox.com/scl/fi/vl4d6mwau9frvxmjm6wwn/Baner.mp3?rlkey=z8jezojlzlyt0i3qp16jrvid9&st=tdb7ne0h&raw=1', isAd: true }
     ];
 
-    // ==================== DATOS DE CANCIONES ====================
+    // ==================== DATOS DE CANCIONES (sin cambios) ====================
     const ORIGINAL_SONGS = [
       //=================Dany Zm=========================
       { id: "Dile que tu eres mia Dany Zm", 
@@ -676,11 +679,117 @@
       }
     }
 
-    // ==================== REPRODUCCIÓN ====================
+    // ==================== REPRODUCCIÓN CON PRECARGA ====================
     let currentPlayQueue = [], currentQueueIndex = 0, currentSong = null, audio = new Audio(), isPlaying = false, currentSearch = '', shuffleActive = false, originalQueue = [], isPlaylistsMode = false;
     let adCounter = 0, isAdPlaying = false, previousSong = null, pendingNextSong = null, adPlaylist = [], currentAdIndex = 0, adCallback = null, videoElement = null, isVideoAd = false;
 
-    // Variables para conteo
+    // --- Elemento de audio para precarga ---
+    const preloadAudio = new Audio();
+    preloadAudio.preload = 'auto';
+    let preloadSong = null;
+
+    // --- Cache de audio usando Cache API ---
+    const CACHE_NAME = 'kerim-audio-cache-v1';
+    let audioCache = null;
+
+    async function getAudioCache() {
+      if (!audioCache) {
+        try {
+          audioCache = await caches.open(CACHE_NAME);
+        } catch (e) {
+          audioCache = null;
+        }
+      }
+      return audioCache;
+    }
+
+    // Función para precargar un audio: lo guarda en caché y también lo carga en el elemento preloadAudio
+    async function precargarAudio(song) {
+      if (!song || !song.music) return;
+      // Si ya es el que está precargado, no hacer nada
+      if (preloadSong && preloadSong.id === song.id) return;
+      
+      try {
+        const cache = await getAudioCache();
+        if (cache) {
+          // Intentar servir desde caché
+          const response = await cache.match(song.music);
+          if (response) {
+            // Ya está en caché, solo precargamos en el elemento
+            preloadAudio.src = song.music;
+            preloadAudio.load();
+            preloadSong = song;
+            return;
+          }
+        }
+        // Si no está en caché, lo descargamos y guardamos
+        const response = await fetch(song.music);
+        if (response.ok) {
+          const clonedResponse = response.clone();
+          if (cache) {
+            cache.put(song.music, clonedResponse);
+          }
+          // Establecer src al elemento de precarga
+          preloadAudio.src = song.music;
+          preloadAudio.load();
+          preloadSong = song;
+        } else {
+          // Fallback: cargar directamente
+          preloadAudio.src = song.music;
+          preloadAudio.load();
+          preloadSong = song;
+        }
+      } catch (e) {
+        // Si falla la caché, cargar directamente
+        preloadAudio.src = song.music;
+        preloadAudio.load();
+        preloadSong = song;
+      }
+    }
+
+    // Función para obtener la siguiente canción en la cola
+    function getNextSongInQueue() {
+      if (!currentPlayQueue.length) return null;
+      let nextIdx = (currentQueueIndex + 1) % currentPlayQueue.length;
+      return currentPlayQueue[nextIdx];
+    }
+
+    // Función para obtener la canción anterior
+    function getPrevSongInQueue() {
+      if (!currentPlayQueue.length) return null;
+      let prevIdx = (currentQueueIndex - 1 + currentPlayQueue.length) % currentPlayQueue.length;
+      return currentPlayQueue[prevIdx];
+    }
+
+    // Variables para control de precarga por tiempo
+    let preloadTimer = null;
+
+    function schedulePreloadNext() {
+      // Programar precarga cuando la canción actual esté al 80% de su duración
+      if (preloadTimer) clearTimeout(preloadTimer);
+      const nextSong = getNextSongInQueue();
+      if (!nextSong) return;
+      // Si ya está precargado, no hacer nada
+      if (preloadSong && preloadSong.id === nextSong.id) return;
+      
+      // Escuchar evento timeupdate para saber cuándo precargar
+      const checkTime = () => {
+        if (!audio.duration || audio.paused || isAdPlaying) return;
+        const progress = audio.currentTime / audio.duration;
+        if (progress >= 0.80) {
+          // Precargar la siguiente
+          precargarAudio(nextSong);
+          audio.removeEventListener('timeupdate', checkTime);
+        }
+      };
+      audio.addEventListener('timeupdate', checkTime);
+      // También si la canción actual ya está muy avanzada, precargar inmediatamente
+      if (audio.duration && (audio.currentTime / audio.duration) >= 0.80) {
+        precargarAudio(nextSong);
+      }
+    }
+
+    // ==================== Pending count ====================
     let pendingCount = false;
     let pendingSongId = null;
 
@@ -776,6 +885,8 @@
           originalQueue = [];
         }
       }
+      // Precargar la siguiente después de cambiar la cola
+      schedulePreloadNext();
     }
 
     // ==================== FUNCIONES DE COLA ====================
@@ -888,7 +999,21 @@
       }
     }
 
-    // ==================== ANUNCIOS ====================
+    // ==================== ANUNCIOS CON PRECARGA ====================
+    // Precargar el siguiente anuncio
+    let preloadAdIndex = -1;
+    let preloadAdAudio = new Audio();
+    preloadAdAudio.preload = 'auto';
+
+    function preloadNextAd() {
+      if (adPlaylist.length === 0 || currentAdIndex >= adPlaylist.length - 1) return;
+      const nextAd = adPlaylist[currentAdIndex + 1];
+      if (nextAd && nextAd.music) {
+        preloadAdAudio.src = nextAd.music;
+        preloadAdAudio.load();
+      }
+    }
+
     function playAds(callback) {
       if (ADS.length === 0 || isAdPlaying) {
         if (callback) callback();
@@ -904,6 +1029,11 @@
       if (miniPrev) miniPrev.classList.add('hidden-nav');
       if (miniNext) miniNext.classList.add('hidden-nav');
       previousSong = currentSong;
+      // Precargar primer anuncio (ya está en el array)
+      if (adPlaylist.length > 0 && adPlaylist[0].music) {
+        preloadAdAudio.src = adPlaylist[0].music;
+        preloadAdAudio.load();
+      }
       playNextAd();
     }
 
@@ -923,6 +1053,9 @@
         isAd: true
       };
       currentSong = adSong;
+      
+      // Precargar siguiente anuncio
+      preloadNextAd();
       
       if (ad.video) {
         let videoHtml = '';
@@ -967,7 +1100,14 @@
       if (miniTitle) miniTitle.innerText = adSong.title;
       
       if (adSong.music && !ad.video) {
-        audio.src = adSong.music;
+        // Usar el audio precargado si es posible
+        if (preloadAdAudio.src && preloadAdAudio.src === adSong.music) {
+          // Transferir el elemento precargado al audio principal
+          audio.src = preloadAdAudio.src;
+          // No reasignar preloadAdAudio porque lo seguimos usando para siguiente
+        } else {
+          audio.src = adSong.music;
+        }
         audio.play().catch(e => console.log('Error al reproducir audio del anuncio:', e));
         isPlaying = true;
         audio.removeEventListener('ended', onAdEnd);
@@ -1109,10 +1249,40 @@
         if (idx !== -1) currentQueueIndex = idx;
       }
       
+      // --- Asignar audio con precarga ---
       if (song.music) {
-        audio.src = song.music;
+        // Si la canción precargada coincide, usarla directamente (casi instantáneo)
+        if (preloadSong && preloadSong.id === song.id && preloadAudio.src) {
+          // Transferir el audio precargado al reproductor principal
+          audio.src = preloadAudio.src;
+          // No vaciamos preloadAudio para poder precargar la siguiente
+        } else {
+          // Intentar servir desde caché
+          try {
+            const cache = await getAudioCache();
+            if (cache) {
+              const response = await cache.match(song.music);
+              if (response) {
+                // Usar el blob del caché para crear una URL de objeto y asignar
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                audio.src = url;
+                // Opcional: liberar URL después de cargar
+                audio.onloadeddata = () => URL.revokeObjectURL(url);
+              } else {
+                audio.src = song.music;
+              }
+            } else {
+              audio.src = song.music;
+            }
+          } catch (e) {
+            audio.src = song.music;
+          }
+        }
         audio.play().catch(e => console.log('Error al reproducir:', e));
         isPlaying = true;
+        // Programar precarga de la siguiente
+        schedulePreloadNext();
       } else {
         audio.pause();
         isPlaying = false;
@@ -1491,6 +1661,10 @@
       renderTopArtists();
       if(masterSongs.length) currentSong = masterSongs[0];
       audio.volume = 0.9;
+      // Precargar la primera canción
+      if (currentSong && currentSong.music) {
+        precargarAudio(currentSong);
+      }
     });
 
     // Limpieza de recursos al salir
@@ -1501,12 +1675,14 @@
       if (renderTimeout) cancelAnimationFrame(renderTimeout);
       audio.pause();
       audio.src = '';
+      preloadAudio.pause();
+      preloadAudio.src = '';
+      preloadAdAudio.pause();
+      preloadAdAudio.src = '';
     });
 
-    console.log('🎵 Kerim Music+ Optimizado iniciado correctamente');
-    console.log('⚡ Rendimiento optimizado: carga instantánea y navegación fluida');
-    console.log('📊 Contador de reproducciones único por usuario con caducidad de 3 meses');
-    console.log('✅ Las reproducciones solo se cuentan cuando la canción se escucha COMPLETA.');
+    console.log('🎵 Kerim Music+ Optimizado con precarga y caché');
+    console.log('⚡ Reproducción ultra fluida sin cortes');
     
   })();
 </script>
