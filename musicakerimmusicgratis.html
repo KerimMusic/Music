@@ -17,10 +17,16 @@
     body{background-color:#0a0e1a;color:#e8ecf4;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,sans-serif;line-height:1.4;overflow-x:hidden;width:100%}
     .top-bar{background:#0a0e1a;padding:.5rem 1rem;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap;border-bottom:1px solid #1a2a5e}
     .top-bar h1{font-weight:700;font-size:1.5rem;background:linear-gradient(135deg,#2b6df6,#1a4fd6);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.5px;white-space:nowrap;text-shadow:0 0 20px rgba(43,109,246,.3)}
-    .filter-buttons{display:flex;justify-content:center;gap:1rem;margin:.5rem auto 1rem;padding:0 1rem;flex-wrap:wrap}
-    .filter-main-btn{background:#111a33;border:1px solid #1a2a5e;border-radius:500px;padding:.55rem 1.5rem;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s ease;color:#7a9ad6;letter-spacing:.3px}
+    .filter-buttons{display:flex;justify-content:center;align-items:center;gap:0.8rem;margin:.5rem auto 1rem;padding:0 1rem;flex-wrap:wrap}
+    .filter-main-btn{background:#111a33;border:1px solid #1a2a5e;border-radius:500px;padding:.55rem 1.5rem;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s ease;color:#7a9ad6;letter-spacing:.3px;white-space:nowrap}
     .filter-main-btn.active{background:#1a4fd6;color:#fff;border-color:#2b6df6;box-shadow:0 0 30px rgba(43,109,246,.25)}
     .filter-main-btn:hover:not(.active){background:#1a2a5e;transform:scale(1.02);color:#e8ecf4}
+    #searchContainer{display:none;position:relative;flex:1;min-width:180px;max-width:320px;width:100%}
+    #searchInput{width:100%;padding:.55rem 2.5rem .55rem 1.5rem;background:#111a33;border:1px solid #1a2a5e;border-radius:500px;color:#e8ecf4;font-size:.85rem;outline:none;transition:border .2s}
+    #searchInput:focus{border-color:#2b6df6;box-shadow:0 0 20px rgba(43,109,246,.1)}
+    #searchInput::placeholder{color:#5a7fc7}
+    #searchClearBtn{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:#5a7fc7;cursor:pointer;font-size:1.1rem;padding:0 4px;transition:color .2s}
+    #searchClearBtn:hover{color:#e8ecf4}
     .gallery-section{max-width:1400px;margin:.5rem auto;padding:0 1rem 6rem;position:relative}
     .counter-wrapper{display:flex;justify-content:center;align-items:center;margin:.5rem auto 1rem;padding:4px 16px;background:rgba(10,14,26,.8);border-radius:500px;width:fit-content;gap:.5rem;border:1px solid #1a2a5e}
     .counter-wrapper.hidden-counter{display:none}
@@ -46,7 +52,7 @@
     .random-matte-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;transition:background-color .8s cubic-bezier(.2,.9,.4,1.1);pointer-events:none}
     .random-matte-bg::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 20% 40%,rgba(43,109,246,.08) 0%,rgba(0,0,0,.6) 100%);pointer-events:none}
 
-    /* ===== NUEVA GALERÍA: 3 COLUMNAS, SOLO PORTADAS ===== */
+    /* ===== NUEVA GALERÍA: 3 COLUMNAS CON TÍTULO Y ARTISTA ===== */
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -56,6 +62,8 @@
     }
 
     .image-card {
+      display: flex;
+      flex-direction: column;
       background: transparent;
       border: none;
       border-radius: 0;
@@ -74,6 +82,31 @@
       object-fit: cover;
       display: block;
       background: #0d162b;
+    }
+
+    .song-info {
+      padding: 0.3rem 0.2rem 0.4rem;
+      text-align: center;
+      background: transparent;
+    }
+
+    .song-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #e8ecf4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+
+    .song-artist {
+      font-size: 0.6rem;
+      color: #7a9ad6;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
     }
 
     /* ===== FIN NUEVA GALERÍA ===== */
@@ -110,7 +143,7 @@
       transition: opacity 0.3s ease, visibility 0.3s ease;
       overflow-y: auto;
       padding: 1rem;
-      pointer-events: none; /* para que el fondo no capture eventos */
+      pointer-events: none;
     }
 
     .fullscreen-player.show {
@@ -127,17 +160,15 @@
       margin: 0 auto;
       transform: translateY(0);
       transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.3s ease;
-      pointer-events: auto; /* para capturar eventos de arrastre */
-      touch-action: none; /* evitar scroll nativo durante arrastre */
+      pointer-events: auto;
+      touch-action: none;
       position: relative;
     }
 
-    /* El fondo del reproductor se oscurece con el arrastre */
     .fullscreen-player.dragging {
       transition: none;
     }
 
-    /* Resto de estilos del reproductor sin cambios */
     .player-cover{width:min(70vw,280px);max-width:280px;margin:0 auto 1.5rem;border-radius:8px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.5),0 0 60px rgba(43,109,246,.08);border:1px solid #1a2a5e;background:#0a0e1a;min-height:200px;display:flex;align-items:center;justify-content:center;position:relative}
     .player-cover img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
     .player-cover .video-wrapper{width:100%;aspect-ratio:16/9;background:#000;display:flex;align-items:center;justify-content:center}
@@ -215,6 +246,11 @@
 
 <div class="filter-buttons">
   <button class="filter-main-btn active" data-view="home">Inicio</button>
+  <button class="filter-main-btn" id="searchToggleBtn">🔍 Buscar</button>
+  <div id="searchContainer">
+    <input type="text" id="searchInput" placeholder="Buscar canción o artista..." autocomplete="off">
+    <button id="searchClearBtn" aria-label="Cerrar búsqueda">✕</button>
+  </div>
 </div>
 
 <main class="gallery-section">
@@ -881,7 +917,13 @@
     const shuffleBtnPlayer = document.getElementById('shuffleBtnPlayer');
     const toggleSuggestionsBtnElem = document.getElementById('toggleSuggestionsBtn');
     const progressArea = document.getElementById('progressArea');
-    const playerCard = document.getElementById('playerCard'); // para arrastre
+    const playerCard = document.getElementById('playerCard');
+
+    // ==================== ELEMENTOS DEL BUSCADOR ====================
+    const searchToggleBtn = document.getElementById('searchToggleBtn');
+    const searchContainer = document.getElementById('searchContainer');
+    const searchInput = document.getElementById('searchInput');
+    const searchClearBtn = document.getElementById('searchClearBtn');
 
     // ==================== FONDO ====================
     const mattePalette = ['#0a0e1a', '#0d162b', '#111a33', '#0f1428', '#0b1222', '#0e1930', '#0c1528', '#09101e'];
@@ -1534,11 +1576,15 @@
           }
         }
         
-        // ===== NUEVA GALERÍA: 3 COLUMNAS, SOLO PORTADAS =====
+        // ===== NUEVA GALERÍA: 3 COLUMNAS CON TÍTULO Y ARTISTA =====
         let html = `<div class="gallery-grid">`;
         items.forEach(song => {
           html += `<div class="image-card" data-id="${song.id}">
                     <img src="${song.url}" loading="lazy" alt="${escapeHtml(song.title)}" decoding="async" fetchpriority="low">
+                    <div class="song-info">
+                      <div class="song-title">${escapeHtml(song.title)}</div>
+                      <div class="song-artist">${escapeHtml(song.artist || 'Artista')}</div>
+                    </div>
                   </div>`;
         });
         html += `</div>`;
@@ -1573,6 +1619,37 @@
       if (sortChipsContainer) sortChipsContainer.style.display = 'none'; 
     }
 
+    // ==================== FUNCIONES DEL BUSCADOR ====================
+    function openSearch() {
+      searchToggleBtn.style.display = 'none';
+      searchContainer.style.display = 'block';
+      searchInput.value = '';
+      searchInput.focus();
+      // No reiniciamos la búsqueda hasta que el usuario escriba
+    }
+
+    function closeSearch(clear = true) {
+      searchContainer.style.display = 'none';
+      searchToggleBtn.style.display = 'inline-block';
+      if (clear) {
+        currentSearch = '';
+        searchInput.value = '';
+        renderContent();
+        renderSuggestions();
+        renderTopArtists();
+        updateQueueAndMode();
+      }
+    }
+
+    function performSearch() {
+      const query = searchInput.value.trim();
+      currentSearch = query;
+      renderContent();
+      renderSuggestions(); // se ocultará automáticamente si hay búsqueda
+      renderTopArtists();
+      updateQueueAndMode();
+    }
+
     // ==================== EVENTOS ====================
     const homeBtn = document.querySelector('[data-view="home"]');
     
@@ -1581,10 +1658,42 @@
         homeBtn.classList.add('active');
         isPlaylistsMode = false;
         updateSortChipsVisibility();
+        // Si el buscador está abierto, cerrarlo y limpiar
+        if (searchContainer.style.display === 'block') {
+          closeSearch(true);
+        }
         renderContent();
         renderSuggestions();
         updateQueueAndMode();
       });
+    }
+
+    // Eventos del buscador
+    if (searchToggleBtn) {
+      searchToggleBtn.addEventListener('click', openSearch);
+    }
+
+    if (searchClearBtn) {
+      searchClearBtn.addEventListener('click', () => {
+        closeSearch(true);
+      });
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', performSearch);
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeSearch(true);
+          e.preventDefault();
+        }
+        if (e.key === 'Enter') {
+          // Opcional: buscar, pero ya lo hace en tiempo real
+          e.preventDefault();
+        }
+      });
+      // Al perder el foco, no cerramos automáticamente para permitir seguir escribiendo
+      // pero si el input está vacío y se pierde el foco, podríamos cerrar? 
+      // Mejor no cerrar automáticamente, dejamos que el usuario cierre con la X o Escape.
     }
 
     // ==================== AUDIO EVENTOS ====================
@@ -1687,7 +1796,6 @@
       isMinimizing: false
     };
 
-    // Umbral: 30% de la altura de la ventana
     const THRESHOLD = 0.3;
 
     function getTranslateY() {
@@ -1702,19 +1810,15 @@
       playerCard.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.3s ease';
       setTranslateY(0);
       fullPlayer.style.background = 'rgba(10, 14, 26, 0.95)';
-      // Restaurar opacidad completa
       fullPlayer.style.opacity = '1';
       fullPlayer.style.pointerEvents = 'auto';
     }
 
     function closePlayer() {
       fullPlayer.classList.remove('show');
-      // Resetear para la próxima vez
       resetPlayerPosition();
-      // Asegurar que el transform se reinicia
       playerCard.style.transition = 'none';
       setTranslateY(0);
-      // Forzar reflow
       void playerCard.offsetHeight;
       playerCard.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.3s ease';
       fullPlayer.style.background = 'rgba(10, 14, 26, 0.95)';
@@ -1722,11 +1826,8 @@
       fullPlayer.style.pointerEvents = 'auto';
     }
 
-    // Iniciar arrastre
     function onDragStart(e) {
-      // Solo si el reproductor está visible
       if (!fullPlayer.classList.contains('show')) return;
-      // Evitar que el arrastre se active en botones y elementos interactivos
       const target = e.target;
       if (target.closest('.ctrl-btn') || target.closest('.mini-btn') || 
           target.closest('.toggle-suggestions-btn') || target.closest('.player-suggestion-item') ||
@@ -1740,12 +1841,9 @@
       dragState.currentY = touch.clientY;
       dragState.deltaY = 0;
       dragState.isMinimizing = false;
-      // Desactivar transición para que el movimiento sea fluido
       playerCard.style.transition = 'none';
       fullPlayer.style.transition = 'none';
-      // Añadir clase para desactivar transiciones en el fondo
       fullPlayer.classList.add('dragging');
-      // Prevenir scroll en la página
       e.preventDefault();
     }
 
@@ -1754,24 +1852,17 @@
       const touch = e.touches ? e.touches[0] : e;
       dragState.currentY = touch.clientY;
       dragState.deltaY = dragState.currentY - dragState.startY;
-      // Solo permitir arrastre hacia abajo (deltaY > 0)
       if (dragState.deltaY < 0) {
-        // Si el usuario arrastra hacia arriba, no movemos y resetamos
         return;
       }
 
-      // Limitar el desplazamiento máximo a un 80% de la altura de la ventana
       const maxY = window.innerHeight * 0.8;
       const delta = Math.min(dragState.deltaY, maxY);
       setTranslateY(delta);
 
-      // Cambiar opacidad del fondo según el desplazamiento
       const progress = delta / (window.innerHeight * THRESHOLD);
       const opacity = Math.max(0, 1 - progress);
-      // Aplicar opacidad al fondo del reproductor
       fullPlayer.style.background = `rgba(10, 14, 26, ${opacity * 0.95})`;
-      // También podemos atenuar la visibilidad del contenido (opcional)
-      // playerCard.style.opacity = Math.max(0.2, 1 - progress * 0.5);
 
       e.preventDefault();
     }
@@ -1781,37 +1872,28 @@
       dragState.isDragging = false;
       fullPlayer.classList.remove('dragging');
 
-      // Calcular si se superó el umbral
       const thresholdPx = window.innerHeight * THRESHOLD;
       if (dragState.deltaY > thresholdPx) {
-        // Minimizar (cerrar)
         closePlayer();
       } else {
-        // Regresar a la posición original
         resetPlayerPosition();
         fullPlayer.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
-        // Restaurar fondo
         fullPlayer.style.background = 'rgba(10, 14, 26, 0.95)';
         fullPlayer.style.opacity = '1';
-        // Asegurar que el transform vuelve a 0 con transición
         playerCard.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.3s ease';
         setTranslateY(0);
       }
 
-      // Limpiar referencias
       dragState.startY = 0;
       dragState.currentY = 0;
       dragState.deltaY = 0;
       e.preventDefault();
     }
 
-    // Agregar eventos de arrastre al player-card
     if (playerCard) {
-      // Touch events
       playerCard.addEventListener('touchstart', onDragStart, { passive: false });
       playerCard.addEventListener('touchmove', onDragMove, { passive: false });
       playerCard.addEventListener('touchend', onDragEnd, { passive: false });
-      // Mouse events (para escritorio)
       playerCard.addEventListener('mousedown', onDragStart);
       document.addEventListener('mousemove', onDragMove);
       document.addEventListener('mouseup', onDragEnd);
@@ -1824,6 +1906,10 @@
     isPlaylistsMode = false; 
     currentSearch = '';
     updateSortChipsVisibility();
+    
+    // Asegurar que el buscador esté oculto al inicio
+    searchContainer.style.display = 'none';
+    searchToggleBtn.style.display = 'inline-block';
     
     renderContent().then(() => {
       renderSuggestions(); 
@@ -1847,7 +1933,6 @@
       preloadAudio.src = '';
       preloadAdAudio.pause();
       preloadAdAudio.src = '';
-      // Eliminar event listeners de mouse para evitar fugas
       document.removeEventListener('mousemove', onDragMove);
       document.removeEventListener('mouseup', onDragEnd);
     });
@@ -1855,6 +1940,7 @@
     console.log('🎵 Kerim Music+ Optimizado con precarga y caché');
     console.log('⚡ Reproducción ultra fluida sin cortes');
     console.log('👆 Arrastra el reproductor hacia abajo para minimizar');
+    console.log('🔍 Buscador en tiempo real activo');
     
   })();
 </script>
