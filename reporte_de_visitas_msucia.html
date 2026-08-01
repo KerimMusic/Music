@@ -208,7 +208,7 @@
         /* ---------- TARJETA DE ÁLBUM DESTACADO ---------- */
         .destacado-wrapper {
             display: none;
-            margin: 16px 0 24px 0;
+            margin: 16px 0 4px 0;
             padding: 0 4px;
         }
         .destacado-wrapper.visible {
@@ -303,6 +303,49 @@
             align-items: center;
             gap: 4px;
             box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        }
+
+        /* ---------- BOTÓN TOGGLE ---------- */
+        .toggle-button {
+            display: block;
+            margin: 16px auto 12px auto;
+            padding: 12px 30px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 60px;
+            color: #f0f0f0;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+            backdrop-filter: blur(4px);
+            letter-spacing: 0.3px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .toggle-button:hover {
+            background: rgba(255, 255, 255, 0.14);
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .toggle-button:active {
+            transform: scale(0.97);
+        }
+
+        /* ---------- LISTA DE TEMAS (wrapper) ---------- */
+        .lista-wrapper {
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: max-height 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                        opacity 0.4s ease,
+                        transform 0.4s ease;
+            margin-top: 4px;
+        }
+        .lista-wrapper.abierto {
+            max-height: 10000px;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* ---------- Tarjetas de usuarios ---------- */
@@ -480,6 +523,12 @@
             .perfil-total .numero {
                 font-size: 1.6rem;
             }
+
+            .toggle-button {
+                font-size: 0.9rem;
+                padding: 10px 20px;
+                margin: 12px auto 8px auto;
+            }
         }
     </style>
 </head>
@@ -511,7 +560,7 @@
             </div>
         </div>
 
-        <!-- Tarjeta de álbum destacado -->
+        <!-- Tarjeta de álbum destacado (tema más escuchado) -->
         <div class="destacado-wrapper" id="destacadoWrapper">
             <div class="destacado-card">
                 <img class="destacado-imagen" id="destacadoImagen" src="" alt="Portada destacada" />
@@ -528,8 +577,13 @@
             </div>
         </div>
 
-        <!-- Aquí se inyectarán dinámicamente las tarjetas de los álbumes -->
-        <div id="tarjetasContainer"></div>
+        <!-- BOTÓN MOSTRAR / OCULTAR TODOS LOS TEMAS -->
+        <button class="toggle-button" id="toggleButton">Mostrar todos los temas</button>
+
+        <!-- LISTA DE TODOS LOS TEMAS (inicialmente oculta) -->
+        <div class="lista-wrapper" id="listaWrapper">
+            <div id="tarjetasContainer"></div>
+        </div>
     </div>
 
     <script type="module">
@@ -675,7 +729,7 @@
                 album: 'Kerim Music',
                 title: 'Sigo Vivo Aicber',
                 coleccion: "Radio Muisc",
-                artist: 'Aiciber'
+                artist: 'Aizber'
             },
             { 
                 id: "Recuerdos Aizber",
@@ -684,7 +738,7 @@
                 album: 'Kerim Music',
                 title: 'Recuerdos Aicber',
                 coleccion: "Radio Muisc",
-                artist: 'Aiciber'
+                artist: 'Aizber'
             },
             // =============== Emsek ==============
             {
@@ -775,7 +829,7 @@
         category: 'Reggeton',
         album: '2019',
         title: 'BABY J Vazquez',
-        artist: 'JVazquez'
+        artist: 'J Vazquez'
             },
             {
                 id: "jvazquez12",
@@ -890,6 +944,24 @@
         const perfilNombre = document.getElementById('perfilNombre');
         const perfilTotal = document.getElementById('perfilTotal');
         const perfilCanciones = document.getElementById('perfilCanciones');
+
+        // Botón toggle
+        const toggleButton = document.getElementById('toggleButton');
+        const listaWrapper = document.getElementById('listaWrapper');
+
+        // ─── TOGGLE MOSTRAR / OCULTAR TODOS LOS TEMAS ──────────────────
+        let listaVisible = false;
+
+        toggleButton.addEventListener('click', () => {
+            listaVisible = !listaVisible;
+            if (listaVisible) {
+                listaWrapper.classList.add('abierto');
+                toggleButton.textContent = 'Ocultar todos los temas';
+            } else {
+                listaWrapper.classList.remove('abierto');
+                toggleButton.textContent = 'Mostrar todos los temas';
+            }
+        });
 
         // Objeto para almacenar los valores actuales de cada álbum
         const valores = {};
@@ -1218,6 +1290,11 @@
                 const nombreDoc = album.nombre || album.title || album.id;
                 escucharContador(ref, span, insignia, nombreDoc, album.id);
             });
+
+            // Tras cargar todos los datos, aseguramos que la lista esté oculta inicialmente
+            listaWrapper.classList.remove('abierto');
+            toggleButton.textContent = 'Mostrar todos los temas';
+            listaVisible = false;
         });
     </script>
 </body>
