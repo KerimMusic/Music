@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>Kerim Music+ · Royal Blue</title>
-  <!-- Preconexiones para acelerar recursos externos -->
+  <!-- Preconexiones -->
   <link rel="preconnect" href="https://www.dropbox.com" crossorigin>
   <link rel="dns-prefetch" href="https://www.dropbox.com">
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
@@ -52,7 +52,7 @@
     .random-matte-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;transition:background-color .8s cubic-bezier(.2,.9,.4,1.1);pointer-events:none}
     .random-matte-bg::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 20% 40%,rgba(43,109,246,.08) 0%,rgba(0,0,0,.6) 100%);pointer-events:none}
 
-    /* ===== NUEVA GALERÍA: 3 COLUMNAS CON TÍTULO Y ARTISTA ===== */
+    /* ===== GALERÍA (cuadrícula y lista) ===== */
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -60,7 +60,6 @@
       opacity: 0;
       animation: fadeUp .3s forwards;
     }
-
     .image-card {
       display: flex;
       flex-direction: column;
@@ -71,11 +70,9 @@
       cursor: pointer;
       transition: transform 0.2s ease;
     }
-
     .image-card:hover {
       transform: scale(1.02);
     }
-
     .image-card img {
       width: 100%;
       aspect-ratio: 1 / 1;
@@ -83,13 +80,11 @@
       display: block;
       background: #0d162b;
     }
-
     .song-info {
       padding: 0.3rem 0.2rem 0.4rem;
       text-align: center;
       background: transparent;
     }
-
     .song-title {
       font-size: 0.7rem;
       font-weight: 600;
@@ -99,7 +94,6 @@
       text-overflow: ellipsis;
       line-height: 1.3;
     }
-
     .song-artist {
       font-size: 0.6rem;
       color: #7a9ad6;
@@ -109,8 +103,90 @@
       line-height: 1.3;
     }
 
-    /* ===== FIN NUEVA GALERÍA ===== */
+    /* ===== MODO LISTA (resultados de búsqueda) ===== */
+    .search-results-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeUp .3s forwards;
+    }
+    .list-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(13, 22, 43, 0.6);
+      border-radius: 8px;
+      padding: 0.4rem 0.6rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      border: 1px solid #1a2a5e;
+    }
+    .list-item:hover {
+      background: #1a2a5e;
+      transform: scale(1.01);
+    }
+    .list-item img {
+      width: 48px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .list-item .list-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .list-item .list-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #e8ecf4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .list-item .list-artist {
+      font-size: 0.65rem;
+      color: #7a9ad6;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
+    /* ===== CONTROLES DE VISTA (búsqueda) ===== */
+    #searchViewControls {
+      display: none;
+      justify-content: center;
+      gap: 0.5rem;
+      margin: 0.5rem 0 0.8rem;
+      flex-wrap: wrap;
+    }
+    .view-btn {
+      background: #111a33;
+      border: 1px solid #1a2a5e;
+      border-radius: 500px;
+      padding: 0.3rem 1.2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #7a9ad6;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+    .view-btn.active {
+      background: #1a4fd6;
+      color: #fff;
+      border-color: #2b6df6;
+      box-shadow: 0 0 20px rgba(43,109,246,.2);
+    }
+    .view-btn:hover:not(.active) {
+      background: #1a2a5e;
+      transform: scale(1.02);
+      color: #e8ecf4;
+    }
+
+    /* ===== RESTO DE ESTILOS (sin cambios) ===== */
     .suggestions-section{margin-bottom:2rem;padding:0}
     .suggestions-horizontal{display:flex;gap:1rem;overflow-x:auto;scrollbar-width:thin;padding-bottom:.75rem;-webkit-overflow-scrolling:touch}
     .suggestions-horizontal::-webkit-scrollbar{height:4px;background:#111a33}
@@ -125,7 +201,7 @@
     .no-results{text-align:center;padding:3rem;color:#5a7fc7;background:rgba(13,22,43,.9);border-radius:8px;border:1px solid #1a2a5e}
     .search-badge{font-size:.8rem;color:#5a7fc7;margin-bottom:1rem;padding-left:.5rem}
 
-    /* ===== REPRODUCTOR CON GESTO DE ARRASTRE ===== */
+    /* ===== REPRODUCTOR (sin cambios) ===== */
     .fullscreen-player {
       position: fixed;
       top: 0;
@@ -145,13 +221,11 @@
       padding: 1rem;
       pointer-events: none;
     }
-
     .fullscreen-player.show {
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
     }
-
     .player-card {
       background: transparent;
       border: none;
@@ -164,11 +238,9 @@
       touch-action: none;
       position: relative;
     }
-
     .fullscreen-player.dragging {
       transition: none;
     }
-
     .player-cover{width:min(70vw,280px);max-width:280px;margin:0 auto 1.5rem;border-radius:8px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.5),0 0 60px rgba(43,109,246,.08);border:1px solid #1a2a5e;background:#0a0e1a;min-height:200px;display:flex;align-items:center;justify-content:center;position:relative}
     .player-cover img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
     .player-cover .video-wrapper{width:100%;aspect-ratio:16/9;background:#000;display:flex;align-items:center;justify-content:center}
@@ -230,26 +302,23 @@
     @media(max-width:480px){.top-bar h1{font-size:1.2rem}.artist-avatar{width:65px;height:65px}.artist-circle-card{width:75px}.suggestion-card{flex:0 0 130px}}
     @keyframes fadeUp{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
 
-  .cdrack {
-  text-align: center;            /* Centra el texto */
-  max-width: 100%;               /* No se sale del ancho disponible */
-  padding: 0 10px;               /* Pequeño margen interno para que no toque los bordes */
-  box-sizing: border-box;        /* Incluye el padding en el ancho total */
-}
-
-.cdrack h1 {
-  font-size: 0.6rem;             /* Tamaño pequeño (ajústalo si quieres) */
-  font-weight: normal;           /* Quita la negrita para que ocupe menos visualmente */
-  margin: 0;                     /* Elimina el margen predeterminado del h1 */
-  word-wrap: break-word;         /* Rompe palabras largas si es necesario */
-  overflow-wrap: break-word;     /* Lo mismo, para navegadores modernos */
-  white-space: normal;           /* Asegura que el texto se envuelva en varias líneas */
-  max-width: 100%;               /* No se desborda horizontalmente */
-  display: block;                /* Se comporta como bloque */
-}
-.cdrack h1 {
-  color: #ffffff;   /* Blanco puro */
-}
+    .cdrack {
+      text-align: center;
+      max-width: 100%;
+      padding: 0 10px;
+      box-sizing: border-box;
+    }
+    .cdrack h1 {
+      font-size: 0.6rem;
+      font-weight: normal;
+      margin: 0;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
+      max-width: 100%;
+      display: block;
+      color: #ffffff;
+    }
   </style>
 </head>
 <body>
@@ -293,13 +362,20 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     <button class="chip-sort" data-sort="lastFirst">Más recientes</button>
     <button class="chip-sort" data-sort="firstFirst">Más antiguas</button>
   </div>
+
+  <!-- ===== NUEVO: CONTROLES DE VISTA PARA BÚSQUEDA ===== -->
+  <div id="searchViewControls">
+    <button class="view-btn active" data-view="grid">▦ Cuadrícula</button>
+    <button class="view-btn" data-view="list">☰ Lista</button>
+  </div>
+
   <div id="searchBadge" class="search-badge"></div>
   <div id="suggestionsContainer" class="suggestions-section"></div>
   <div id="contentContainer"></div>
   <div class="attribution">Kerim Music+ · Stream your vibe</div>
 </main>
 
-<!-- ===== REPRODUCTOR SIN BOTÓN DE CERRAR ===== -->
+<!-- ===== REPRODUCTOR (sin cambios) ===== -->
 <div class="fullscreen-player" id="fullscreenPlayer">
   <div class="player-card" id="playerCard">
     <div class="player-cover" id="playerCover">
@@ -343,7 +419,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
   <div class="mini-progress-bg"><div class="mini-progress-fill" id="miniProgressFill"></div></div>
 </div>
 
-<!-- ========== FIREBASE MODULE ========== -->
+<!-- ========== FIREBASE MODULE (sin cambios) ========== -->
 <script type="importmap">
   {
     "imports": {
@@ -535,7 +611,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
   (function(){
     'use strict';
 
-    // ==================== CONFIGURACIÓN ====================
+    // ==================== CONFIGURACIÓN (sin cambios) ====================
     let hasKerimMusicPlus = false;
     const ADS = [
       { id: 'ad9', url: 'https://www.dropbox.com/scl/fi/l41bs2ooxh6ccnewgnvd1/1785466259517.png?rlkey=czf0bcn58v0irh5qdfeg9tnef&st=pbd0d7v5&raw=1', title: 'Anuncio 8', category: 'ANUNCIO', music: 'https://www.dropbox.com/scl/fi/9tsc6vvge3ukcao3w8hiy/elimina-basura-spotyfi.mp3?rlkey=pogumn7wjmhepbtocb16km25w&st=3oh3m9tu&raw=1', isAd: true },
@@ -551,14 +627,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
     // ==================== DATOS DE CANCIONES ====================
     const ORIGINAL_SONGS = [
-      //================Kerim Music=====================
-      { id: "Amor del Grinch", 
-        title: "Amor del Grinch", 
-        artist: "Amor del Grinch", 
-        category: "Acustica", 
-        url: 'https://www.dropbox.com/scl/fi/qaljv0hddgtvmcl18tbzp/Grinch.jpg?rlkey=zhcwpzt3jsudf4oq4tr03mz7q&st=gmivxjmo&raw=1', 
-        music: 'https://www.dropbox.com/scl/fi/f4li6cxgmk6flvnekrteu/El-amor-del-Grinch.mp3?rlkey=5gbjx00g6gqtyfid58z8175ty&st=8h8un4ja&raw=1'
-        },
       //=================Dany Zm=========================
       { id: "Dile que tu eres mia Dany Zm", 
         title: "Dile que tu eres mia", 
@@ -717,7 +785,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     ];
 
-    // ==================== FUNCIONES AUXILIARES ====================
+    // ==================== FUNCIONES AUXILIARES (sin cambios) ====================
     function shuffleArray(arr) {
       const array = [...arr];
       for (let i = array.length - 1; i > 0; i--) {
@@ -731,7 +799,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
     function formatTime(sec){ if(isNaN(sec)) return '0:00'; let m=Math.floor(sec/60), s=Math.floor(sec%60); return `${m}:${s<10?'0':''}${s}`; }
 
-    // ==================== TOAST ====================
+    // ==================== TOAST (sin cambios) ====================
     let toastTimeout = null;
     function showToast(message, duration = 2500) {
       const toast = document.getElementById('toastNotification');
@@ -742,7 +810,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       toastTimeout = setTimeout(() => toast.classList.remove('show'), duration);
     }
 
-    // ==================== INICIALIZACIÓN ====================
+    // ==================== INICIALIZACIÓN (sin cambios) ====================
     const shuffledSongs = shuffleArray(ORIGINAL_SONGS);
     let masterSongs = [...shuffledSongs];
     const allSongs = [...ORIGINAL_SONGS];
@@ -779,7 +847,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== FUNCIONES DE ESTADO ====================
+    // ==================== FUNCIONES DE ESTADO (sin cambios) ====================
     function getLeastPlayedSuggestions(limit = 6){ 
       let songsWithCount = masterSongs.map(song => ({
         ...song, 
@@ -800,7 +868,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       return artistsArray.slice(0, limit);
     }
 
-    // ==================== UI ====================
+    // ==================== UI (sin cambios) ====================
     function updateUIPlan() {
       const planBadge = document.getElementById('planBadge');
       if (!planBadge) return;
@@ -817,7 +885,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== REPRODUCCIÓN CON PRECARGA ====================
+    // ==================== REPRODUCCIÓN (sin cambios) ====================
     let currentPlayQueue = [], currentQueueIndex = 0, currentSong = null, audio = new Audio(), isPlaying = false, currentSearch = '', shuffleActive = false, originalQueue = [], isPlaylistsMode = false;
     let adCounter = 0, isAdPlaying = false, previousSong = null, pendingNextSong = null, adPlaylist = [], currentAdIndex = 0, adCallback = null, videoElement = null, isVideoAd = false;
 
@@ -944,13 +1012,34 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     const progressArea = document.getElementById('progressArea');
     const playerCard = document.getElementById('playerCard');
 
-    // ==================== ELEMENTOS DEL BUSCADOR ====================
+    // ==================== ELEMENTOS DEL BUSCADOR Y CONTROL DE VISTA ====================
     const searchToggleBtn = document.getElementById('searchToggleBtn');
     const searchContainer = document.getElementById('searchContainer');
     const searchInput = document.getElementById('searchInput');
     const searchClearBtn = document.getElementById('searchClearBtn');
+    const searchViewControls = document.getElementById('searchViewControls');
+    const viewBtns = document.querySelectorAll('.view-btn');
 
-    // ==================== FONDO ====================
+    // ==================== VARIABLE DE MODO DE VISTA ====================
+    // Por defecto 'grid', guardado en localStorage
+    let searchViewMode = localStorage.getItem('kerim_search_view_mode') || 'grid';
+
+    // ==================== FUNCIONES DEL CONTROL DE VISTA ====================
+    function setSearchView(mode) {
+      if (mode !== 'grid' && mode !== 'list') return;
+      searchViewMode = mode;
+      localStorage.setItem('kerim_search_view_mode', mode);
+      // Actualizar clases de los botones
+      viewBtns.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.view === mode);
+      });
+      // Re-renderizar contenido si hay búsqueda activa
+      if (currentSearch.trim() !== '') {
+        renderContent();
+      }
+    }
+
+    // ==================== FONDO (sin cambios) ====================
     const mattePalette = ['#0a0e1a', '#0d162b', '#111a33', '#0f1428', '#0b1222', '#0e1930', '#0c1528', '#09101e'];
     let bgTimeout = null;
     let bgInterval = null;
@@ -971,7 +1060,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       bgTimeout = setTimeout(() => changeBackgroundRandomly(), 50);
     }
 
-    // ==================== SHUFFLE ====================
+    // ==================== SHUFFLE (sin cambios) ====================
     function toggleShuffle() {
       shuffleActive = !shuffleActive;
       
@@ -1013,7 +1102,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       schedulePreloadNext();
     }
 
-    // ==================== FUNCIONES DE COLA ====================
+    // ==================== FUNCIONES DE COLA (sin cambios) ====================
     function getActiveListForQueue(){
       let base = [...masterSongs];
       if(currentSearch.trim() !== '') base = base.filter(s => 
@@ -1068,7 +1157,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if(currentPlayQueue.length && !currentSong) currentSong = currentPlayQueue[0]; 
     }
 
-    // ==================== FUNCIÓN PARA MOSTRAR VIDEO ====================
+    // ==================== FUNCIÓN PARA MOSTRAR VIDEO (sin cambios) ====================
     function showVideoInPlayer(videoHtml) {
       if (!fullCover || !videoContainer) return;
       fullCover.style.display = 'none';
@@ -1123,7 +1212,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== ANUNCIOS CON PRECARGA ====================
+    // ==================== ANUNCIOS (sin cambios) ====================
     let preloadAdIndex = -1;
     let preloadAdAudio = new Audio();
     preloadAdAudio.preload = 'auto';
@@ -1304,7 +1393,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== REPRODUCIR CANCIONES ====================
+    // ==================== REPRODUCIR CANCIONES (sin cambios) ====================
     function playSong(song, customQueue = null) {
       if (!song) return;
       if (isAdPlaying) return;
@@ -1460,7 +1549,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       isPlaying ? audio.pause() : audio.play(); 
     }
 
-    // ==================== SUGERENCIAS ====================
+    // ==================== SUGERENCIAS (sin cambios) ====================
     function renderSuggestions(){ 
       if (!suggestionsContainer) return;
       if(isPlaylistsMode || currentSearch.trim() !== '') { 
@@ -1484,7 +1573,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }); 
     }
 
-    // ==================== SUGERENCIAS DEL REPRODUCTOR ====================
+    // ==================== SUGERENCIAS DEL REPRODUCTOR (sin cambios) ====================
     let suggestionsHidden = false;
 
     function getPlayerSuggestions(currentSongObj, limit = 6) {
@@ -1542,7 +1631,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== RENDER TOP ARTISTS ====================
+    // ==================== RENDER TOP ARTISTS (sin cambios) ====================
     function renderTopArtists() {
       const topArtistsSection = document.getElementById('topArtistsSection');
       const artistsContainer = document.getElementById('artistsContainer');
@@ -1562,7 +1651,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       artistsContainer.innerHTML = html;
     }
 
-    // ==================== RENDER CONTENIDO ====================
+    // ==================== RENDER CONTENIDO (con soporte para modo lista) ====================
     let renderTimeout = null;
 
     function updateCounterVisibility() { 
@@ -1583,6 +1672,14 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         renderTopArtists();
         const items = getActiveListForQueue();
         const isSearching = currentSearch.trim() !== ''; 
+
+        // Mostrar/ocultar controles de vista según búsqueda activa
+        if (isSearching) {
+          searchViewControls.style.display = 'flex';
+        } else {
+          searchViewControls.style.display = 'none';
+        }
+
         if (searchBadge) {
           if(isSearching) searchBadge.innerHTML = `🔍 Resultados: "${escapeHtml(currentSearch)}" (${items.length})`; 
           else if(isPlaylistsMode) searchBadge.innerHTML = `❤️ Tus Me gusta · ${items.length} canción${items.length !== 1 ? 'es' : ''}`; 
@@ -1601,21 +1698,39 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           }
         }
         
-        // ===== NUEVA GALERÍA: 3 COLUMNAS CON TÍTULO Y ARTISTA =====
-        let html = `<div class="gallery-grid">`;
-        items.forEach(song => {
-          html += `<div class="image-card" data-id="${song.id}">
-                    <img src="${song.url}" loading="lazy" alt="${escapeHtml(song.title)}" decoding="async" fetchpriority="low">
-                    <div class="song-info">
-                      <div class="song-title">${escapeHtml(song.title)}</div>
-                      <div class="song-artist">${escapeHtml(song.artist || 'Artista')}</div>
-                    </div>
-                  </div>`;
-        });
-        html += `</div>`;
+        // ===== DECISIÓN DE VISTA: GRID O LISTA =====
+        let html = '';
+        if (isSearching && searchViewMode === 'list') {
+          // Modo Lista
+          html = `<div class="search-results-list">`;
+          items.forEach(song => {
+            html += `<div class="list-item" data-id="${song.id}">
+                      <img src="${song.url}" loading="lazy" alt="${escapeHtml(song.title)}">
+                      <div class="list-info">
+                        <div class="list-title">${escapeHtml(song.title)}</div>
+                        <div class="list-artist">${escapeHtml(song.artist || 'Artista')}</div>
+                      </div>
+                    </div>`;
+          });
+          html += `</div>`;
+        } else {
+          // Modo Cuadrícula (por defecto)
+          html = `<div class="gallery-grid">`;
+          items.forEach(song => {
+            html += `<div class="image-card" data-id="${song.id}">
+                      <img src="${song.url}" loading="lazy" alt="${escapeHtml(song.title)}" decoding="async" fetchpriority="low">
+                      <div class="song-info">
+                        <div class="song-title">${escapeHtml(song.title)}</div>
+                        <div class="song-artist">${escapeHtml(song.artist || 'Artista')}</div>
+                      </div>
+                    </div>`;
+          });
+          html += `</div>`;
+        }
         contentContainer.innerHTML = html;
         
-        contentContainer.querySelectorAll('.image-card').forEach(card => { 
+        // Event listeners para todos los elementos clickeables
+        contentContainer.querySelectorAll('.image-card, .list-item').forEach(card => { 
           card.addEventListener('click', () => { 
             const id = card.dataset.id; 
             const found = masterSongs.find(s => s.id === id) || allSongs.find(s => s.id === id); 
@@ -1626,7 +1741,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       });
     }
 
-    // ==================== OBTENER REPRODUCCIONES FIRESTORE ====================
+    // ==================== OBTENER REPRODUCCIONES FIRESTORE (sin cambios) ====================
     async function obtenerReproduccionesFirestore(songId) {
       try {
         if (window.obtenerReproducciones) {
@@ -1639,7 +1754,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== FILTROS Y ORDEN ====================
+    // ==================== FILTROS Y ORDEN (sin cambios) ====================
     function updateSortChipsVisibility() { 
       if (sortChipsContainer) sortChipsContainer.style.display = 'none'; 
     }
@@ -1650,7 +1765,12 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       searchContainer.style.display = 'block';
       searchInput.value = '';
       searchInput.focus();
-      // No reiniciamos la búsqueda hasta que el usuario escriba
+      // Al abrir, resetear búsqueda actual
+      currentSearch = '';
+      renderContent();
+      renderSuggestions();
+      renderTopArtists();
+      updateQueueAndMode();
     }
 
     function closeSearch(clear = true) {
@@ -1664,6 +1784,8 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         renderTopArtists();
         updateQueueAndMode();
       }
+      // Ocultar controles de vista
+      searchViewControls.style.display = 'none';
     }
 
     function performSearch() {
@@ -1683,7 +1805,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         homeBtn.classList.add('active');
         isPlaylistsMode = false;
         updateSortChipsVisibility();
-        // Si el buscador está abierto, cerrarlo y limpiar
         if (searchContainer.style.display === 'block') {
           closeSearch(true);
         }
@@ -1712,16 +1833,20 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           e.preventDefault();
         }
         if (e.key === 'Enter') {
-          // Opcional: buscar, pero ya lo hace en tiempo real
           e.preventDefault();
         }
       });
-      // Al perder el foco, no cerramos automáticamente para permitir seguir escribiendo
-      // pero si el input está vacío y se pierde el foco, podríamos cerrar? 
-      // Mejor no cerrar automáticamente, dejamos que el usuario cierre con la X o Escape.
     }
 
-    // ==================== AUDIO EVENTOS ====================
+    // Eventos de los botones de vista
+    viewBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = btn.dataset.view;
+        setSearchView(mode);
+      });
+    });
+
+    // ==================== AUDIO EVENTOS (sin cambios) ====================
     let audioUpdateFrame = null;
 
     audio.addEventListener('timeupdate', () => {
@@ -1768,7 +1893,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       nextTrack();
     });
 
-    // ==================== PROGRESS BAR ====================
+    // ==================== PROGRESS BAR (sin cambios) ====================
     if (progressBarBg) {
       progressBarBg.addEventListener('click', (e) => { 
         if(audio.duration){ 
@@ -1779,7 +1904,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       });
     }
 
-    // ==================== CONTROLES ====================
+    // ==================== CONTROLES (sin cambios) ====================
     if (fullPlayPause) fullPlayPause.addEventListener('click', togglePlayPause);
     if (fullNext) fullNext.addEventListener('click', nextTrack);
     if (fullPrev) fullPrev.addEventListener('click', prevTrack);
@@ -1796,7 +1921,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     if (shuffleBtnPlayer) shuffleBtnPlayer.addEventListener('click', toggleShuffle);
     if (toggleSuggestionsBtnElem) toggleSuggestionsBtnElem.addEventListener('click', toggleSuggestions);
 
-    // ==================== WELCOME MODAL ====================
+    // ==================== WELCOME MODAL (sin cambios) ====================
     const welcomeModal = document.getElementById('welcomeModal');
     const acceptBtn = document.getElementById('acceptWelcomeBtn');
     if (localStorage.getItem('kerim_welcome_accepted') === 'true') {
@@ -1811,7 +1936,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== GESTO DE ARRASTRE PARA MINIMIZAR ====================
+    // ==================== GESTO DE ARRASTRE (sin cambios) ====================
     let dragState = {
       isDragging: false,
       startY: 0,
@@ -1932,6 +2057,12 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     currentSearch = '';
     updateSortChipsVisibility();
     
+    // Configurar el control de vista según el modo guardado
+    viewBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.view === searchViewMode);
+    });
+    searchViewControls.style.display = 'none'; // oculto por defecto
+
     // Asegurar que el buscador esté oculto al inicio
     searchContainer.style.display = 'none';
     searchToggleBtn.style.display = 'inline-block';
@@ -1965,7 +2096,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     console.log('🎵 Kerim Music+ Optimizado con precarga y caché');
     console.log('⚡ Reproducción ultra fluida sin cortes');
     console.log('👆 Arrastra el reproductor hacia abajo para minimizar');
-    console.log('🔍 Buscador en tiempo real activo');
+    console.log('🔍 Buscador con cambio de vista (Lista / Cuadrícula)');
     
   })();
 </script>
