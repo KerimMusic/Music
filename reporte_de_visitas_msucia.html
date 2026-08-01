@@ -45,8 +45,26 @@
             margin-bottom: 8px;
             padding-bottom: 12px;
             border-bottom: 2px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
         .titulo span {
+            color: #ffffff;
+        }
+        .total-global {
+            font-size: 1rem;
+            font-weight: 400;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 4px 16px;
+            border-radius: 40px;
+            color: #b0b0d0;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .total-global .numero {
+            font-weight: 700;
             color: #ffffff;
         }
 
@@ -321,6 +339,10 @@
             backdrop-filter: blur(4px);
             letter-spacing: 0.3px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         .toggle-button:hover {
             background: rgba(255, 255, 255, 0.14);
@@ -329,6 +351,16 @@
         }
         .toggle-button:active {
             transform: scale(0.97);
+        }
+        .toggle-button .flecha {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        .toggle-button .flecha.abajo {
+            transform: rotate(0deg);
+        }
+        .toggle-button .flecha.arriba {
+            transform: rotate(180deg);
         }
 
         /* ---------- LISTA DE TEMAS (wrapper) ---------- */
@@ -361,7 +393,7 @@
             transition: all 0.2s ease;
             border: 1px solid rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(4px);
-            cursor: default;
+            cursor: pointer;
         }
         .usuario-card:hover {
             transform: translateY(-3px);
@@ -480,6 +512,11 @@
             }
             .titulo {
                 font-size: 1.4rem;
+                flex-direction: column;
+                gap: 6px;
+            }
+            .total-global {
+                font-size: 0.85rem;
             }
             .info {
                 gap: 6px;
@@ -534,7 +571,10 @@
 </head>
 <body>
     <div class="container" id="appContainer">
-        <div class="titulo"><span>Kerim Music+</span></div>
+        <div class="titulo">
+            <span>Kerim Music+</span>
+            <span class="total-global">🌐 Total: <span class="numero" id="totalGlobal">0</span></span>
+        </div>
 
         <!-- BUSCADOR -->
         <div class="buscador-wrapper">
@@ -578,7 +618,10 @@
         </div>
 
         <!-- BOTÓN MOSTRAR / OCULTAR TODOS LOS TEMAS -->
-        <button class="toggle-button" id="toggleButton">Mostrar todos los temas</button>
+        <button class="toggle-button" id="toggleButton">
+            <span>Mostrar todos los temas</span>
+            <span class="flecha abajo" id="flechaToggle">▼</span>
+        </button>
 
         <!-- LISTA DE TODOS LOS TEMAS (inicialmente oculta) -->
         <div class="lista-wrapper" id="listaWrapper">
@@ -615,6 +658,14 @@
 
         // ─── LISTA DE ÁLBUMES (CON ARTISTA NORMALIZADO) ──────
         const albumes = [
+            //======================Kerim Msuic==================
+            { id: "Amor del Grinch", 
+        title: "Amor del Grinch", 
+        artist: "Amor del Grinch", 
+        category: "Acustica",
+        coleccion: "Radio Muisc",
+        url: 'https://www.dropbox.com/scl/fi/qaljv0hddgtvmcl18tbzp/Grinch.jpg?rlkey=zhcwpzt3jsudf4oq4tr03mz7q&st=gmivxjmo&raw=1', 
+        },
             //=======================Dany Zm=====================
         { id: "Dile que tu eres mia Dany Zm", 
         title: "Dile que tu eres mia", 
@@ -716,7 +767,7 @@
         },
         { id: "Te extraño tanto Dany Zm", 
         title: "Te extraño tanto", 
-        artist: "Dany Zm", 
+        artist: "Dany Zm ft Sain Nt", 
         category: "Rap",
         coleccion: "Radio Muisc", 
         url: 'https://www.dropbox.com/scl/fi/10taifx84l0e4h2y9l2nx/Te-estra-o-tanto.png?rlkey=kp4gp2kp8rhbzsdobyl5tfng6&st=vrnzzymz&raw=1', 
@@ -945,9 +996,11 @@
         const perfilTotal = document.getElementById('perfilTotal');
         const perfilCanciones = document.getElementById('perfilCanciones');
 
-        // Botón toggle
+        // Botón toggle y contador global
         const toggleButton = document.getElementById('toggleButton');
         const listaWrapper = document.getElementById('listaWrapper');
+        const flechaToggle = document.getElementById('flechaToggle');
+        const totalGlobalSpan = document.getElementById('totalGlobal');
 
         // ─── TOGGLE MOSTRAR / OCULTAR TODOS LOS TEMAS ──────────────────
         let listaVisible = false;
@@ -956,10 +1009,12 @@
             listaVisible = !listaVisible;
             if (listaVisible) {
                 listaWrapper.classList.add('abierto');
-                toggleButton.textContent = 'Ocultar todos los temas';
+                toggleButton.querySelector('span:first-child').textContent = 'Ocultar todos los temas';
+                flechaToggle.className = 'flecha arriba';
             } else {
                 listaWrapper.classList.remove('abierto');
-                toggleButton.textContent = 'Mostrar todos los temas';
+                toggleButton.querySelector('span:first-child').textContent = 'Mostrar todos los temas';
+                flechaToggle.className = 'flecha abajo';
             }
         });
 
@@ -1126,6 +1181,7 @@
             const card = document.createElement('div');
             card.className = 'usuario-card';
             card.dataset.id = album.id;
+            card.dataset.artist = album.artist || '';
 
             const img = document.createElement('img');
             img.src = imagen;
@@ -1161,6 +1217,23 @@
             spans[album.id] = numeroSpan;
             insignias[album.id] = insigniaSpan;
             cardElements[album.id] = card;
+
+            // ─── CLIC EN LA TARJETA PARA MOSTRAR PERFIL DEL ARTISTA ──
+            card.addEventListener('click', () => {
+                const artist = album.artist;
+                if (artist && artistasMap.has(artist)) {
+                    mostrarPerfil(artist);
+                    // Opcional: cerrar la lista si está abierta para ver el perfil mejor
+                    if (listaVisible) {
+                        listaWrapper.classList.remove('abierto');
+                        listaVisible = false;
+                        toggleButton.querySelector('span:first-child').textContent = 'Mostrar todos los temas';
+                        flechaToggle.className = 'flecha abajo';
+                    }
+                    // Limpiar el buscador para reflejar la selección
+                    buscadorInput.value = artist;
+                }
+            });
         });
 
         // ─── FUNCIONES DEL CONTADOR ──────────────────────────────────────
@@ -1201,6 +1274,7 @@
 
                     actualizarDestacado();
                     reordenarTarjetas();
+                    actualizarTotalGlobal();
 
                     // Si el perfil está visible y corresponde al artista de este álbum, actualizar
                     if (perfilArtista.classList.contains('visible')) {
@@ -1242,6 +1316,15 @@
             } else {
                 wrapper.classList.remove('visible');
             }
+        }
+
+        // ─── ACTUALIZAR CONTADOR GLOBAL ─────────────────────────────────
+        function actualizarTotalGlobal() {
+            let total = 0;
+            for (const valor of Object.values(valores)) {
+                total += valor;
+            }
+            totalGlobalSpan.textContent = total;
         }
 
         // ─── REORDENAR TARJETAS ──────────────────────────────────────────
@@ -1291,9 +1374,10 @@
                 escucharContador(ref, span, insignia, nombreDoc, album.id);
             });
 
-            // Tras cargar todos los datos, aseguramos que la lista esté oculta inicialmente
+            // Tras cargar, aseguramos que la lista esté oculta
             listaWrapper.classList.remove('abierto');
-            toggleButton.textContent = 'Mostrar todos los temas';
+            toggleButton.querySelector('span:first-child').textContent = 'Mostrar todos los temas';
+            flechaToggle.className = 'flecha abajo';
             listaVisible = false;
         });
     </script>
