@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
   <link rel="dns-prefetch" href="https://firestore.googleapis.com">
   <style>
-    /* ===== ESTILOS OPTIMIZADOS (sin cambios) ===== */
+    /* ===== ESTILOS OPTIMIZADOS ===== */
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     body{background-color:#0a0e1a;color:#e8ecf4;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,sans-serif;line-height:1.4;overflow-x:hidden;width:100%}
     .top-bar{background:#0a0e1a;padding:.5rem 1rem;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap;border-bottom:1px solid #1a2a5e}
@@ -45,11 +45,39 @@
     .chip-sort:hover:not(.active){background:#1a2a5e;transform:scale(1.02);color:#e8ecf4}
     .random-matte-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;transition:background-color .8s cubic-bezier(.2,.9,.4,1.1);pointer-events:none}
     .random-matte-bg::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 20% 40%,rgba(43,109,246,.08) 0%,rgba(0,0,0,.6) 100%);pointer-events:none}
-    .gallery-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;opacity:0;animation:fadeUp .3s forwards}
-    .gallery-grid.list-view{display:flex;flex-direction:column;gap:.5rem}
-    .gallery-grid.list-view .image-card{display:flex;flex-direction:row;align-items:center;gap:1rem;padding:.5rem;border-radius:8px;background:rgba(17,26,51,.95);border:1px solid #1a2a5e}
-    .gallery-grid.list-view .image-card img{width:48px;height:48px;border-radius:4px;aspect-ratio:1/1;flex-shrink:0}
-    .gallery-grid.list-view .card-title{flex:1;text-align:left;white-space:normal;background:0 0;border:none;padding:0;font-size:.85rem;font-weight:500;color:#e8ecf4}
+
+    /* ===== NUEVA GALERÍA: 3 COLUMNAS, SOLO PORTADAS ===== */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeUp .3s forwards;
+    }
+
+    .image-card {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .image-card:hover {
+      transform: scale(1.02);
+    }
+
+    .image-card img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      display: block;
+      background: #0d162b;
+    }
+
+    /* ===== FIN NUEVA GALERÍA ===== */
+
     .suggestions-section{margin-bottom:2rem;padding:0}
     .suggestions-horizontal{display:flex;gap:1rem;overflow-x:auto;scrollbar-width:thin;padding-bottom:.75rem;-webkit-overflow-scrolling:touch}
     .suggestions-horizontal::-webkit-scrollbar{height:4px;background:#111a33}
@@ -61,21 +89,55 @@
     .suggestion-title{font-size:.75rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e8ecf4;margin-bottom:4px}
     .suggestion-badge{font-size:.55rem;color:#2b6df6;display:inline-block;padding:2px 8px;border-radius:20px;background:rgba(43,109,246,.12)}
     .suggestion-invite{font-size:.6rem;color:#5a7fc7;margin-top:4px;display:flex;align-items:center;gap:4px}
-    .image-card{background:#0d162b;border-radius:8px;overflow:hidden;cursor:pointer;transition:all .25s ease;display:flex;flex-direction:column;border:1px solid #1a2a5e}
-    .image-card:hover{background:#1a2a5e;transform:translateY(-4px);box-shadow:0 8px 30px rgba(43,109,246,.1)}
-    .image-card img{width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform .3s ease;display:block}
-    .image-card:hover img{transform:scale(1.02)}
-    .card-title{padding:.75rem .5rem;text-align:left;font-size:.8rem;font-weight:600;color:#e8ecf4;background:0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .card-plays{font-size:.65rem;color:#5a7fc7;padding:0 .5rem .5rem;font-weight:400}
-    @media(min-width:500px){.gallery-grid:not(.list-view){grid-template-columns:repeat(3,1fr);gap:1rem}}
-    @media(min-width:640px){.gallery-grid:not(.list-view){grid-template-columns:repeat(4,1fr)}}
-    @media(min-width:900px){.gallery-grid:not(.list-view){grid-template-columns:repeat(5,1fr)}}
-    @media(min-width:1200px){.gallery-grid:not(.list-view){grid-template-columns:repeat(6,1fr)}}
     .no-results{text-align:center;padding:3rem;color:#5a7fc7;background:rgba(13,22,43,.9);border-radius:8px;border:1px solid #1a2a5e}
     .search-badge{font-size:.8rem;color:#5a7fc7;margin-bottom:1rem;padding-left:.5rem}
-    .fullscreen-player{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(180deg,#0d162b 0%,#0a0e1a 100%);backdrop-filter:blur(0);z-index:3000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all .3s ease;overflow-y:auto;padding:1rem}
-    .fullscreen-player.show{opacity:1;visibility:visible}
-    .player-card{background:0 0;border:none;max-width:500px;width:100%;margin:0 auto}
+
+    /* ===== REPRODUCTOR CON GESTO DE ARRASTRE ===== */
+    .fullscreen-player {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 14, 26, 0.95);
+      backdrop-filter: blur(0);
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      overflow-y: auto;
+      padding: 1rem;
+      pointer-events: none; /* para que el fondo no capture eventos */
+    }
+
+    .fullscreen-player.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .player-card {
+      background: transparent;
+      border: none;
+      max-width: 500px;
+      width: 100%;
+      margin: 0 auto;
+      transform: translateY(0);
+      transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.3s ease;
+      pointer-events: auto; /* para capturar eventos de arrastre */
+      touch-action: none; /* evitar scroll nativo durante arrastre */
+      position: relative;
+    }
+
+    /* El fondo del reproductor se oscurece con el arrastre */
+    .fullscreen-player.dragging {
+      transition: none;
+    }
+
+    /* Resto de estilos del reproductor sin cambios */
     .player-cover{width:min(70vw,280px);max-width:280px;margin:0 auto 1.5rem;border-radius:8px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.5),0 0 60px rgba(43,109,246,.08);border:1px solid #1a2a5e;background:#0a0e1a;min-height:200px;display:flex;align-items:center;justify-content:center;position:relative}
     .player-cover img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
     .player-cover .video-wrapper{width:100%;aspect-ratio:16/9;background:#000;display:flex;align-items:center;justify-content:center}
@@ -97,8 +159,6 @@
     .ctrl-btn.play-pause{width:64px;height:64px;background:#1a4fd6;color:#fff;font-size:1.8rem;box-shadow:0 0 40px rgba(43,109,246,.25)}
     .ctrl-btn.play-pause:hover{background:#2b6df6;transform:scale(1.05);color:#fff}
     .ctrl-btn.hidden-nav{visibility:hidden;pointer-events:none}
-    .close-player{position:absolute;top:20px;right:20px;background:rgba(10,14,26,.8);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;transition:all .2s ease;color:#5a7fc7;border:1px solid #1a2a5e}
-    .close-player:hover{color:#e8ecf4;transform:scale(1.05);border-color:#2b6df6}
     .player-suggestions{margin-top:1.5rem}
     .player-suggestions-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem}
     .player-suggestions-title{font-size:.75rem;font-weight:600;color:#5a7fc7;letter-spacing:.5px}
@@ -178,9 +238,9 @@
   <div class="attribution">Kerim Music+ · Stream your vibe</div>
 </main>
 
+<!-- ===== REPRODUCTOR SIN BOTÓN DE CERRAR ===== -->
 <div class="fullscreen-player" id="fullscreenPlayer">
-  <div class="close-player" id="closePlayerBtn">✕</div>
-  <div class="player-card">
+  <div class="player-card" id="playerCard">
     <div class="player-cover" id="playerCover">
       <img id="fullCover" src="https://i.postimg.cc/XNP1xdB2/IMG-20260207-WA0000.jpg" alt="cover" loading="lazy">
       <div id="videoContainer" style="display:none;width:100%;aspect-ratio:16/9;background:#000"></div>
@@ -222,7 +282,7 @@
   <div class="mini-progress-bg"><div class="mini-progress-fill" id="miniProgressFill"></div></div>
 </div>
 
-<!-- ========== FIREBASE MODULE (sin cambios) ========== -->
+<!-- ========== FIREBASE MODULE ========== -->
 <script type="importmap">
   {
     "imports": {
@@ -409,7 +469,7 @@
   });
 </script>
 
-<!-- ========== SCRIPT PRINCIPAL OPTIMIZADO ========== -->
+<!-- ========== SCRIPT PRINCIPAL ========== -->
 <script>
   (function(){
     'use strict';
@@ -428,7 +488,7 @@
       { id: 'ad4', url: 'https://www.dropbox.com/scl/fi/zstw4ykjmjh3ljzejuwk5/Anuncio.png?rlkey=pumuamhvcw40nas5biyyrizvo&st=ku13lu66&raw=1', title: 'Anuncio 4', category: 'ANUNCIO', music: 'https://www.dropbox.com/scl/fi/vl4d6mwau9frvxmjm6wwn/Baner.mp3?rlkey=z8jezojlzlyt0i3qp16jrvid9&st=tdb7ne0h&raw=1', isAd: true }
     ];
 
-    // ==================== DATOS DE CANCIONES (sin cambios) ====================
+    // ==================== DATOS DE CANCIONES ====================
     const ORIGINAL_SONGS = [
       //=================Dany Zm=========================
       { id: "Dile que tu eres mia Dany Zm", 
@@ -588,7 +648,7 @@
       }
     ];
 
-    // ==================== FUNCIONES AUXILIARES OPTIMIZADAS ====================
+    // ==================== FUNCIONES AUXILIARES ====================
     function shuffleArray(arr) {
       const array = [...arr];
       for (let i = array.length - 1; i > 0; i--) {
@@ -622,7 +682,6 @@
     let artistPlayCount = new Map();
     let firestorePlays = new Map();
 
-    // Cargar datos guardados
     try{ 
       let savedCounts = localStorage.getItem('kerim_play_counts');
       if(savedCounts){ 
@@ -693,12 +752,10 @@
     let currentPlayQueue = [], currentQueueIndex = 0, currentSong = null, audio = new Audio(), isPlaying = false, currentSearch = '', shuffleActive = false, originalQueue = [], isPlaylistsMode = false;
     let adCounter = 0, isAdPlaying = false, previousSong = null, pendingNextSong = null, adPlaylist = [], currentAdIndex = 0, adCallback = null, videoElement = null, isVideoAd = false;
 
-    // --- Elemento de audio para precarga ---
     const preloadAudio = new Audio();
     preloadAudio.preload = 'auto';
     let preloadSong = null;
 
-    // --- Cache de audio usando Cache API ---
     const CACHE_NAME = 'kerim-audio-cache-v1';
     let audioCache = null;
 
@@ -713,93 +770,76 @@
       return audioCache;
     }
 
-    // Función para precargar un audio: lo guarda en caché y también lo carga en el elemento preloadAudio
     async function precargarAudio(song) {
       if (!song || !song.music) return;
-      // Si ya es el que está precargado, no hacer nada
       if (preloadSong && preloadSong.id === song.id) return;
       
       try {
         const cache = await getAudioCache();
         if (cache) {
-          // Intentar servir desde caché
           const response = await cache.match(song.music);
           if (response) {
-            // Ya está en caché, solo precargamos en el elemento
             preloadAudio.src = song.music;
             preloadAudio.load();
             preloadSong = song;
             return;
           }
         }
-        // Si no está en caché, lo descargamos y guardamos
         const response = await fetch(song.music);
         if (response.ok) {
           const clonedResponse = response.clone();
           if (cache) {
             cache.put(song.music, clonedResponse);
           }
-          // Establecer src al elemento de precarga
           preloadAudio.src = song.music;
           preloadAudio.load();
           preloadSong = song;
         } else {
-          // Fallback: cargar directamente
           preloadAudio.src = song.music;
           preloadAudio.load();
           preloadSong = song;
         }
       } catch (e) {
-        // Si falla la caché, cargar directamente
         preloadAudio.src = song.music;
         preloadAudio.load();
         preloadSong = song;
       }
     }
 
-    // Función para obtener la siguiente canción en la cola
     function getNextSongInQueue() {
       if (!currentPlayQueue.length) return null;
       let nextIdx = (currentQueueIndex + 1) % currentPlayQueue.length;
       return currentPlayQueue[nextIdx];
     }
 
-    // Función para obtener la canción anterior
     function getPrevSongInQueue() {
       if (!currentPlayQueue.length) return null;
       let prevIdx = (currentQueueIndex - 1 + currentPlayQueue.length) % currentPlayQueue.length;
       return currentPlayQueue[prevIdx];
     }
 
-    // Variables para control de precarga por tiempo
     let preloadTimer = null;
 
     function schedulePreloadNext() {
-      // Programar precarga cuando la canción actual esté al 80% de su duración
       if (preloadTimer) clearTimeout(preloadTimer);
       const nextSong = getNextSongInQueue();
       if (!nextSong) return;
-      // Si ya está precargado, no hacer nada
       if (preloadSong && preloadSong.id === nextSong.id) return;
       
-      // Escuchar evento timeupdate para saber cuándo precargar
       const checkTime = () => {
         if (!audio.duration || audio.paused || isAdPlaying) return;
         const progress = audio.currentTime / audio.duration;
         if (progress >= 0.80) {
-          // Precargar la siguiente
           precargarAudio(nextSong);
           audio.removeEventListener('timeupdate', checkTime);
         }
       };
       audio.addEventListener('timeupdate', checkTime);
-      // También si la canción actual ya está muy avanzada, precargar inmediatamente
       if (audio.duration && (audio.currentTime / audio.duration) >= 0.80) {
         precargarAudio(nextSong);
       }
     }
 
-    // ==================== Pending count ====================
     let pendingCount = false;
     let pendingSongId = null;
 
@@ -821,7 +861,6 @@
     const progressBarBg = document.getElementById('progressBarBg');
     const currentTimeSpan = document.getElementById('currentTime');
     const durationSpan = document.getElementById('durationTime');
-    const closePlayerBtn = document.getElementById('closePlayerBtn');
     const miniCover = document.getElementById('miniCover');
     const miniTitle = document.getElementById('miniTitle');
     const miniPlayPause = document.getElementById('miniPlayPauseBtn');
@@ -834,8 +873,9 @@
     const shuffleBtnPlayer = document.getElementById('shuffleBtnPlayer');
     const toggleSuggestionsBtnElem = document.getElementById('toggleSuggestionsBtn');
     const progressArea = document.getElementById('progressArea');
+    const playerCard = document.getElementById('playerCard'); // para arrastre
 
-    // ==================== FONDO OPTIMIZADO ====================
+    // ==================== FONDO ====================
     const mattePalette = ['#0a0e1a', '#0d162b', '#111a33', '#0f1428', '#0b1222', '#0e1930', '#0c1528', '#09101e'];
     let bgTimeout = null;
     let bgInterval = null;
@@ -895,7 +935,6 @@
           originalQueue = [];
         }
       }
-      // Precargar la siguiente después de cambiar la cola
       schedulePreloadNext();
     }
 
@@ -1010,7 +1049,6 @@
     }
 
     // ==================== ANUNCIOS CON PRECARGA ====================
-    // Precargar el siguiente anuncio
     let preloadAdIndex = -1;
     let preloadAdAudio = new Audio();
     preloadAdAudio.preload = 'auto';
@@ -1039,7 +1077,6 @@
       if (miniPrev) miniPrev.classList.add('hidden-nav');
       if (miniNext) miniNext.classList.add('hidden-nav');
       previousSong = currentSong;
-      // Precargar primer anuncio (ya está en el array)
       if (adPlaylist.length > 0 && adPlaylist[0].music) {
         preloadAdAudio.src = adPlaylist[0].music;
         preloadAdAudio.load();
@@ -1064,7 +1101,6 @@
       };
       currentSong = adSong;
       
-      // Precargar siguiente anuncio
       preloadNextAd();
       
       if (ad.video) {
@@ -1110,11 +1146,8 @@
       if (miniTitle) miniTitle.innerText = adSong.title;
       
       if (adSong.music && !ad.video) {
-        // Usar el audio precargado si es posible
         if (preloadAdAudio.src && preloadAdAudio.src === adSong.music) {
-          // Transferir el elemento precargado al audio principal
           audio.src = preloadAdAudio.src;
-          // No reasignar preloadAdAudio porque lo seguimos usando para siguiente
         } else {
           audio.src = adSong.music;
         }
@@ -1259,25 +1292,18 @@
         if (idx !== -1) currentQueueIndex = idx;
       }
       
-      // --- Asignar audio con precarga ---
       if (song.music) {
-        // Si la canción precargada coincide, usarla directamente (casi instantáneo)
         if (preloadSong && preloadSong.id === song.id && preloadAudio.src) {
-          // Transferir el audio precargado al reproductor principal
           audio.src = preloadAudio.src;
-          // No vaciamos preloadAudio para poder precargar la siguiente
         } else {
-          // Intentar servir desde caché
           try {
             const cache = await getAudioCache();
             if (cache) {
               const response = await cache.match(song.music);
               if (response) {
-                // Usar el blob del caché para crear una URL de objeto y asignar
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
                 audio.src = url;
-                // Opcional: liberar URL después de cargar
                 audio.onloadeddata = () => URL.revokeObjectURL(url);
               } else {
                 audio.src = song.music;
@@ -1291,7 +1317,6 @@
         }
         audio.play().catch(e => console.log('Error al reproducir:', e));
         isPlaying = true;
-        // Programar precarga de la siguiente
         schedulePreloadNext();
       } else {
         audio.pause();
@@ -1462,7 +1487,7 @@
       artistsContainer.innerHTML = html;
     }
 
-    // ==================== RENDER CONTENIDO OPTIMIZADO ====================
+    // ==================== RENDER CONTENIDO ====================
     let renderTimeout = null;
 
     function updateCounterVisibility() { 
@@ -1494,7 +1519,6 @@
           return; 
         } 
         
-        // Obtener contadores de Firestore solo si no están en caché
         for (let song of items) {
           if (!firestorePlays.has(String(song.id))) {
             const plays = await obtenerReproduccionesFirestore(song.id);
@@ -1502,25 +1526,16 @@
           }
         }
         
-        let gridClass = 'gallery-grid' + (isSearching ? ' list-view' : ''); 
-        let html = `<div class="${gridClass}">`; 
-        items.forEach(song => { 
-          if(isSearching) {
-            html += `<div class="image-card" data-id="${song.id}">
-                      <img src="${song.url}" loading="lazy" alt="${escapeHtml(song.title)}">
-                      <div class="card-title">${escapeHtml(song.title)}<span style="font-size:0.7rem; color:#5a7fc7;"> · ${song.category}</span></div>
-                    </div>`; 
-          } else {
-            html += `<div class="image-card" data-id="${song.id}">
-                      <img src="${song.url}" loading="lazy" alt="${escapeHtml(song.title)}">
-                      <div class="card-title">${escapeHtml(song.title)}</div>
-                    </div>`; 
-          }
-        }); 
-        html += `</div>`; 
-        contentContainer.innerHTML = html; 
+        // ===== NUEVA GALERÍA: 3 COLUMNAS, SOLO PORTADAS =====
+        let html = `<div class="gallery-grid">`;
+        items.forEach(song => {
+          html += `<div class="image-card" data-id="${song.id}">
+                    <img src="${song.url}" loading="lazy" alt="${escapeHtml(song.title)}" decoding="async" fetchpriority="low">
+                  </div>`;
+        });
+        html += `</div>`;
+        contentContainer.innerHTML = html;
         
-        // Event delegation para mejor rendimiento
         contentContainer.querySelectorAll('.image-card').forEach(card => { 
           card.addEventListener('click', () => { 
             const id = card.dataset.id; 
@@ -1564,7 +1579,7 @@
       });
     }
 
-    // ==================== AUDIO EVENTOS OPTIMIZADOS ====================
+    // ==================== AUDIO EVENTOS ====================
     let audioUpdateFrame = null;
 
     audio.addEventListener('timeupdate', () => {
@@ -1635,9 +1650,6 @@
         if(!e.target.closest('.mini-btn') && fullPlayer) fullPlayer.classList.add('show'); 
       });
     }
-    if (closePlayerBtn) closePlayerBtn.addEventListener('click', () => { 
-      if (fullPlayer) fullPlayer.classList.remove('show'); 
-    });
 
     if (shuffleBtnPlayer) shuffleBtnPlayer.addEventListener('click', toggleShuffle);
     if (toggleSuggestionsBtnElem) toggleSuggestionsBtnElem.addEventListener('click', toggleSuggestions);
@@ -1657,6 +1669,146 @@
       }
     }
 
+    // ==================== GESTO DE ARRASTRE PARA MINIMIZAR ====================
+    let dragState = {
+      isDragging: false,
+      startY: 0,
+      currentY: 0,
+      deltaY: 0,
+      maxTranslate: 0,
+      isMinimizing: false
+    };
+
+    // Umbral: 30% de la altura de la ventana
+    const THRESHOLD = 0.3;
+
+    function getTranslateY() {
+      return parseFloat(playerCard.style.transform.replace('translateY(', '').replace(')', '')) || 0;
+    }
+
+    function setTranslateY(value) {
+      playerCard.style.transform = `translateY(${value}px)`;
+    }
+
+    function resetPlayerPosition() {
+      playerCard.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.3s ease';
+      setTranslateY(0);
+      fullPlayer.style.background = 'rgba(10, 14, 26, 0.95)';
+      // Restaurar opacidad completa
+      fullPlayer.style.opacity = '1';
+      fullPlayer.style.pointerEvents = 'auto';
+    }
+
+    function closePlayer() {
+      fullPlayer.classList.remove('show');
+      // Resetear para la próxima vez
+      resetPlayerPosition();
+      // Asegurar que el transform se reinicia
+      playerCard.style.transition = 'none';
+      setTranslateY(0);
+      // Forzar reflow
+      void playerCard.offsetHeight;
+      playerCard.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.3s ease';
+      fullPlayer.style.background = 'rgba(10, 14, 26, 0.95)';
+      fullPlayer.style.opacity = '1';
+      fullPlayer.style.pointerEvents = 'auto';
+    }
+
+    // Iniciar arrastre
+    function onDragStart(e) {
+      // Solo si el reproductor está visible
+      if (!fullPlayer.classList.contains('show')) return;
+      // Evitar que el arrastre se active en botones y elementos interactivos
+      const target = e.target;
+      if (target.closest('.ctrl-btn') || target.closest('.mini-btn') || 
+          target.closest('.toggle-suggestions-btn') || target.closest('.player-suggestion-item') ||
+          target.closest('.progress-bar-bg')) {
+        return;
+      }
+
+      const touch = e.touches ? e.touches[0] : e;
+      dragState.isDragging = true;
+      dragState.startY = touch.clientY;
+      dragState.currentY = touch.clientY;
+      dragState.deltaY = 0;
+      dragState.isMinimizing = false;
+      // Desactivar transición para que el movimiento sea fluido
+      playerCard.style.transition = 'none';
+      fullPlayer.style.transition = 'none';
+      // Añadir clase para desactivar transiciones en el fondo
+      fullPlayer.classList.add('dragging');
+      // Prevenir scroll en la página
+      e.preventDefault();
+    }
+
+    function onDragMove(e) {
+      if (!dragState.isDragging) return;
+      const touch = e.touches ? e.touches[0] : e;
+      dragState.currentY = touch.clientY;
+      dragState.deltaY = dragState.currentY - dragState.startY;
+      // Solo permitir arrastre hacia abajo (deltaY > 0)
+      if (dragState.deltaY < 0) {
+        // Si el usuario arrastra hacia arriba, no movemos y resetamos
+        return;
+      }
+
+      // Limitar el desplazamiento máximo a un 80% de la altura de la ventana
+      const maxY = window.innerHeight * 0.8;
+      const delta = Math.min(dragState.deltaY, maxY);
+      setTranslateY(delta);
+
+      // Cambiar opacidad del fondo según el desplazamiento
+      const progress = delta / (window.innerHeight * THRESHOLD);
+      const opacity = Math.max(0, 1 - progress);
+      // Aplicar opacidad al fondo del reproductor
+      fullPlayer.style.background = `rgba(10, 14, 26, ${opacity * 0.95})`;
+      // También podemos atenuar la visibilidad del contenido (opcional)
+      // playerCard.style.opacity = Math.max(0.2, 1 - progress * 0.5);
+
+      e.preventDefault();
+    }
+
+    function onDragEnd(e) {
+      if (!dragState.isDragging) return;
+      dragState.isDragging = false;
+      fullPlayer.classList.remove('dragging');
+
+      // Calcular si se superó el umbral
+      const thresholdPx = window.innerHeight * THRESHOLD;
+      if (dragState.deltaY > thresholdPx) {
+        // Minimizar (cerrar)
+        closePlayer();
+      } else {
+        // Regresar a la posición original
+        resetPlayerPosition();
+        fullPlayer.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
+        // Restaurar fondo
+        fullPlayer.style.background = 'rgba(10, 14, 26, 0.95)';
+        fullPlayer.style.opacity = '1';
+        // Asegurar que el transform vuelve a 0 con transición
+        playerCard.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.3s ease';
+        setTranslateY(0);
+      }
+
+      // Limpiar referencias
+      dragState.startY = 0;
+      dragState.currentY = 0;
+      dragState.deltaY = 0;
+      e.preventDefault();
+    }
+
+    // Agregar eventos de arrastre al player-card
+    if (playerCard) {
+      // Touch events
+      playerCard.addEventListener('touchstart', onDragStart, { passive: false });
+      playerCard.addEventListener('touchmove', onDragMove, { passive: false });
+      playerCard.addEventListener('touchend', onDragEnd, { passive: false });
+      // Mouse events (para escritorio)
+      playerCard.addEventListener('mousedown', onDragStart);
+      document.addEventListener('mousemove', onDragMove);
+      document.addEventListener('mouseup', onDragEnd);
+    }
+
     // ==================== INICIALIZACIÓN FINAL ====================
     updateUIPlan();
     changeBackgroundRandomly();
@@ -1671,13 +1823,11 @@
       renderTopArtists();
       if(masterSongs.length) currentSong = masterSongs[0];
       audio.volume = 0.9;
-      // Precargar la primera canción
       if (currentSong && currentSong.music) {
         precargarAudio(currentSong);
       }
     });
 
-    // Limpieza de recursos al salir
     window.addEventListener('beforeunload', () => {
       if (bgInterval) clearInterval(bgInterval);
       if (bgTimeout) clearTimeout(bgTimeout);
@@ -1689,10 +1839,14 @@
       preloadAudio.src = '';
       preloadAdAudio.pause();
       preloadAdAudio.src = '';
+      // Eliminar event listeners de mouse para evitar fugas
+      document.removeEventListener('mousemove', onDragMove);
+      document.removeEventListener('mouseup', onDragEnd);
     });
 
     console.log('🎵 Kerim Music+ Optimizado con precarga y caché');
     console.log('⚡ Reproducción ultra fluida sin cortes');
+    console.log('👆 Arrastra el reproductor hacia abajo para minimizar');
     
   })();
 </script>
