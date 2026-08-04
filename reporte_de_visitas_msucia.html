@@ -459,9 +459,9 @@
             letter-spacing: 0.02em;
             background: #2a2a4a;
             color: #ccc;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             text-transform: uppercase;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
 
         .insignia.visible {
@@ -487,7 +487,232 @@
             box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
         }
 
-        /* Ajustes para móvil */
+        /* ========== NUEVOS ESTILOS PARA CARRUSEL Y CUADRÍCULA ========== */
+        .carrusel-section {
+            display: none;
+            margin: 20px 0 10px;
+        }
+        .carrusel-section.visible {
+            display: block;
+        }
+
+        .carrusel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .carrusel-titulo {
+            color: #f0f0f0;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .carrusel-ver-todos {
+            color: #a0a0c0;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: underline;
+            transition: color 0.2s;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        .carrusel-ver-todos:hover {
+            color: #f0f0f0;
+        }
+
+        .carrusel-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 16px;
+            padding: 8px 4px 16px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+        }
+        .carrusel-container::-webkit-scrollbar {
+            height: 4px;
+        }
+        .carrusel-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .carrusel-item {
+            flex: 0 0 160px;
+            scroll-snap-align: start;
+            background: #1e1e32;
+            border-radius: 20px;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .carrusel-item:hover {
+            transform: translateY(-4px);
+        }
+        .carrusel-item img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-radius: 12px;
+            background: #12121f;
+            margin-bottom: 8px;
+        }
+        .carrusel-item .titulo {
+            font-weight: 600;
+            color: #f0f0f0;
+            font-size: 0.9rem;
+            line-height: 1.2;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+        .carrusel-item .artista {
+            font-size: 0.75rem;
+            color: #b0b0d0;
+            margin-bottom: 4px;
+        }
+        .carrusel-item .reproducciones {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #f0f0f0;
+        }
+        .carrusel-item .fecha-hora {
+            font-size: 0.65rem;
+            color: #8888aa;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 6px;
+        }
+        .carrusel-item .fecha-hora .reloj-icono {
+            font-size: 0.8rem;
+        }
+
+        /* ---------- MODAL CUADRÍCULA ---------- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+            justify-content: center;
+        }
+        .modal-overlay.visible {
+            display: flex;
+        }
+        .modal-contenido {
+            max-width: 1200px;
+            width: 100%;
+            margin: auto;
+            position: relative;
+            background: #1a1a2e;
+            border-radius: 30px;
+            padding: 30px 25px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-cerrar {
+            position: sticky;
+            top: 0;
+            float: right;
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            color: #f0f0f0;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 6px 16px;
+            border-radius: 40px;
+            transition: background 0.2s;
+            line-height: 1;
+        }
+        .modal-cerrar:hover {
+            background: rgba(255, 255, 255, 0.16);
+        }
+        .modal-titulo {
+            color: #f0f0f0;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            margin-top: 0;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+        }
+        .grid-item {
+            background: #1e1e32;
+            border-radius: 20px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .grid-item:hover {
+            transform: translateY(-4px);
+        }
+        .grid-item img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-radius: 12px;
+            background: #12121f;
+            margin-bottom: 8px;
+        }
+        .grid-item .titulo {
+            font-weight: 600;
+            color: #f0f0f0;
+            font-size: 0.9rem;
+            line-height: 1.2;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+        .grid-item .artista {
+            font-size: 0.75rem;
+            color: #b0b0d0;
+            margin-bottom: 4px;
+        }
+        .grid-item .reproducciones {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #f0f0f0;
+        }
+        .grid-item .fecha-hora {
+            font-size: 0.65rem;
+            color: #8888aa;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 6px;
+        }
+        .grid-item .fecha-hora .reloj-icono {
+            font-size: 0.8rem;
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 20px 15px;
@@ -566,6 +791,18 @@
                 padding: 10px 20px;
                 margin: 12px auto 8px auto;
             }
+
+            .carrusel-item {
+                flex: 0 0 130px;
+                padding: 10px;
+            }
+            .grid-container {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 14px;
+            }
+            .modal-contenido {
+                padding: 20px 15px;
+            }
         }
     </style>
 </head>
@@ -616,6 +853,17 @@
             </div>
         </div>
 
+        <!-- ========== NUEVA SECCIÓN CARRUSEL TEMAS MÁS ESCUCHADOS ========== -->
+        <div class="carrusel-section" id="carruselSection">
+            <div class="carrusel-header">
+                <span class="carrusel-titulo">🎧 Temas más escuchados</span>
+                <button class="carrusel-ver-todos" id="verTodosLink">Mostrar todos los temas más escuchados</button>
+            </div>
+            <div class="carrusel-container" id="carruselContainer">
+                <!-- Generado dinámicamente -->
+            </div>
+        </div>
+
         <!-- BOTÓN MOSTRAR / OCULTAR TODOS LOS TEMAS -->
         <button class="toggle-button" id="toggleButton">
             <span>Mostrar todos los temas</span>
@@ -625,6 +873,17 @@
         <!-- LISTA DE TODOS LOS TEMAS (inicialmente oculta) -->
         <div class="lista-wrapper" id="listaWrapper">
             <div id="tarjetasContainer"></div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL PARA CUADRÍCULA DE TODOS LOS TEMAS MÁS ESCUCHADOS ========== -->
+    <div class="modal-overlay" id="modalTodos">
+        <div class="modal-contenido">
+            <button class="modal-cerrar" id="cerrarModal">✕</button>
+            <h2 class="modal-titulo">Todos los temas más escuchados</h2>
+            <div class="grid-container" id="gridContainer">
+                <!-- Generado dinámicamente -->
+            </div>
         </div>
     </div>
 
@@ -657,6 +916,14 @@
 
         // ─── LISTA DE ÁLBUMES (CON ARTISTA NORMALIZADO) ──────
         const albumes = [
+            //======================Barrio Bajo==================
+            { id: "Dile Barrio Bajo", 
+        title: "Dile", 
+        artist: "Barrio Bajo", 
+        category: "Rap",
+        coleccion: "Radio Muisc",
+        url: 'https://www.dropbox.com/scl/fi/qker6uqxmojvnvuuzgzob/Dile.jpg?rlkey=76hsqmpzj3r4ctpexesyehok5&st=offbzalp&raw=1', 
+        },
             //======================Kerim Msuic==================
             { id: "Amor del Grinch", 
         title: "Amor del Grinch", 
@@ -1001,6 +1268,14 @@
         const flechaToggle = document.getElementById('flechaToggle');
         const totalGlobalSpan = document.getElementById('totalGlobal');
 
+        // ========== NUEVOS ELEMENTOS CARRUSEL Y MODAL ==========
+        const carruselSection = document.getElementById('carruselSection');
+        const carruselContainer = document.getElementById('carruselContainer');
+        const verTodosLink = document.getElementById('verTodosLink');
+        const modalTodos = document.getElementById('modalTodos');
+        const cerrarModal = document.getElementById('cerrarModal');
+        const gridContainer = document.getElementById('gridContainer');
+
         // ─── TOGGLE MOSTRAR / OCULTAR TODOS LOS TEMAS ──────────────────
         let listaVisible = false;
 
@@ -1222,14 +1497,12 @@
                 const artist = album.artist;
                 if (artist && artistasMap.has(artist)) {
                     mostrarPerfil(artist);
-                    // Opcional: cerrar la lista si está abierta para ver el perfil mejor
                     if (listaVisible) {
                         listaWrapper.classList.remove('abierto');
                         listaVisible = false;
                         toggleButton.querySelector('span:first-child').textContent = 'Mostrar todos los temas';
                         flechaToggle.className = 'flecha abajo';
                     }
-                    // Limpiar el buscador para reflejar la selección
                     buscadorInput.value = artist;
                 }
             });
@@ -1274,8 +1547,8 @@
                     actualizarDestacado();
                     reordenarTarjetas();
                     actualizarTotalGlobal();
+                    actualizarTemasMasEscuchados(); // <-- NUEVO
 
-                    // Si el perfil está visible y corresponde al artista de este álbum, actualizar
                     if (perfilArtista.classList.contains('visible')) {
                         const artistaActual = perfilNombre.textContent;
                         const album = albumes.find(a => a.id === clave);
@@ -1338,6 +1611,151 @@
             cards.forEach(card => tarjetasContainer.appendChild(card));
         }
 
+        // ========== NUEVAS FUNCIONES: CARRUSEL Y CUADRÍCULA ==========
+
+        // Obtener lista de temas con insignia "mas-escuchado"
+        function obtenerTemasMasEscuchados() {
+            const resultado = [];
+            for (const [id, valor] of Object.entries(valores)) {
+                const badge = obtenerInsignia(valor);
+                if (badge && badge.clase === 'mas-escuchado') {
+                    const album = albumes.find(a => a.id === id);
+                    if (album) {
+                        resultado.push({
+                            id,
+                            valor,
+                            album,
+                            nombre: album.nombre || album.title || 'Sin nombre',
+                            imagen: album.imagen || album.url || '',
+                            artista: album.artist || 'Desconocido'
+                        });
+                    }
+                }
+            }
+            // Ordenar por reproducciones descendente
+            resultado.sort((a, b) => b.valor - a.valor);
+            return resultado;
+        }
+
+        // Función para crear un elemento de carrusel o cuadrícula
+        function crearItem(tema, tipo) {
+            const div = document.createElement('div');
+            div.className = tipo === 'grid' ? 'grid-item' : 'carrusel-item';
+
+            const img = document.createElement('img');
+            img.src = tema.imagen || 'https://via.placeholder.com/160';
+            img.alt = tema.nombre;
+            div.appendChild(img);
+
+            const titulo = document.createElement('div');
+            titulo.className = 'titulo';
+            titulo.textContent = tema.nombre;
+            div.appendChild(titulo);
+
+            const artista = document.createElement('div');
+            artista.className = 'artista';
+            artista.textContent = tema.artista;
+            div.appendChild(artista);
+
+            const repros = document.createElement('div');
+            repros.className = 'reproducciones';
+            repros.textContent = tema.valor.toLocaleString() + ' reproducciones';
+            div.appendChild(repros);
+
+            const fechaHora = document.createElement('div');
+            fechaHora.className = 'fecha-hora';
+            fechaHora.innerHTML = `<span class="reloj-icono">🕒</span> <span class="fecha-hora-texto">${formatearFechaHora(new Date())}</span>`;
+            div.appendChild(fechaHora);
+
+            return div;
+        }
+
+        // Función para formatear fecha y hora
+        function formatearFechaHora(date) {
+            const dia = String(date.getDate()).padStart(2, '0');
+            const mes = String(date.getMonth() + 1).padStart(2, '0');
+            const año = date.getFullYear();
+            const horas = String(date.getHours()).padStart(2, '0');
+            const minutos = String(date.getMinutes()).padStart(2, '0');
+            const segundos = String(date.getSeconds()).padStart(2, '0');
+            return `${dia}/${mes}/${año} ${horas}:${minutos}:${segundos}`;
+        }
+
+        // Actualizar todos los elementos de fecha/hora (cada segundo)
+        function actualizarFechasHoras() {
+            const ahora = new Date();
+            const texto = formatearFechaHora(ahora);
+            document.querySelectorAll('.fecha-hora-texto').forEach(el => {
+                el.textContent = texto;
+            });
+        }
+
+        // Renderizar carrusel
+        function renderizarCarrusel(temas) {
+            carruselContainer.innerHTML = '';
+            if (temas.length === 0) {
+                carruselSection.classList.remove('visible');
+                return;
+            }
+            carruselSection.classList.add('visible');
+            temas.forEach(tema => {
+                const item = crearItem(tema, 'carrusel');
+                carruselContainer.appendChild(item);
+            });
+        }
+
+        // Renderizar cuadrícula en el modal
+        function renderizarGrid(temas) {
+            gridContainer.innerHTML = '';
+            if (temas.length === 0) {
+                gridContainer.innerHTML = '<p style="color: #b0b0d0; text-align: center;">No hay temas en esta categoría.</p>';
+                return;
+            }
+            temas.forEach(tema => {
+                const item = crearItem(tema, 'grid');
+                gridContainer.appendChild(item);
+            });
+        }
+
+        // Función principal para actualizar la sección "Temas más escuchados"
+        function actualizarTemasMasEscuchados() {
+            const temas = obtenerTemasMasEscuchados();
+            renderizarCarrusel(temas);
+            // Si el modal está abierto, actualizar también la cuadrícula
+            if (modalTodos.classList.contains('visible')) {
+                renderizarGrid(temas);
+            }
+        }
+
+        // ─── EVENTOS DEL MODAL ──────────────────────────────────────────
+
+        verTodosLink.addEventListener('click', () => {
+            const temas = obtenerTemasMasEscuchados();
+            renderizarGrid(temas);
+            modalTodos.classList.add('visible');
+            document.body.style.overflow = 'hidden';
+        });
+
+        cerrarModal.addEventListener('click', () => {
+            modalTodos.classList.remove('visible');
+            document.body.style.overflow = '';
+        });
+
+        modalTodos.addEventListener('click', (e) => {
+            if (e.target === modalTodos) {
+                modalTodos.classList.remove('visible');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Cerrar con tecla Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modalTodos.classList.contains('visible')) {
+                modalTodos.classList.remove('visible');
+                document.body.style.overflow = '';
+            }
+        });
+
         // ─── FONDO ALEATORIO ─────────────────────────────────────────────
         const palette = [
             '#1a1a2e', '#16213e', '#0f0f1a', '#1e1e2f', '#14142b',
@@ -1373,7 +1791,14 @@
                 escucharContador(ref, span, insignia, nombreDoc, album.id);
             });
 
-            // Tras cargar, aseguramos que la lista esté oculta
+            // Inicializar carrusel con los datos actuales
+            actualizarTemasMasEscuchados();
+
+            // Iniciar actualización de fecha/hora cada segundo
+            setInterval(actualizarFechasHoras, 1000);
+            // Actualizar inmediatamente
+            actualizarFechasHoras();
+
             listaWrapper.classList.remove('abierto');
             toggleButton.querySelector('span:first-child').textContent = 'Mostrar todos los temas';
             flechaToggle.className = 'flecha abajo';
