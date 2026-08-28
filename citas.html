@@ -30,7 +30,6 @@
             overflow-x: hidden;
         }
 
-        /* TARJETA PRINCIPAL - SIN ESTILOS DE CONTENEDOR */
         .card {
             max-width: 860px;
             width: 100%;
@@ -39,9 +38,6 @@
             z-index: 1;
         }
 
-        /* ============================================================
-           ANIMACIONES DE ENTRADA
-           ============================================================ */
         .logo-container {
             display: flex;
             flex-direction: column;
@@ -115,7 +111,6 @@
             color: #444;
         }
 
-        /* BOTÓN "CREA TU PAQUETE" – CENTRADO Y AZUL */
         .crea-tu-paquete {
             background: #0c9cdf;
             color: #fff;
@@ -153,7 +148,6 @@
             color: #fff;
         }
 
-        /* CONTENEDOR DE SERVICIOS (oculto inicialmente) */
         .servicios-wrapper {
             max-height: 0;
             overflow: hidden;
@@ -327,9 +321,6 @@
             border-color: #aaa;
         }
 
-        /* ============================================================
-           NUEVO: CAMPO DE TEXTO PARA BEAT
-           ============================================================ */
         .beat-notes-wrapper {
             max-height: 0;
             overflow: hidden;
@@ -378,9 +369,6 @@
             margin-right: 6px;
         }
 
-        /* ============================================================
-           CONTENEDOR TOTAL – OCULTO POR DEFECTO
-           ============================================================ */
         .total-section {
             opacity: 0;
             max-height: 0;
@@ -426,7 +414,6 @@
             margin-left: 0.5rem;
         }
 
-        /* BOTÓN WHATSAPP OCULTO INICIALMENTE */
         .btn-whatsapp-wrapper {
             display: flex;
             justify-content: center;
@@ -477,9 +464,6 @@
             transform: scale(0.97);
         }
 
-        /* ============================================================
-           BOTÓN PDF – OCULTO POR DEFECTO
-           ============================================================ */
         .btn-pdf-wrapper {
             display: flex;
             justify-content: center;
@@ -704,7 +688,6 @@
             display: block;
         }
 
-        /* KEYFRAMES */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -764,9 +747,6 @@
             50% { transform: scale(1.15); }
         }
 
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
         @media (max-width: 650px) {
             .logo-circle {
                 width: 130px;
@@ -895,12 +875,10 @@
 </head>
 <body>
     <div class="card">
-        <!-- LOGO CIRCULAR ARRIBA DEL NOMBRE -->
         <div class="logo-container">
             <div class="logo-circle">
                 <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl-C2FWUPqhXScoTAnIi5KiqCJy93JtmYMytb1J4I9wt0DiIgz1r8eFwN2kEnX1SIUI_HBxEpUX2w1M7sL94vE8LV_NeTpuOP0hvURBnW4_-VDHUFmKQPCA_USZqeRYqTAoYcr6Af4uOi9l=s680-w680-h510-rw" alt="KERIM MUSIC Logo">
             </div>
-            <!-- TOTAL OCULTO DEBAJO DE LA IMAGEN -->
             <div class="total-bajo-logo" id="totalBajoLogo">
                 <i class="fas fa-coins"></i> TOTAL: <span id="totalBajoNumero">$0</span>
             </div>
@@ -916,15 +894,12 @@
             </div>
         </div>
 
-        <!-- BOTÓN "CREA TU PAQUETE" – CENTRADO Y AZUL -->
         <div class="crea-tu-paquete" id="btnMostrarOpciones">
             <i class="fas fa-plus-circle"></i> Crea tu paquete de grabación
         </div>
 
-        <!-- CONTENEDOR DE SERVICIOS (oculto inicialmente) -->
         <div class="servicios-wrapper" id="serviciosWrapper">
             <div class="servicios" id="serviciosContainer">
-                <!-- Beat -->
                 <div class="servicio-item" data-servicio="beat" data-precio="600">
                     <div class="servicio-info">
                         <i class="fas fa-drum"></i>
@@ -938,13 +913,11 @@
                         <span class="estado-texto" id="estado-beat">agregar</span>
                     </div>
                 </div>
-                <!-- Campo de notas para BEAT (aparece cuando el switch está activo) -->
                 <div class="beat-notes-wrapper" id="beatNotesWrapper">
                     <label for="beatNotes"><i class="fas fa-pencil-alt"></i> Describe cómo quieres tu beat:</label>
                     <textarea id="beatNotes" placeholder="Ej: estilo trap, tempo 140 BPM, con 808s, atmósfera oscura..." rows="2"></textarea>
                 </div>
 
-                <!-- Grabación de voz -->
                 <div class="servicio-item" data-servicio="voz" data-precio="900">
                     <div class="servicio-info">
                         <i class="fas fa-microphone"></i>
@@ -959,7 +932,6 @@
                     </div>
                 </div>
 
-                <!-- Masterización -->
                 <div class="servicio-item" data-servicio="master" data-precio="400">
                     <div class="servicio-info">
                         <i class="fas fa-sliders-h"></i>
@@ -974,7 +946,6 @@
                     </div>
                 </div>
 
-                <!-- Diseño de portada -->
                 <div class="servicio-item" data-servicio="portada" data-precio="600">
                     <div class="servicio-info">
                         <i class="fas fa-paint-brush"></i>
@@ -989,7 +960,6 @@
                     </div>
                 </div>
 
-                <!-- MANEJO DE ARTISTAS Y PUBLICIDAD -->
                 <div class="servicio-item" data-servicio="artistas" data-precio="800">
                     <div class="servicio-info">
                         <i class="fas fa-users"></i>
@@ -1005,7 +975,6 @@
                     </div>
                 </div>
 
-                <!-- KERIM MUSIC+ BENEFICIO -->
                 <div class="servicio-item" data-servicio="kerimplus" data-precio="2000">
                     <div class="servicio-info">
                         <i class="fas fa-star"></i>
@@ -1023,7 +992,6 @@
             </div>
         </div>
 
-        <!-- CONTENEDOR TOTAL – OCULTO HASTA QUE HAYA SELECCIÓN -->
         <div class="total-section" id="totalSection">
             <div class="total-label">
                 <i class="fas fa-coins"></i> TOTAL
@@ -1031,14 +999,12 @@
             </div>
         </div>
 
-        <!-- BOTÓN WHATSAPP OCULTO INICIALMENTE -->
         <div class="btn-whatsapp-wrapper" id="btnWhatsAppWrapper">
             <button class="btn-whatsapp" id="whatsappBtn">
                 <i class="fab fa-whatsapp"></i> Enviar pedido
             </button>
         </div>
 
-        <!-- BOTÓN PDF OCULTO INICIALMENTE -->
         <div class="btn-pdf-wrapper" id="btnPDFWrapper">
             <button class="btn-pdf" id="pdfBtn">
                 <i class="fas fa-file-pdf"></i> Descargar Recivo
@@ -1120,7 +1086,6 @@
             } else {
                 wrapper.classList.remove('abierto');
                 btnMostrar.innerHTML = '<i class="fas fa-plus-circle"></i> Crea tu paquete de grabación';
-                // Ocultar totales si no hay selección
                 const haySeleccion = Object.values(estado).some(val => val === true);
                 if (!haySeleccion) {
                     totalBajoLogo.classList.remove('visible');
@@ -1129,7 +1094,6 @@
                     btnPDFWrapper.classList.remove('visible');
                 }
             }
-            // Actualizar visibilidad del total general según selección y wrapper abierto
             actualizarVisibilidadTotales();
         });
 
@@ -1365,7 +1329,6 @@
                 textoEl.textContent = 'agregar';
                 textoEl.classList.remove('activo');
             }
-            // Controlar visibilidad del campo de notas para BEAT
             if (servicio === 'beat') {
                 if (estado[servicio]) {
                     beatNotesWrapper.classList.add('visible');
@@ -1438,39 +1401,51 @@
         }
 
         // ============================================================
-        // FUNCIÓN PARA REINICIAR TODO
+        // RESETEO COMPLETO
         // ============================================================
         function resetearTodo() {
-            // 1. Resetear estado
+            // Desactivar todos los servicios
             for (let key in estado) {
                 estado[key] = false;
                 actualizarSwitch(key);
             }
-            // 2. Limpiar textarea de notas de beat
-            if (beatNotesTextarea) {
-                beatNotesTextarea.value = '';
-            }
-            // 3. Ocultar totales y botones
+            // Limpiar notas de beat
+            beatNotesTextarea.value = '';
+            beatNotesWrapper.classList.remove('visible');
+            // Actualizar total
+            actualizarTotal();
+            // Ocultar totales y botones
             totalSection.classList.remove('visible');
             totalBajoLogo.classList.remove('visible');
             btnWhatsAppWrapper.classList.remove('visible');
             btnPDFWrapper.classList.remove('visible');
-            // 4. Cerrar panel de opciones
-            if (opcionesVisibles) {
-                opcionesVisibles = false;
-                wrapper.classList.remove('abierto');
-                btnMostrar.innerHTML = '<i class="fas fa-plus-circle"></i> Crea tu paquete de grabación';
+            // Cerrar panel de opciones
+            wrapper.classList.remove('abierto');
+            btnMostrar.innerHTML = '<i class="fas fa-plus-circle"></i> Crea tu paquete de grabación';
+            opcionesVisibles = false;
+            // Cerrar modal de gracias si está abierto
+            if (graciasOverlay.classList.contains('mostrar')) {
+                cerrarGracias();
             }
-            // 5. Actualizar total a $0
-            actualizarTotal();
+            // Detener fuegos si están activos
+            detenerFuegos();
+            detenerSonidoKerim();
+            // Resetear animaciones de items por si quedan
+            const items = wrapper.querySelectorAll('.servicio-item');
+            items.forEach(item => {
+                item.style.animation = 'none';
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-30px)';
+            });
         }
 
         // ============================================================
-        // ENVIAR PEDIDO (WhatsApp) y luego resetear
+        // ENVIAR PEDIDO (WhatsApp) + RESET + PDF
         // ============================================================
         function enviarPedidoWhatsApp() {
             reproducirClick();
 
+            // Construir mensaje
             let mensaje = '🎵 *KERIM MUSIC* - Pedido de producción%0A%0A';
             let serviciosSeleccionados = [];
             let total = 0;
@@ -1511,14 +1486,17 @@
             const url = `https://wa.me/${telefono}?text=${mensaje}`;
             window.open(url, '_blank');
 
-            // Reiniciar todo después de enviar
-            resetearTodo();
+            // Descargar PDF automáticamente y resetear después de un breve retraso
+            setTimeout(() => {
+                descargarPDF(true); // true = silencioso (sin alerta)
+                resetearTodo();
+            }, 500);
         }
 
         // ============================================================
-        // GENERAR PDF (incluye notas de beat)
+        // GENERAR PDF (con opción silenciosa)
         // ============================================================
-        function descargarPDF() {
+        function descargarPDF(silent = false) {
             reproducirClick();
 
             const seleccionados = [];
@@ -1547,7 +1525,7 @@
             }
 
             if (seleccionados.length === 0) {
-                alert('No hay servicios seleccionados para generar el PDF.');
+                if (!silent) alert('No hay servicios seleccionados para generar el PDF.');
                 return;
             }
 
@@ -1614,7 +1592,7 @@
             doc.setFontSize(11);
             doc.text('Gracias por confiar en KERIM MUSIC.', margin, y);
             y += 6;
-            doc.text('¡Imprime este recivo y presentalo!', margin, y);
+            doc.text('¡Haremos realidad tu proyecto imprimelo y presentalo!', margin, y);
 
             doc.save(`paquete_KERIM_${ahora.getFullYear()}-${(ahora.getMonth()+1).toString().padStart(2,'0')}-${ahora.getDate().toString().padStart(2,'0')}.pdf`);
         }
@@ -1648,7 +1626,9 @@
             enviarPedidoWhatsApp();
         });
 
-        document.getElementById('pdfBtn').addEventListener('click', descargarPDF);
+        document.getElementById('pdfBtn').addEventListener('click', function() {
+            descargarPDF(false);
+        });
 
         window.toggleServicio = toggleServicio;
         window.cerrarGracias = cerrarGracias;
