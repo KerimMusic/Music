@@ -1341,6 +1341,7 @@
         const btnWhatsAppWrapper = document.getElementById('btnWhatsAppWrapper');
         const btnPDFWrapper = document.getElementById('btnPDFWrapper');
         const beatNotesWrapper = document.getElementById('beatNotesWrapper');
+        const beatNotesTextarea = document.getElementById('beatNotes');
         const estadoTextos = {
             beat: document.getElementById('estado-beat'),
             voz: document.getElementById('estado-voz'),
@@ -1436,6 +1437,37 @@
             detenerSonidoKerim();
         }
 
+        // ============================================================
+        // FUNCIÓN PARA REINICIAR TODO
+        // ============================================================
+        function resetearTodo() {
+            // 1. Resetear estado
+            for (let key in estado) {
+                estado[key] = false;
+                actualizarSwitch(key);
+            }
+            // 2. Limpiar textarea de notas de beat
+            if (beatNotesTextarea) {
+                beatNotesTextarea.value = '';
+            }
+            // 3. Ocultar totales y botones
+            totalSection.classList.remove('visible');
+            totalBajoLogo.classList.remove('visible');
+            btnWhatsAppWrapper.classList.remove('visible');
+            btnPDFWrapper.classList.remove('visible');
+            // 4. Cerrar panel de opciones
+            if (opcionesVisibles) {
+                opcionesVisibles = false;
+                wrapper.classList.remove('abierto');
+                btnMostrar.innerHTML = '<i class="fas fa-plus-circle"></i> Crea tu paquete de grabación';
+            }
+            // 5. Actualizar total a $0
+            actualizarTotal();
+        }
+
+        // ============================================================
+        // ENVIAR PEDIDO (WhatsApp) y luego resetear
+        // ============================================================
         function enviarPedidoWhatsApp() {
             reproducirClick();
 
@@ -1455,9 +1487,8 @@
                     };
                     const precio = PRECIOS[key];
                     let servicioTexto = `✅ ${nombreMap[key]}  $${precio} MXN`;
-                    // Si es Beat y hay notas, agregarlas
                     if (key === 'beat') {
-                        const notas = document.getElementById('beatNotes').value.trim();
+                        const notas = beatNotesTextarea.value.trim();
                         if (notas) {
                             servicioTexto += `%0A   📝 Notas: ${notas}`;
                         }
@@ -1479,6 +1510,9 @@
             const telefono = '524621098798';
             const url = `https://wa.me/${telefono}?text=${mensaje}`;
             window.open(url, '_blank');
+
+            // Reiniciar todo después de enviar
+            resetearTodo();
         }
 
         // ============================================================
@@ -1497,16 +1531,14 @@
                 artistas: 'Manejo de artistas (3 meses + publicidad)',
                 kerimplus: 'Kerim Music+ (2 grabaciones · paquete completo)'
             };
-            let notasBeat = '';
 
             for (let key in estado) {
                 if (estado[key]) {
                     const item = { nombre: nombreMap[key] || key, precio: PRECIOS[key] };
                     if (key === 'beat') {
-                        const notas = document.getElementById('beatNotes').value.trim();
+                        const notas = beatNotesTextarea.value.trim();
                         if (notas) {
                             item.notas = notas;
-                            notasBeat = notas;
                         }
                     }
                     seleccionados.push(item);
@@ -1564,7 +1596,6 @@
                 let texto = `${index + 1}. ${item.nombre} — $${item.precio.toLocaleString('es-MX')} MXN`;
                 doc.text(texto, margin + 5, y);
                 y += 7;
-                // Si tiene notas, mostrarlas
                 if (item.notas) {
                     doc.setFontSize(10);
                     doc.text(`   Notas: ${item.notas}`, margin + 10, y);
@@ -1583,7 +1614,7 @@
             doc.setFontSize(11);
             doc.text('Gracias por confiar en KERIM MUSIC.', margin, y);
             y += 6;
-            doc.text('¡Imprime este recivo y presentalo al estudio!', margin, y);
+            doc.text('¡Imprime este recivo y presentalo!', margin, y);
 
             doc.save(`paquete_KERIM_${ahora.getFullYear()}-${(ahora.getMonth()+1).toString().padStart(2,'0')}-${ahora.getDate().toString().padStart(2,'0')}.pdf`);
         }
@@ -1602,7 +1633,6 @@
                 actualizarSwitch(key);
             }
             actualizarTotal();
-            // Inicialmente oculto
             totalSection.classList.remove('visible');
             totalBajoLogo.classList.remove('visible');
             btnWhatsAppWrapper.classList.remove('visible');
