@@ -21,6 +21,7 @@
             justify-content: center;
             align-items: center;
             padding: 2rem 1rem;
+            overflow-x: hidden;
         }
 
         /* TARJETA BLANCO Y NEGRO - ESTILO BINTANG */
@@ -34,6 +35,33 @@
             border: 1px solid #e0e0e0;
             transition: 0.3s ease;
             color: #111;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ----- LOGO CIRCULAR ARRIBA ----- */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-circle {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #222;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            background: #f5f5f5;
+            flex-shrink: 0;
+        }
+
+        .logo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
         /* encabezado */
@@ -315,11 +343,135 @@
             font-weight: 600;
         }
 
+        /* ----- ANIMACIÓN DE AGRADECIMIENTO ----- */
+        .gracias-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .gracias-overlay.mostrar {
+            display: flex;
+        }
+
+        .gracias-modal {
+            background: #f5f5f5;
+            border-radius: 60px;
+            padding: 3rem 4rem;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            border: 2px solid #222;
+            animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            z-index: 10000;
+        }
+
+        .gracias-modal i {
+            font-size: 4rem;
+            color: #222;
+            margin-bottom: 1rem;
+            animation: pulse 1.2s ease infinite;
+        }
+
+        .gracias-modal h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #000;
+            margin-bottom: 0.5rem;
+        }
+
+        .gracias-modal p {
+            font-size: 1.1rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .gracias-modal .subtexto {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 0.5rem;
+            font-weight: 400;
+        }
+
+        .gracias-modal .btn-cerrar {
+            margin-top: 1.8rem;
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            padding: 0.7rem 2.5rem;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .gracias-modal .btn-cerrar i {
+            font-size: 1.2rem;
+            margin: 0;
+            animation: none;
+            color: #fff;
+        }
+
+        .gracias-modal .btn-cerrar:hover {
+            background: #000;
+            transform: scale(1.05);
+        }
+
+        /* ----- FUEGOS ARTIFICIALES (canvas) ----- */
+        #fireworksCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            display: none;
+        }
+
+        #fireworksCanvas.activo {
+            display: block;
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
         /* responsive */
         @media (max-width: 650px) {
             .card {
                 padding: 1.8rem 1.2rem;
                 border-radius: 32px;
+            }
+            .logo-circle {
+                width: 80px;
+                height: 80px;
             }
             .brand h1 {
                 font-size: 2.2rem;
@@ -367,6 +519,12 @@
                 font-size: 1.1rem;
                 padding: 0.5rem 0.8rem;
             }
+            .gracias-modal {
+                padding: 2rem 1.5rem;
+            }
+            .gracias-modal h2 {
+                font-size: 1.7rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -387,11 +545,22 @@
                 font-size: 0.95rem;
                 padding: 0.4rem 0.6rem;
             }
+            .logo-circle {
+                width: 65px;
+                height: 65px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="card">
+        <!-- LOGO CIRCULAR ARRIBA DEL NOMBRE -->
+        <div class="logo-container">
+            <div class="logo-circle">
+                <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl-C2FWUPqhXScoTAnIi5KiqCJy93JtmYMytb1J4I9wt0DiIgz1r8eFwN2kEnX1SIUI_HBxEpUX2w1M7sL94vE8LV_NeTpuOP0hvURBnW4_-VDHUFmKQPCA_USZqeRYqTAoYcr6Af4uOi9l=s680-w680-h510-rw" alt="KERIM MUSIC Logo">
+            </div>
+        </div>
+
         <!-- encabezado -->
         <div class="brand">
             <h1>KERIM MUSIC</h1>
@@ -480,6 +649,22 @@
                     <span class="estado-texto" id="estado-artistas">agregar</span>
                 </div>
             </div>
+
+            <!-- KERIM MUSIC+ BENEFICIO -->
+            <div class="servicio-item" data-servicio="kerimplus" data-precio="2000">
+                <div class="servicio-info">
+                    <i class="fas fa-star"></i>
+                    <span class="nombre">KERIM MUSIC+</span>
+                    <span class="precio">$2,000 MXN</span>
+                    <span class="detalle">2 grabaciones · paquete completo</span>
+                </div>
+                <div class="toggle-wrapper">
+                    <div class="switch" data-servicio="kerimplus" onclick="toggleServicio(this)">
+                        <div class="thumb"></div>
+                    </div>
+                    <span class="estado-texto" id="estado-kerimplus">agregar</span>
+                </div>
+            </div>
         </div>
 
         <!-- TOTAL + BOTÓN WHATSAPP -->
@@ -498,26 +683,182 @@
         </div>
     </div>
 
+    <!-- OVERLAY DE AGRADECIMIENTO -->
+    <div class="gracias-overlay" id="graciasOverlay">
+        <div class="gracias-modal">
+            <i class="fas fa-star"></i>
+            <h2>¡Gracias!</h2>
+            <p>Buena decisión ✨</p>
+            <div class="subtexto">Has seleccionado Kerim Music+</div>
+            <button class="btn-cerrar" id="btnEnviarPedidoGracias">
+                <i class="fab fa-whatsapp"></i> Enviar pedido
+            </button>
+        </div>
+    </div>
+
+    <!-- Canvas para fuegos artificiales -->
+    <canvas id="fireworksCanvas"></canvas>
+
     <script>
-        // Precios fijos (agregado artistas)
+        // ----- FUEGOS ARTIFICIALES -----
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+        let fireworksActive = false;
+        let particles = [];
+        let animationId = null;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Colores en blanco/negro/grises con toques dorados
+        const colores = [
+            '#FFFFFF', '#F5F5F5', '#E0E0E0', '#CCCCCC', 
+            '#D4AF37', '#C9A832', '#B8860B', '#FFD700',
+            '#AAAAAA', '#888888'
+        ];
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color || colores[Math.floor(Math.random() * colores.length)];
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 8 + 3;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed - 2;
+                this.gravity = 0.12;
+                this.life = 1;
+                this.decay = 0.008 + Math.random() * 0.012;
+                this.size = Math.random() * 4 + 2;
+                this.trail = [];
+                this.maxTrail = 6;
+            }
+
+            update() {
+                this.trail.push({ x: this.x, y: this.y });
+                if (this.trail.length > this.maxTrail) {
+                    this.trail.shift();
+                }
+                this.vx *= 0.99;
+                this.vy += this.gravity;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= this.decay;
+                this.size *= 0.995;
+            }
+
+            draw(ctx) {
+                // Estela
+                for (let i = 0; i < this.trail.length; i++) {
+                    const alpha = (i / this.trail.length) * this.life * 0.5;
+                    ctx.beginPath();
+                    ctx.arc(this.trail[i].x, this.trail[i].y, this.size * (i / this.trail.length) * 0.6, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color.replace(')', `,${alpha})`).replace('rgb', 'rgba');
+                    ctx.fill();
+                }
+
+                // Partícula principal
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 15;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Brillo extra
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * 0.3, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fill();
+            }
+
+            isDead() {
+                return this.life <= 0;
+            }
+        }
+
+        function crearExplosion(x, y) {
+            const numParticles = 80 + Math.floor(Math.random() * 60);
+            for (let i = 0; i < numParticles; i++) {
+                const color = colores[Math.floor(Math.random() * colores.length)];
+                particles.push(new Particle(x, y, color));
+            }
+        }
+
+        function generarFuegosArtificiales() {
+            if (!fireworksActive) return;
+
+            const numExplosions = 5 + Math.floor(Math.random() * 4);
+            for (let i = 0; i < numExplosions; i++) {
+                const x = Math.random() * canvas.width * 0.8 + canvas.width * 0.1;
+                const y = Math.random() * canvas.height * 0.5 + canvas.height * 0.1;
+                setTimeout(() => {
+                    if (fireworksActive) crearExplosion(x, y);
+                }, i * 200 + Math.random() * 150);
+            }
+
+            setTimeout(generarFuegosArtificiales, 800 + Math.random() * 600);
+        }
+
+        function animarFuegos() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.update();
+                p.draw(ctx);
+                if (p.isDead()) {
+                    particles.splice(i, 1);
+                }
+            }
+
+            animationId = requestAnimationFrame(animarFuegos);
+        }
+
+        function iniciarFuegos() {
+            if (fireworksActive) return;
+            fireworksActive = true;
+            canvas.classList.add('activo');
+            particles = [];
+            generarFuegosArtificiales();
+            animarFuegos();
+        }
+
+        function detenerFuegos() {
+            fireworksActive = false;
+            canvas.classList.remove('activo');
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+            particles = [];
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // ----- LÓGICA DE SERVICIOS -----
         const PRECIOS = {
             beat: 600,
             voz: 900,
             master: 400,
             portada: 600,
-            artistas: 800
+            artistas: 800,
+            kerimplus: 2000
         };
 
-        // Estado inicial: TODOS APAGADOS (false)
         let estado = {
             beat: false,
             voz: false,
             master: false,
             portada: false,
-            artistas: false
+            artistas: false,
+            kerimplus: false
         };
 
-        // Referencias
         const totalSpan = document.getElementById('totalDisplay');
         const switches = document.querySelectorAll('.switch');
         const estadoTextos = {
@@ -525,10 +866,12 @@
             voz: document.getElementById('estado-voz'),
             master: document.getElementById('estado-master'),
             portada: document.getElementById('estado-portada'),
-            artistas: document.getElementById('estado-artistas')
+            artistas: document.getElementById('estado-artistas'),
+            kerimplus: document.getElementById('estado-kerimplus')
         };
 
-        // Actualiza la UI de cada switch y su etiqueta
+        const graciasOverlay = document.getElementById('graciasOverlay');
+
         function actualizarSwitch(servicio) {
             const switchEl = document.querySelector(`.switch[data-servicio="${servicio}"]`);
             const textoEl = estadoTextos[servicio];
@@ -545,18 +888,21 @@
             }
         }
 
-        // Función toggle (llamada desde onclick)
         function toggleServicio(element) {
             const servicio = element.dataset.servicio;
             if (!servicio) return;
 
-            // Cambiar estado
+            const estabaActivo = estado[servicio];
             estado[servicio] = !estado[servicio];
             actualizarSwitch(servicio);
             actualizarTotal();
+
+            if (servicio === 'kerimplus' && !estabaActivo && estado[servicio]) {
+                mostrarGracias();
+                iniciarFuegos();
+            }
         }
 
-        // Calcular y mostrar total
         function actualizarTotal() {
             let total = 0;
             for (let key in estado) {
@@ -567,16 +913,16 @@
             totalSpan.textContent = `$${total.toLocaleString('es-MX')}`;
         }
 
-        // Inicializar todos los switches apagados
-        function inicializarSwitches() {
-            for (let key in estado) {
-                actualizarSwitch(key);
-            }
-            actualizarTotal();
+        function mostrarGracias() {
+            graciasOverlay.classList.add('mostrar');
         }
 
-        // ----- BOTÓN WHATSAPP -----
-        document.getElementById('whatsappBtn').addEventListener('click', function() {
+        function cerrarGracias() {
+            graciasOverlay.classList.remove('mostrar');
+            detenerFuegos();
+        }
+
+        function enviarPedidoWhatsApp() {
             let mensaje = '🎵 *KERIM MUSIC* - Pedido de producción%0A%0A';
             let serviciosSeleccionados = [];
             let total = 0;
@@ -588,7 +934,8 @@
                         voz: 'Grabación de voz',
                         master: 'Masterización',
                         portada: 'Diseño de portada',
-                        artistas: 'Manejo de artistas (3 meses + publicidad)'
+                        artistas: 'Manejo de artistas (3 meses + publicidad)',
+                        kerimplus: 'Kerim Music+ (2 grabaciones · paquete completo)'
                     };
                     const precio = PRECIOS[key];
                     serviciosSeleccionados.push(`✅ ${nombreMap[key]}  $${precio} MXN`);
@@ -608,12 +955,31 @@
             const telefono = '524621098798';
             const url = `https://wa.me/${telefono}?text=${mensaje}`;
             window.open(url, '_blank');
+        }
+
+        graciasOverlay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                cerrarGracias();
+            }
         });
 
-        // Exponer toggleServicio globalmente
-        window.toggleServicio = toggleServicio;
+        function inicializarSwitches() {
+            for (let key in estado) {
+                actualizarSwitch(key);
+            }
+            actualizarTotal();
+        }
 
-        // Inicializar
+        document.getElementById('whatsappBtn').addEventListener('click', enviarPedidoWhatsApp);
+
+        document.getElementById('btnEnviarPedidoGracias').addEventListener('click', function() {
+            cerrarGracias();
+            enviarPedidoWhatsApp();
+        });
+
+        window.toggleServicio = toggleServicio;
+        window.cerrarGracias = cerrarGracias;
+
         inicializarSwitches();
     </script>
 </body>
