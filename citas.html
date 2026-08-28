@@ -15,7 +15,7 @@
         }
 
         body {
-            background: #0c0c0c;
+            background: #000000;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -24,15 +24,11 @@
             overflow-x: hidden;
         }
 
+        /* TARJETA PRINCIPAL - SIN ESTILOS DE CONTENEDOR */
         .card {
             max-width: 860px;
             width: 100%;
-            background: #f5f5f5;
-            border-radius: 48px;
-            padding: 2.5rem 2.2rem;
-            box-shadow: 0 25px 50px -8px rgba(0,0,0,0.9), 0 0 0 1px rgba(0,0,0,0.08);
-            border: 1px solid #e0e0e0;
-            transition: 0.3s ease;
+            /* Eliminados: background, border-radius, padding, box-shadow, border */
             color: #111;
             position: relative;
             z-index: 1;
@@ -63,7 +59,7 @@
             display: block;
         }
 
-        /* ----- TOTAL OCULTO DEBAJO DE LA IMAGEN ----- */
+        /* TOTAL DEBAJO DE LA IMAGEN */
         .total-bajo-logo {
             text-align: center;
             margin-top: 0.5rem;
@@ -106,7 +102,7 @@
             font-size: 2.6rem;
             font-weight: 800;
             letter-spacing: -0.02em;
-            color: #000;
+            color: #f3f1f1;
             text-shadow: none;
         }
 
@@ -121,7 +117,7 @@
             border: 1px solid #ccc;
         }
 
-        /* ----- CONTENEDOR DE SERVICIOS (oculto inicialmente) ----- */
+        /* CONTENEDOR DE SERVICIOS (oculto inicialmente) */
         .servicios-wrapper {
             max-height: 0;
             overflow: hidden;
@@ -142,7 +138,7 @@
             gap: 0.9rem;
         }
 
-        /* ----- BOTÓN "CREA TU PAQUETE" (ahora con cursor pointer) ----- */
+        /* BOTÓN "CREA TU PAQUETE" */
         .crea-tu-paquete {
             text-align: center;
             font-size: 1.4rem;
@@ -341,7 +337,7 @@
             margin-left: 0.5rem;
         }
 
-        /* ----- BOTÓN WHATSAPP OCULTO INICIALMENTE ----- */
+        /* BOTÓN WHATSAPP OCULTO INICIALMENTE */
         .btn-whatsapp-wrapper {
             display: flex;
             justify-content: center;
@@ -525,10 +521,6 @@
         }
 
         @media (max-width: 650px) {
-            .card {
-                padding: 1.8rem 1.2rem;
-                border-radius: 32px;
-            }
             .logo-circle {
                 width: 80px;
                 height: 80px;
@@ -641,7 +633,7 @@
             <span class="sub"><i class="fas fa-headphones" style="margin-right: 6px;"></i> producción</span>
         </div>
 
-        <!-- BOTÓN "CREA TU PAQUETE" (ahora con onclick) -->
+        <!-- BOTÓN "CREA TU PAQUETE" -->
         <div class="crea-tu-paquete" id="btnMostrarOpciones">
             <i class="fas fa-plus-circle"></i> Crea tu paquete de grabación
         </div>
