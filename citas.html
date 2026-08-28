@@ -65,7 +65,6 @@
             animation-delay: 0.3s;
         }
 
-        /* Grupo de elementos a la derecha del encabezado */
         .brand-right {
             display: flex;
             align-items: center;
@@ -84,7 +83,6 @@
             border: 1px solid #ccc;
         }
 
-        /* BOTÓN DE COMPARTIR */
         .btn-compartir {
             background: #0c9cdf;
             border: 1px solid #0c9cdf;
@@ -115,39 +113,42 @@
             color: #444;
         }
 
+        /* BOTÓN "CREA TU PAQUETE" – CENTRADO Y AZUL */
         .crea-tu-paquete {
-            text-align: center;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #111;
-            letter-spacing: 0.5px;
-            padding: 0.6rem 1rem;
-            background: #ececec;
+            background: #0c9cdf;
+            color: #fff;
+            border: none;
+            padding: 0.8rem 2.5rem;
             border-radius: 60px;
-            border: 1px solid #ccc;
-            display: inline-block;
-            width: 100%;
+            font-weight: 700;
+            font-size: 1.4rem;
+            letter-spacing: 0.5px;
             cursor: pointer;
             transition: background 0.3s ease, transform 0.2s ease;
+            display: block;
+            width: fit-content;
+            margin: 0 auto;
             user-select: none;
             opacity: 0;
             transform: scale(0.95);
             animation: fadeInUp 0.8s ease forwards;
             animation-delay: 0.5s;
+            box-shadow: 0 4px 12px rgba(12, 156, 223, 0.3);
         }
 
         .crea-tu-paquete:hover {
-            background: #ddd;
-            transform: scale(1.01);
+            background: #0a7abf;
+            transform: scale(1.02);
+            box-shadow: 0 6px 18px rgba(12, 156, 223, 0.4);
         }
 
         .crea-tu-paquete:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
 
         .crea-tu-paquete i {
             margin-right: 8px;
-            color: #222;
+            color: #fff;
         }
 
         /* CONTENEDOR DE SERVICIOS (oculto inicialmente) */
@@ -171,7 +172,6 @@
             gap: 0.9rem;
         }
 
-        /* Cada servicio item con animación escalonada */
         .servicio-item {
             display: flex;
             align-items: center;
@@ -196,7 +196,6 @@
         .servicio-item:nth-child(5) { animation-delay: 0.5s; }
         .servicio-item:nth-child(6) { animation-delay: 0.6s; }
 
-        /* Cuando el wrapper está cerrado, ocultamos las animaciones */
         .servicios-wrapper:not(.abierto) .servicio-item {
             animation: none;
             opacity: 0;
@@ -326,20 +325,30 @@
             border-color: #aaa;
         }
 
+        /* ============================================================
+           CONTENEDOR TOTAL – OCULTO POR DEFECTO
+           ============================================================ */
         .total-section {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.5s ease, max-height 0.5s ease, margin 0.4s ease;
+            margin: 0;
+            background: #e8e8e8;
+            border-radius: 80px;
+            padding: 0 2.2rem;
+            border: 1px solid #ccc;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            background: #e8e8e8;
-            border-radius: 80px;
-            padding: 1.2rem 2.2rem;
+        }
+
+        .total-section.visible {
+            opacity: 1;
+            max-height: 200px;
             margin-top: 1.8rem;
-            border: 1px solid #ccc;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.8s ease forwards;
-            animation-delay: 0.7s;
+            padding: 1.2rem 2.2rem;
         }
 
         .total-label {
@@ -433,7 +442,6 @@
             font-weight: 600;
         }
 
-        /* ----- LOGO CIRCULAR ----- */
         .logo-circle {
             width: 180px;
             height: 180px;
@@ -452,7 +460,6 @@
             display: block;
         }
 
-        /* TOTAL DEBAJO DE LA IMAGEN */
         .total-bajo-logo {
             text-align: center;
             margin-top: 0.5rem;
@@ -591,9 +598,7 @@
             display: block;
         }
 
-        /* ============================================================
-           KEYFRAMES DE ANIMACIÓN
-           ============================================================ */
+        /* KEYFRAMES */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -680,7 +685,7 @@
             .servicio-info .nombre {
                 font-size: 1.1rem;
             }
-            .total-section {
+            .total-section.visible {
                 flex-direction: column;
                 align-items: stretch;
                 gap: 1.5rem;
@@ -715,7 +720,7 @@
             }
             .crea-tu-paquete {
                 font-size: 1.1rem;
-                padding: 0.5rem 0.8rem;
+                padding: 0.6rem 1.5rem;
             }
             .gracias-modal {
                 padding: 2rem 1.5rem;
@@ -756,7 +761,7 @@
             }
             .crea-tu-paquete {
                 font-size: 0.95rem;
-                padding: 0.4rem 0.6rem;
+                padding: 0.5rem 1.2rem;
             }
             .servicios-wrapper.abierto {
                 max-height: 1400px;
@@ -791,14 +796,13 @@
             <h1>KERIM MUSIC</h1>
             <div class="brand-right">
                 <span class="sub"><i class="fas fa-headphones" style="margin-right: 6px;"></i> producción</span>
-                <!-- BOTÓN DE COMPARTIR -->
                 <button class="btn-compartir" id="btnCompartir" title="Compartir esta página">
                     <i class="fas fa-share-alt"></i> Compartir
                 </button>
             </div>
         </div>
 
-        <!-- BOTÓN "CREA TU PAQUETE" -->
+        <!-- BOTÓN "CREA TU PAQUETE" – CENTRADO Y AZUL -->
         <div class="crea-tu-paquete" id="btnMostrarOpciones">
             <i class="fas fa-plus-circle"></i> Crea tu paquete de grabación
         </div>
@@ -900,7 +904,8 @@
             </div>
         </div>
 
-        <div class="total-section">
+        <!-- CONTENEDOR TOTAL – OCULTO HASTA QUE HAYA SELECCIÓN -->
+        <div class="total-section" id="totalSection">
             <div class="total-label">
                 <i class="fas fa-coins"></i> TOTAL
                 <span class="total-number" id="totalDisplay">$0</span>
@@ -942,16 +947,13 @@
             const titulo = 'KERIM MUSIC · Producción Musical';
 
             if (navigator.share) {
-                // API de compartir nativa (móviles)
                 navigator.share({
                     title: titulo,
                     text: '🎵 KERIM MUSIC - Producción musical profesional',
                     url: url
                 }).catch(() => {});
             } else {
-                // Fallback: copiar al portapapeles
                 navigator.clipboard.writeText(url).then(() => {
-                    // Feedback visual
                     const btn = document.getElementById('btnCompartir');
                     const originalHTML = btn.innerHTML;
                     btn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
@@ -965,14 +967,13 @@
                         btn.style.color = '#444';
                     }, 2000);
                 }).catch(() => {
-                    // Si falla, abrir diálogo de compartir con URL
                     alert('Comparte esta URL: ' + url);
                 });
             }
         });
 
         // ============================================================
-        // MOSTRAR/OCULTAR OPCIONES AL HACER CLIC EN "CREA TU PAQUETE"
+        // MOSTRAR/OCULTAR OPCIONES
         // ============================================================
         const btnMostrar = document.getElementById('btnMostrarOpciones');
         const wrapper = document.getElementById('serviciosWrapper');
@@ -983,30 +984,32 @@
             if (opcionesVisibles) {
                 wrapper.classList.add('abierto');
                 btnMostrar.innerHTML = '<i class="fas fa-minus-circle"></i> Ocultar opciones';
-                // Reiniciar animaciones de los items
                 const items = wrapper.querySelectorAll('.servicio-item');
                 items.forEach((item, index) => {
                     item.style.animation = 'none';
-                    item.offsetHeight; // Forzar reflow
+                    item.offsetHeight;
                     item.style.animation = `slideIn 0.6s ease forwards`;
                     item.style.animationDelay = `${(index + 1) * 0.1}s`;
                 });
             } else {
                 wrapper.classList.remove('abierto');
                 btnMostrar.innerHTML = '<i class="fas fa-plus-circle"></i> Crea tu paquete de grabación';
-                // Ocultar el total debajo del logo si no hay selección
+                // Ocultar totales si no hay selección
                 const haySeleccion = Object.values(estado).some(val => val === true);
                 if (!haySeleccion) {
                     totalBajoLogo.classList.remove('visible');
+                    document.getElementById('totalSection').classList.remove('visible');
+                    btnWhatsAppWrapper.classList.remove('visible');
                 }
             }
+            // Actualizar visibilidad del total general según selección y wrapper abierto
+            actualizarVisibilidadTotales();
         });
 
         // ============================================================
-        // SONIDO DE CLIC - SIN RETRASO (PRECARGA)
+        // SONIDOS
         // ============================================================
         const CLICK_SOUND_URL = 'https://www.dropbox.com/scl/fi/dbkqe6yb8t1j73n3dpd2w/click-sound-effect_yChMMh7e.mp3?rlkey=2rsja9ti4m2eexp8sumu5ngue&st=zsfvyu29&dl=1';
-
         const clickAudio = new Audio();
         clickAudio.src = CLICK_SOUND_URL;
         clickAudio.volume = 0.5;
@@ -1024,11 +1027,7 @@
             } catch (e) {}
         }
 
-        // ============================================================
-        // SONIDO ESPECIAL PARA KERIM MUSIC+ (SOLO ESTE BOTÓN)
-        // ============================================================
         const KERIM_SOUND_URL = 'https://www.dropbox.com/scl/fi/2owprje8g8x6ogui9mvp8/espectacular-intro-de-video-para-tu-logo-revela-chispas-doradas_hlw3EGS3.mp3?rlkey=lbj8aupfvox5sk3afmcoulbp7&st=0ko35ubl&raw=1';
-
         const kerimAudio = new Audio();
         kerimAudio.src = KERIM_SOUND_URL;
         kerimAudio.volume = 0.5;
@@ -1115,7 +1114,6 @@
                     ctx.fillStyle = this.color.replace(')', `,${alpha})`).replace('rgb', 'rgba');
                     ctx.fill();
                 }
-
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fillStyle = this.color;
@@ -1123,7 +1121,6 @@
                 ctx.shadowBlur = 15;
                 ctx.fill();
                 ctx.shadowBlur = 0;
-
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size * 0.3, 0, Math.PI * 2);
                 ctx.fillStyle = '#FFFFFF';
@@ -1213,8 +1210,8 @@
         const totalSpan = document.getElementById('totalDisplay');
         const totalBajoSpan = document.getElementById('totalBajoNumero');
         const totalBajoLogo = document.getElementById('totalBajoLogo');
+        const totalSection = document.getElementById('totalSection');
         const btnWhatsAppWrapper = document.getElementById('btnWhatsAppWrapper');
-        const switches = document.querySelectorAll('.switch');
         const estadoTextos = {
             beat: document.getElementById('estado-beat'),
             voz: document.getElementById('estado-voz'),
@@ -1223,14 +1220,12 @@
             artistas: document.getElementById('estado-artistas'),
             kerimplus: document.getElementById('estado-kerimplus')
         };
-
         const graciasOverlay = document.getElementById('graciasOverlay');
 
         function actualizarSwitch(servicio) {
             const switchEl = document.querySelector(`.switch[data-servicio="${servicio}"]`);
             const textoEl = estadoTextos[servicio];
             if (!switchEl || !textoEl) return;
-
             if (estado[servicio]) {
                 switchEl.classList.add('active');
                 textoEl.textContent = 'incluido';
@@ -1242,6 +1237,20 @@
             }
         }
 
+        function actualizarVisibilidadTotales() {
+            const haySeleccion = Object.values(estado).some(val => val === true);
+            // El total general solo se muestra si hay selección Y el wrapper está abierto
+            if (haySeleccion && opcionesVisibles) {
+                totalSection.classList.add('visible');
+                totalBajoLogo.classList.add('visible');
+                btnWhatsAppWrapper.classList.add('visible');
+            } else {
+                totalSection.classList.remove('visible');
+                totalBajoLogo.classList.remove('visible');
+                btnWhatsAppWrapper.classList.remove('visible');
+            }
+        }
+
         function toggleServicio(element) {
             const servicio = element.dataset.servicio;
             if (!servicio) return;
@@ -1250,7 +1259,6 @@
                 reproducirClick();
             }
 
-            const estabaActivo = estado[servicio];
             estado[servicio] = !estado[servicio];
             actualizarSwitch(servicio);
             actualizarTotal();
@@ -1265,15 +1273,7 @@
                 }
             }
 
-            // Mostrar u ocultar el total debajo del logo y el botón de WhatsApp
-            const haySeleccion = Object.values(estado).some(val => val === true);
-            if (haySeleccion && opcionesVisibles) {
-                totalBajoLogo.classList.add('visible');
-                btnWhatsAppWrapper.classList.add('visible');
-            } else {
-                totalBajoLogo.classList.remove('visible');
-                btnWhatsAppWrapper.classList.remove('visible');
-            }
+            actualizarVisibilidadTotales();
         }
 
         function actualizarTotal() {
@@ -1346,12 +1346,14 @@
                 actualizarSwitch(key);
             }
             actualizarTotal();
+            // Inicialmente oculto
+            totalSection.classList.remove('visible');
             totalBajoLogo.classList.remove('visible');
             btnWhatsAppWrapper.classList.remove('visible');
+            opcionesVisibles = false; // por si acaso
         }
 
         document.getElementById('whatsappBtn').addEventListener('click', enviarPedidoWhatsApp);
-
         document.getElementById('btnEnviarPedidoGracias').addEventListener('click', function() {
             reproducirClick();
             cerrarGracias();
