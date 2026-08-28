@@ -719,6 +719,18 @@
         }
 
         // ============================================================
+        // NUEVA FUNCIÓN: DETENER SONIDO DE KERIM MUSIC+
+        // ============================================================
+        function detenerSonidoKerim() {
+            try {
+                if (kerimAudio) {
+                    kerimAudio.pause();
+                    kerimAudio.currentTime = 0;
+                }
+            } catch (e) {}
+        }
+
+        // ============================================================
         // FUEGOS ARTIFICIALES
         // ============================================================
         const canvas = document.getElementById('fireworksCanvas');
@@ -916,11 +928,16 @@
             actualizarSwitch(servicio);
             actualizarTotal();
 
-            if (servicio === 'kerimplus' && !estabaActivo && estado[servicio]) {
-                // Reproducir el sonido especial de Kerim Music+
-                reproducirSonidoKerim();
-                mostrarGracias();
-                iniciarFuegos();
+            if (servicio === 'kerimplus') {
+                if (estado[servicio]) {
+                    // Se activó: reproducir sonido, mostrar gracias y fuegos
+                    reproducirSonidoKerim();
+                    mostrarGracias();
+                    iniciarFuegos();
+                } else {
+                    // Se desactivó: detener el sonido
+                    detenerSonidoKerim();
+                }
             }
         }
 
@@ -941,6 +958,8 @@
         function cerrarGracias() {
             graciasOverlay.classList.remove('mostrar');
             detenerFuegos();
+            // También detener el sonido al cerrar la ventana
+            detenerSonidoKerim();
         }
 
         function enviarPedidoWhatsApp() {
