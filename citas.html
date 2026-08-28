@@ -28,65 +28,23 @@
         .card {
             max-width: 860px;
             width: 100%;
-            /* Eliminados: background, border-radius, padding, box-shadow, border */
             color: #111;
             position: relative;
             z-index: 1;
         }
 
+        /* ============================================================
+           ANIMACIONES DE ENTRADA
+           ============================================================ */
         .logo-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-bottom: 0.5rem;
-        }
-
-        /* ----- IMAGEN CIRCULAR MÁS GRANDE ----- */
-        .logo-circle {
-            width: 180px;  /* Antes: 110px */
-            height: 180px; /* Antes: 110px */
-            border-radius: 50%;
-            overflow: hidden;
-            border: 3px solid #222;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-            background: #f5f5f5;
-            flex-shrink: 0;
-        }
-
-        .logo-circle img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        /* TOTAL DEBAJO DE LA IMAGEN */
-        .total-bajo-logo {
-            text-align: center;
-            margin-top: 0.5rem;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #000;
             opacity: 0;
-            transition: opacity 0.4s ease, transform 0.3s ease;
-            transform: translateY(-5px);
-            pointer-events: none;
-            background: #e8e8e8;
-            padding: 0.3rem 1.5rem;
-            border-radius: 40px;
-            border: 1px solid #ccc;
-            display: inline-block;
-        }
-
-        .total-bajo-logo.visible {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-
-        .total-bajo-logo i {
-            margin-right: 6px;
-            color: #222;
+            transform: translateY(-30px) scale(0.9);
+            animation: fadeInDown 0.8s ease forwards;
+            animation-delay: 0.1s;
         }
 
         .brand {
@@ -97,25 +55,45 @@
             padding-bottom: 0.75rem;
             margin-bottom: 2rem;
             flex-wrap: wrap;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: fadeInLeft 0.8s ease forwards;
+            animation-delay: 0.3s;
         }
 
-        .brand h1 {
-            font-size: 2.6rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            color: #f3f1f1;
-            text-shadow: none;
-        }
-
-        .brand .sub {
-            color: #444;
-            font-weight: 500;
-            letter-spacing: 1px;
-            font-size: 0.95rem;
-            background: #eaeaea;
-            padding: 0.3rem 1.2rem;
-            border-radius: 40px;
+        .crea-tu-paquete {
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #111;
+            letter-spacing: 0.5px;
+            padding: 0.6rem 1rem;
+            background: #ececec;
+            border-radius: 60px;
             border: 1px solid #ccc;
+            display: inline-block;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            user-select: none;
+            opacity: 0;
+            transform: scale(0.95);
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 0.5s;
+        }
+
+        .crea-tu-paquete:hover {
+            background: #ddd;
+            transform: scale(1.01);
+        }
+
+        .crea-tu-paquete:active {
+            transform: scale(0.98);
+        }
+
+        .crea-tu-paquete i {
+            margin-right: 8px;
+            color: #222;
         }
 
         /* CONTENEDOR DE SERVICIOS (oculto inicialmente) */
@@ -139,38 +117,7 @@
             gap: 0.9rem;
         }
 
-        /* BOTÓN "CREA TU PAQUETE" */
-        .crea-tu-paquete {
-            text-align: center;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #111;
-            letter-spacing: 0.5px;
-            padding: 0.6rem 1rem;
-            background: #ececec;
-            border-radius: 60px;
-            border: 1px solid #ccc;
-            display: inline-block;
-            width: 100%;
-            cursor: pointer;
-            transition: background 0.3s ease, transform 0.2s ease;
-            user-select: none;
-        }
-
-        .crea-tu-paquete:hover {
-            background: #ddd;
-            transform: scale(1.01);
-        }
-
-        .crea-tu-paquete:active {
-            transform: scale(0.98);
-        }
-
-        .crea-tu-paquete i {
-            margin-right: 8px;
-            color: #222;
-        }
-
+        /* Cada servicio item con animación escalonada */
         .servicio-item {
             display: flex;
             align-items: center;
@@ -183,6 +130,27 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.03);
             flex-wrap: wrap;
             gap: 0.5rem 1rem;
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideIn 0.6s ease forwards;
+        }
+
+        .servicio-item:nth-child(1) { animation-delay: 0.1s; }
+        .servicio-item:nth-child(2) { animation-delay: 0.2s; }
+        .servicio-item:nth-child(3) { animation-delay: 0.3s; }
+        .servicio-item:nth-child(4) { animation-delay: 0.4s; }
+        .servicio-item:nth-child(5) { animation-delay: 0.5s; }
+        .servicio-item:nth-child(6) { animation-delay: 0.6s; }
+
+        /* Cuando el wrapper está cerrado, ocultamos las animaciones */
+        .servicios-wrapper:not(.abierto) .servicio-item {
+            animation: none;
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        .servicios-wrapper.abierto .servicio-item {
+            animation: slideIn 0.6s ease forwards;
         }
 
         .servicio-item:hover {
@@ -314,6 +282,10 @@
             padding: 1.2rem 2.2rem;
             margin-top: 1.8rem;
             border: 1px solid #ccc;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 0.7s;
         }
 
         .total-label {
@@ -397,11 +369,81 @@
             letter-spacing: 0.5px;
             border-top: 1px solid #ccc;
             padding-top: 1.8rem;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 0.9s;
         }
 
         .footer-kerim span {
             color: #000;
             font-weight: 600;
+        }
+
+        /* ----- LOGO CIRCULAR ----- */
+        .logo-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #222;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            background: #f5f5f5;
+            flex-shrink: 0;
+        }
+
+        .logo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* TOTAL DEBAJO DE LA IMAGEN */
+        .total-bajo-logo {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #000;
+            opacity: 0;
+            transition: opacity 0.4s ease, transform 0.3s ease;
+            transform: translateY(-5px);
+            pointer-events: none;
+            background: #e8e8e8;
+            padding: 0.3rem 1.5rem;
+            border-radius: 40px;
+            border: 1px solid #ccc;
+            display: inline-block;
+        }
+
+        .total-bajo-logo.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .total-bajo-logo i {
+            margin-right: 6px;
+            color: #222;
+        }
+
+        .brand h1 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #f3f1f1;
+            text-shadow: none;
+        }
+
+        .brand .sub {
+            color: #444;
+            font-weight: 500;
+            letter-spacing: 1px;
+            font-size: 0.95rem;
+            background: #eaeaea;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            border: 1px solid #ccc;
         }
 
         .gracias-overlay {
@@ -506,9 +548,56 @@
             display: block;
         }
 
+        /* ============================================================
+           KEYFRAMES DE ANIMACIÓN
+           ============================================================ */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         @keyframes popIn {
@@ -521,10 +610,13 @@
             50% { transform: scale(1.15); }
         }
 
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
         @media (max-width: 650px) {
             .logo-circle {
-                width: 130px;  /* Antes: 80px */
-                height: 130px; /* Antes: 80px */
+                width: 130px;
+                height: 130px;
             }
             .brand h1 {
                 font-size: 2.2rem;
@@ -590,8 +682,8 @@
 
         @media (max-width: 480px) {
             .logo-circle {
-                width: 100px;  /* Antes: 65px */
-                height: 100px; /* Antes: 65px */
+                width: 100px;
+                height: 100px;
             }
             .servicio-info i {
                 font-size: 1.3rem;
@@ -782,6 +874,14 @@
             if (opcionesVisibles) {
                 wrapper.classList.add('abierto');
                 btnMostrar.innerHTML = '<i class="fas fa-minus-circle"></i> Ocultar opciones';
+                // Reiniciar animaciones de los items
+                const items = wrapper.querySelectorAll('.servicio-item');
+                items.forEach((item, index) => {
+                    item.style.animation = 'none';
+                    item.offsetHeight; // Forzar reflow
+                    item.style.animation = `slideIn 0.6s ease forwards`;
+                    item.style.animationDelay = `${(index + 1) * 0.1}s`;
+                });
             } else {
                 wrapper.classList.remove('abierto');
                 btnMostrar.innerHTML = '<i class="fas fa-plus-circle"></i> Crea tu paquete de grabación';
