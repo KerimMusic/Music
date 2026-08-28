@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KERIM MUSIC · Bintang</title>
+    <!-- Font Awesome (íconos) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: #0c0c0c;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        /* TARJETA BLANCO Y NEGRO - ESTILO BINTANG */
+        .card {
+            max-width: 860px;
+            width: 100%;
+            background: #f5f5f5;
+            border-radius: 48px;
+            padding: 2.5rem 2.2rem;
+            box-shadow: 0 25px 50px -8px rgba(0,0,0,0.9), 0 0 0 1px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+            transition: 0.3s ease;
+            color: #111;
+        }
+
+        /* encabezado */
+        .brand {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 2px solid #222;
+            padding-bottom: 0.75rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .brand h1 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #000;
+            text-shadow: none;
+        }
+
+        .brand .sub {
+            color: #444;
+            font-weight: 500;
+            letter-spacing: 1px;
+            font-size: 0.95rem;
+            background: #eaeaea;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            border: 1px solid #ccc;
+        }
+
+        /* Texto "Crea tu paquete de grabación" */
+        .crea-tu-paquete {
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #111;
+            letter-spacing: 0.5px;
+            margin-bottom: 1.2rem;
+            padding: 0.6rem 1rem;
+            background: #ececec;
+            border-radius: 60px;
+            border: 1px solid #ccc;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .crea-tu-paquete i {
+            margin-right: 8px;
+            color: #222;
+        }
+
+        /* servicios */
+        .servicios {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            margin: 1.5rem 0 2.5rem 0;
+        }
+
+        .servicio-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            padding: 1rem 1.8rem;
+            border-radius: 60px;
+            border: 1px solid #d0d0d0;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            flex-wrap: wrap;
+            gap: 0.5rem 1rem;
+        }
+
+        .servicio-item:hover {
+            background: #fafafa;
+            border-color: #999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .servicio-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .servicio-info i {
+            color: #222;
+            font-size: 1.6rem;
+            width: 2rem;
+            text-align: center;
+        }
+
+        .servicio-info .nombre {
+            color: #111;
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+
+        .servicio-info .precio {
+            color: #555;
+            font-weight: 500;
+            font-size: 1rem;
+            background: #ececec;
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            border: 1px solid #ccc;
+        }
+
+        .servicio-info .detalle {
+            color: #777;
+            font-size: 0.85rem;
+            font-weight: 400;
+            background: #f0f0f0;
+            padding: 0.15rem 0.8rem;
+            border-radius: 30px;
+            border: 1px solid #ddd;
+        }
+
+        /* ----- BOTONES MODERNOS BLANCO Y NEGRO (BINTANG) ----- */
+        .toggle-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        /* Switch estilo Bintang: blanco/negro minimalista */
+        .switch {
+            position: relative;
+            width: 60px;
+            height: 32px;
+            background: #d0d0d0;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.25s ease;
+            border: 1px solid #aaa;
+            flex-shrink: 0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .switch.active {
+            background: #222;
+            border-color: #111;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .switch .thumb {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: #ffffff;
+            border-radius: 50%;
+            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            border: 1px solid #bbb;
+        }
+
+        .switch.active .thumb {
+            left: 31px;
+            background: #f5f5f5;
+            border-color: #555;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .switch:hover {
+            border-color: #777;
+        }
+        .switch.active:hover {
+            border-color: #000;
+        }
+
+        /* Etiqueta de estado (B&W) */
+        .estado-texto {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #888;
+            min-width: 60px;
+            letter-spacing: 0.3px;
+            transition: 0.2s ease;
+            background: #f0f0f0;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .estado-texto.activo {
+            color: #000;
+            background: #e0e0e0;
+            border-color: #aaa;
+        }
+
+        /* total y botón */
+        .total-section {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            background: #e8e8e8;
+            border-radius: 80px;
+            padding: 1.2rem 2.2rem;
+            margin-top: 1.8rem;
+            border: 1px solid #ccc;
+        }
+
+        .total-label {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            color: #222;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .total-label i {
+            color: #111;
+            margin-right: 4px;
+        }
+
+        .total-number {
+            font-size: 2.6rem;
+            font-weight: 800;
+            color: #000;
+            margin-left: 0.5rem;
+        }
+
+        .btn-whatsapp {
+            background: #1a1a1a;
+            border: none;
+            padding: 0.8rem 2.2rem;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s ease;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+            border: 1px solid #333;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-whatsapp i {
+            font-size: 1.7rem;
+            color: #fff;
+        }
+
+        .btn-whatsapp:hover {
+            transform: scale(1.03);
+            background: #000;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            border-color: #000;
+        }
+
+        .btn-whatsapp:active {
+            transform: scale(0.97);
+        }
+
+        .footer-kerim {
+            margin-top: 2rem;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            border-top: 1px solid #ccc;
+            padding-top: 1.8rem;
+        }
+
+        .footer-kerim span {
+            color: #000;
+            font-weight: 600;
+        }
+
+        /* responsive */
+        @media (max-width: 650px) {
+            .card {
+                padding: 1.8rem 1.2rem;
+                border-radius: 32px;
+            }
+            .brand h1 {
+                font-size: 2.2rem;
+            }
+            .servicio-item {
+                padding: 0.8rem 1.2rem;
+                border-radius: 40px;
+            }
+            .servicio-info .nombre {
+                font-size: 1.1rem;
+            }
+            .total-section {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1.5rem;
+                border-radius: 40px;
+                padding: 1.5rem;
+            }
+            .total-number {
+                font-size: 2.2rem;
+            }
+            .btn-whatsapp {
+                justify-content: center;
+                padding: 0.9rem;
+                font-size: 1.1rem;
+            }
+            .switch {
+                width: 50px;
+                height: 28px;
+            }
+            .switch .thumb {
+                width: 20px;
+                height: 20px;
+                top: 3px;
+                left: 3px;
+            }
+            .switch.active .thumb {
+                left: 26px;
+            }
+            .servicio-info .detalle {
+                font-size: 0.75rem;
+                padding: 0.1rem 0.6rem;
+            }
+            .crea-tu-paquete {
+                font-size: 1.1rem;
+                padding: 0.5rem 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .servicio-info i {
+                font-size: 1.3rem;
+                width: 1.6rem;
+            }
+            .servicio-info .precio {
+                font-size: 0.85rem;
+                padding: 0.1rem 0.7rem;
+            }
+            .estado-texto {
+                font-size: 0.75rem;
+                min-width: 48px;
+                padding: 0.1rem 0.4rem;
+            }
+            .crea-tu-paquete {
+                font-size: 0.95rem;
+                padding: 0.4rem 0.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <!-- encabezado -->
+        <div class="brand">
+            <h1>KERIM MUSIC</h1>
+            <span class="sub"><i class="fas fa-headphones" style="margin-right: 6px;"></i> producción</span>
+        </div>
+
+        <!-- Texto "Crea tu paquete de grabación" -->
+        <div class="crea-tu-paquete">
+            <i class="fas fa-plus-circle"></i> Crea tu paquete de grabación
+        </div>
+
+        <!-- lista de servicios (paquetes) - TODOS APAGADOS (agregar) -->
+        <div class="servicios" id="serviciosContainer">
+            <!-- Beat -->
+            <div class="servicio-item" data-servicio="beat" data-precio="600">
+                <div class="servicio-info">
+                    <i class="fas fa-drum"></i>
+                    <span class="nombre">BEAT</span>
+                    <span class="precio">$600 MXN</span>
+                </div>
+                <div class="toggle-wrapper">
+                    <div class="switch" data-servicio="beat" onclick="toggleServicio(this)">
+                        <div class="thumb"></div>
+                    </div>
+                    <span class="estado-texto" id="estado-beat">agregar</span>
+                </div>
+            </div>
+
+            <!-- Grabación de voz -->
+            <div class="servicio-item" data-servicio="voz" data-precio="900">
+                <div class="servicio-info">
+                    <i class="fas fa-microphone"></i>
+                    <span class="nombre">GRABACIÓN DE VOZ</span>
+                    <span class="precio">$900 MXN</span>
+                </div>
+                <div class="toggle-wrapper">
+                    <div class="switch" data-servicio="voz" onclick="toggleServicio(this)">
+                        <div class="thumb"></div>
+                    </div>
+                    <span class="estado-texto" id="estado-voz">agregar</span>
+                </div>
+            </div>
+
+            <!-- Masterización -->
+            <div class="servicio-item" data-servicio="master" data-precio="400">
+                <div class="servicio-info">
+                    <i class="fas fa-sliders-h"></i>
+                    <span class="nombre">MASTERIZACIÓN</span>
+                    <span class="precio">$400 MXN</span>
+                </div>
+                <div class="toggle-wrapper">
+                    <div class="switch" data-servicio="master" onclick="toggleServicio(this)">
+                        <div class="thumb"></div>
+                    </div>
+                    <span class="estado-texto" id="estado-master">agregar</span>
+                </div>
+            </div>
+
+            <!-- Diseño de portada -->
+            <div class="servicio-item" data-servicio="portada" data-precio="600">
+                <div class="servicio-info">
+                    <i class="fas fa-paint-brush"></i>
+                    <span class="nombre">DISEÑO DE PORTADA</span>
+                    <span class="precio">$600 MXN</span>
+                </div>
+                <div class="toggle-wrapper">
+                    <div class="switch" data-servicio="portada" onclick="toggleServicio(this)">
+                        <div class="thumb"></div>
+                    </div>
+                    <span class="estado-texto" id="estado-portada">agregar</span>
+                </div>
+            </div>
+
+            <!-- MANEJO DE ARTISTAS Y PUBLICIDAD -->
+            <div class="servicio-item" data-servicio="artistas" data-precio="800">
+                <div class="servicio-info">
+                    <i class="fas fa-users"></i>
+                    <span class="nombre">MANEJO DE ARTISTAS</span>
+                    <span class="precio">$800 MXN</span>
+                    <span class="detalle">3 meses · publicidad</span>
+                </div>
+                <div class="toggle-wrapper">
+                    <div class="switch" data-servicio="artistas" onclick="toggleServicio(this)">
+                        <div class="thumb"></div>
+                    </div>
+                    <span class="estado-texto" id="estado-artistas">agregar</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOTAL + BOTÓN WHATSAPP -->
+        <div class="total-section">
+            <div class="total-label">
+                <i class="fas fa-coins"></i> TOTAL
+                <span class="total-number" id="totalDisplay">$0</span>
+            </div>
+            <button class="btn-whatsapp" id="whatsappBtn">
+                <i class="fab fa-whatsapp"></i> Enviar pedido
+            </button>
+        </div>
+
+        <div class="footer-kerim">
+            <span>KERIM MUSIC</span> · Producción · Grabación · Masterización · Diseño · Management
+        </div>
+    </div>
+
+    <script>
+        // Precios fijos (agregado artistas)
+        const PRECIOS = {
+            beat: 600,
+            voz: 900,
+            master: 400,
+            portada: 600,
+            artistas: 800
+        };
+
+        // Estado inicial: TODOS APAGADOS (false)
+        let estado = {
+            beat: false,
+            voz: false,
+            master: false,
+            portada: false,
+            artistas: false
+        };
+
+        // Referencias
+        const totalSpan = document.getElementById('totalDisplay');
+        const switches = document.querySelectorAll('.switch');
+        const estadoTextos = {
+            beat: document.getElementById('estado-beat'),
+            voz: document.getElementById('estado-voz'),
+            master: document.getElementById('estado-master'),
+            portada: document.getElementById('estado-portada'),
+            artistas: document.getElementById('estado-artistas')
+        };
+
+        // Actualiza la UI de cada switch y su etiqueta
+        function actualizarSwitch(servicio) {
+            const switchEl = document.querySelector(`.switch[data-servicio="${servicio}"]`);
+            const textoEl = estadoTextos[servicio];
+            if (!switchEl || !textoEl) return;
+
+            if (estado[servicio]) {
+                switchEl.classList.add('active');
+                textoEl.textContent = 'incluido';
+                textoEl.classList.add('activo');
+            } else {
+                switchEl.classList.remove('active');
+                textoEl.textContent = 'agregar';
+                textoEl.classList.remove('activo');
+            }
+        }
+
+        // Función toggle (llamada desde onclick)
+        function toggleServicio(element) {
+            const servicio = element.dataset.servicio;
+            if (!servicio) return;
+
+            // Cambiar estado
+            estado[servicio] = !estado[servicio];
+            actualizarSwitch(servicio);
+            actualizarTotal();
+        }
+
+        // Calcular y mostrar total
+        function actualizarTotal() {
+            let total = 0;
+            for (let key in estado) {
+                if (estado[key]) {
+                    total += PRECIOS[key];
+                }
+            }
+            totalSpan.textContent = `$${total.toLocaleString('es-MX')}`;
+        }
+
+        // Inicializar todos los switches apagados
+        function inicializarSwitches() {
+            for (let key in estado) {
+                actualizarSwitch(key);
+            }
+            actualizarTotal();
+        }
+
+        // ----- BOTÓN WHATSAPP -----
+        document.getElementById('whatsappBtn').addEventListener('click', function() {
+            let mensaje = '🎵 *KERIM MUSIC* - Pedido de producción%0A%0A';
+            let serviciosSeleccionados = [];
+            let total = 0;
+
+            for (let key in estado) {
+                if (estado[key]) {
+                    const nombreMap = {
+                        beat: 'Beat',
+                        voz: 'Grabación de voz',
+                        master: 'Masterización',
+                        portada: 'Diseño de portada',
+                        artistas: 'Manejo de artistas (3 meses + publicidad)'
+                    };
+                    const precio = PRECIOS[key];
+                    serviciosSeleccionados.push(`✅ ${nombreMap[key]}  $${precio} MXN`);
+                    total += precio;
+                }
+            }
+
+            if (serviciosSeleccionados.length === 0) {
+                mensaje += '⚠️ *No has seleccionado ningún servicio.*%0A';
+            } else {
+                mensaje += serviciosSeleccionados.join('%0A');
+            }
+
+            mensaje += `%0A%0A💰 *TOTAL:* $${total.toLocaleString('es-MX')} MXN`;
+            mensaje += `%0A%0A📩 *Enviado desde la web KERIM MUSIC*`;
+
+            const telefono = '524621098798';
+            const url = `https://wa.me/${telefono}?text=${mensaje}`;
+            window.open(url, '_blank');
+        });
+
+        // Exponer toggleServicio globalmente
+        window.toggleServicio = toggleServicio;
+
+        // Inicializar
+        inicializarSwitches();
+    </script>
+</body>
+</html>
