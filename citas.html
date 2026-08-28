@@ -715,26 +715,85 @@
             display: block;
         }
 
-        /* ---- MENSAJE DE BIENVENIDA (oculto por defecto) ---- */
+        /* ---- MENSAJE DE BIENVENIDA CON ANIMACIÓN FLUIDA ---- */
         .mensaje-bienvenida {
-            text-align: center;
+            text-align: left;
             color: #f0f0f0;
             max-width: 600px;
-            margin: 0.8rem auto 0.3rem;
+            margin: 0 auto;
             padding: 0 1rem;
             font-size: 1rem;
             line-height: 1.6;
-            display: none; /* oculto inicialmente */
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.6s ease,
+                        margin 0.4s ease;
+            margin-top: 0;
+            margin-bottom: 0;
         }
         .mensaje-bienvenida.visible {
-            display: block;
+            max-height: 1200px;
+            opacity: 1;
+            margin-top: 0.8rem;
+            margin-bottom: 0.3rem;
         }
         .mensaje-bienvenida p {
-            margin: 0.3rem 0;
+            margin: 0.5rem 0;
         }
         .mensaje-bienvenida strong {
             color: #ffffff;
             font-weight: 700;
+        }
+        .mensaje-bienvenida ol {
+            padding-left: 1.5rem;
+            margin: 0.5rem 0;
+        }
+        .mensaje-bienvenida ol li {
+            margin-bottom: 0.3rem;
+        }
+
+        /* Estilos para el video dentro del mensaje */
+        .mensaje-bienvenida .video-container {
+            display: flex;
+            justify-content: center;
+            margin: 0.5rem 0 1rem 0;
+        }
+        .mensaje-bienvenida .video-container video {
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            border: 1px solid #444;
+        }
+
+        /* ---- MODO INFORMACIÓN: ocultar todo excepto imagen y mensaje ---- */
+        body.info-mode .brand h1,
+        body.info-mode .brand .sub,
+        body.info-mode .btn-compartir,
+        body.info-mode .crea-tu-paquete,
+        body.info-mode .servicios-wrapper,
+        body.info-mode .total-section,
+        body.info-mode .btn-whatsapp-wrapper,
+        body.info-mode .btn-pdf-wrapper,
+        body.info-mode .footer-kerim {
+            display: none;
+        }
+        body.info-mode .total-bajo-logo {
+            display: none;
+        }
+        /* El botón de información se mantiene visible */
+        body.info-mode .info-toggle {
+            display: inline-flex;
+        }
+        body.info-mode .logo-container {
+            margin-bottom: 0;
+        }
+        /* Centramos el texto en modo información */
+        body.info-mode .mensaje-bienvenida {
+            text-align: center;
         }
 
         @keyframes fadeIn {
@@ -879,7 +938,13 @@
             .mensaje-bienvenida {
                 font-size: 0.9rem;
                 padding: 0 0.8rem;
-                margin: 0.6rem auto 0.2rem;
+            }
+            .mensaje-bienvenida.visible {
+                margin-top: 0.6rem;
+                margin-bottom: 0.2rem;
+            }
+            .mensaje-bienvenida .video-container video {
+                border-radius: 8px;
             }
         }
 
@@ -925,7 +990,10 @@
             .mensaje-bienvenida {
                 font-size: 0.8rem;
                 padding: 0 0.5rem;
-                margin: 0.5rem auto 0.1rem;
+            }
+            .mensaje-bienvenida.visible {
+                margin-top: 0.5rem;
+                margin-bottom: 0.1rem;
             }
         }
     </style>
@@ -939,18 +1007,36 @@
             <div class="total-bajo-logo" id="totalBajoLogo">
                 <i class="fas fa-coins"></i> TOTAL: <span id="totalBajoNumero">$0</span>
             </div>
-            <!-- MENSAJE DE BIENVENIDA (oculto inicialmente) -->
+            <!-- MENSAJE DE BIENVENIDA (oculto inicialmente) - con formato mejorado y video -->
             <div class="mensaje-bienvenida" id="mensajeBienvenida">
-                <p>🎵 <strong>¡Crea tu proyecto libremente!</strong></p>
-                <p>Tú tienes la libertad de crear y desarrollar tu proyecto como quieras. Al realizar tu pedido, recibirás tu <strong>comprobante descargable</strong> y podrás darle seguimiento a través de <strong>WhatsApp</strong>.</p>
-                <p>📲 <strong>Realiza tu pedido por WhatsApp y comienza tu proyecto.</strong></p>
+                <!-- VIDEO centrado debajo de la imagen - con audio -->
+                <div class="video-container">
+                    <video id="infoVideo" autoplay loop playsinline>
+                        <source src="https://www.dropbox.com/scl/fi/fozpdad1tujwuaiiie1gb/Anuncio-placoso-de-la-L.mp4?rlkey=q8wvxc8a6odvs3uwj2sxh1vkk&st=4rvkysbl&raw=1" type="video/mp4">
+                        Tu navegador no soporta videos.
+                    </video>
+                </div>
+
+                <p style="font-size:1.1rem; font-weight:bold; text-align:center;">🎵 Crea tu proyecto a tu manera</p>
+                <p>En nuestro servicio tienes la libertad de <strong>crear tu propio proyecto de la manera que tú quieras</strong>. Tú decides qué deseas realizar, cómo quieres llevarlo a cabo y qué detalles quieres incluir en tu proyecto.</p>
+                <p>Una vez que hayas definido lo que necesitas, podrás <strong>realizar tu pedido directamente por WhatsApp</strong>, donde podremos atenderte, resolver tus dudas y confirmar contigo todos los detalles antes de comenzar.</p>
+                <p>Después de realizar tu pedido, recibirás un <strong>comprobante descargable</strong> como respaldo de tu solicitud. Este comprobante te permitirá tener constancia de que tu pedido fue realizado y conservar la información correspondiente a tu proyecto.</p>
+                <p style="font-weight:bold;">📲 ¿Cómo funciona?</p>
+                <ol>
+                    <li><strong>Crea tu proyecto:</strong> Decide qué quieres realizar y prepara los detalles de tu idea.</li>
+                    <li><strong>Realiza tu pedido:</strong> Envíanos tu solicitud directamente por <strong>WhatsApp</strong>.</li>
+                    <li><strong>Confirma los detalles:</strong> Revisaremos contigo la información de tu proyecto para asegurarnos de que todo esté correcto.</li>
+                    <li><strong>Recibe tu comprobante:</strong> Una vez realizado el pedido, tendrás disponible un <strong>comprobante descargable</strong> para que puedas guardarlo.</li>
+                    <li><strong>Dale seguimiento:</strong> Mantendremos la comunicación contigo por WhatsApp para que puedas estar informado sobre tu proyecto.</li>
+                </ol>
+                <p>Queremos que tengas una experiencia sencilla, clara y segura. <strong>Tu proyecto comienza con tu idea, tú decides cómo quieres crearlo y nosotros te ayudamos a llevarlo a cabo.</strong></p>
+                <p style="font-weight:bold; text-align:center;">📱 <strong>Haz tu pedido por WhatsApp y comienza a crear tu proyecto.</strong></p>
             </div>
         </div>
 
         <div class="brand">
             <h1>KERIM MUSIC</h1>
             <div class="brand-right">
-                <span class="sub"><i class="fas fa-headphones" style="margin-right: 6px;"></i> producción</span>
                 <button class="btn-compartir" id="btnCompartir" title="Compartir esta página">
                     <i class="fas fa-share-alt"></i> Compartir
                 </button>
@@ -1698,18 +1784,34 @@
         });
 
         // ============================================================
-        // TOGGLE INFORMACIÓN (texto clickeable)
+        // TOGGLE INFORMACIÓN (texto clickeable) + CONTROL DE VIDEO
         // ============================================================
         const btnInfo = document.getElementById('btnInformacion');
         const mensajeInfo = document.getElementById('mensajeBienvenida');
+        const video = document.getElementById('infoVideo');
         let infoVisible = false;
 
         btnInfo.addEventListener('click', function() {
             infoVisible = !infoVisible;
+            // mostrar/ocultar mensaje
             mensajeInfo.classList.toggle('visible', infoVisible);
+            // activar/desactivar modo información (ocultar el resto)
+            document.body.classList.toggle('info-mode', infoVisible);
             btnInfo.innerHTML = infoVisible
                 ? '<i class="fas fa-info-circle"></i> Ocultar'
                 : '<i class="fas fa-info-circle"></i> Información';
+
+            // Control de reproducción del video
+            if (infoVisible) {
+                // Al mostrar, intentar reproducir (con manejo de autoplay)
+                video.play().catch(function(e) {
+                    // Si no se puede reproducir automáticamente, el usuario puede dar clic
+                });
+            } else {
+                // Al ocultar, pausar y reiniciar el video
+                video.pause();
+                video.currentTime = 0;
+            }
         });
 
         window.toggleServicio = toggleServicio;
