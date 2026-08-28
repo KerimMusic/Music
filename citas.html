@@ -41,9 +41,10 @@
             margin-bottom: 0.5rem;
         }
 
+        /* ----- IMAGEN CIRCULAR MÁS GRANDE ----- */
         .logo-circle {
-            width: 110px;
-            height: 110px;
+            width: 180px;  /* Antes: 110px */
+            height: 180px; /* Antes: 110px */
             border-radius: 50%;
             overflow: hidden;
             border: 3px solid #222;
@@ -522,8 +523,8 @@
 
         @media (max-width: 650px) {
             .logo-circle {
-                width: 80px;
-                height: 80px;
+                width: 130px;  /* Antes: 80px */
+                height: 130px; /* Antes: 80px */
             }
             .brand h1 {
                 font-size: 2.2rem;
@@ -588,6 +589,10 @@
         }
 
         @media (max-width: 480px) {
+            .logo-circle {
+                width: 100px;  /* Antes: 65px */
+                height: 100px; /* Antes: 65px */
+            }
             .servicio-info i {
                 font-size: 1.3rem;
                 width: 1.6rem;
@@ -604,10 +609,6 @@
             .crea-tu-paquete {
                 font-size: 0.95rem;
                 padding: 0.4rem 0.6rem;
-            }
-            .logo-circle {
-                width: 65px;
-                height: 65px;
             }
             .servicios-wrapper.abierto {
                 max-height: 1400px;
