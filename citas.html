@@ -24,7 +24,6 @@
             overflow-x: hidden;
         }
 
-        /* TARJETA BLANCO Y NEGRO - ESTILO BINTANG */
         .card {
             max-width: 860px;
             width: 100%;
@@ -39,7 +38,6 @@
             z-index: 1;
         }
 
-        /* ----- LOGO CIRCULAR ARRIBA ----- */
         .logo-container {
             display: flex;
             justify-content: center;
@@ -64,7 +62,6 @@
             display: block;
         }
 
-        /* encabezado */
         .brand {
             display: flex;
             justify-content: space-between;
@@ -94,7 +91,6 @@
             border: 1px solid #ccc;
         }
 
-        /* Texto "Crea tu paquete de grabación" */
         .crea-tu-paquete {
             text-align: center;
             font-size: 1.4rem;
@@ -115,7 +111,6 @@
             color: #222;
         }
 
-        /* servicios */
         .servicios {
             display: flex;
             flex-direction: column;
@@ -184,14 +179,12 @@
             border: 1px solid #ddd;
         }
 
-        /* ----- BOTONES MODERNOS BLANCO Y NEGRO (BINTANG) ----- */
         .toggle-wrapper {
             display: flex;
             align-items: center;
             gap: 0.8rem;
         }
 
-        /* Switch estilo Bintang: blanco/negro minimalista */
         .switch {
             position: relative;
             width: 60px;
@@ -238,7 +231,6 @@
             border-color: #000;
         }
 
-        /* Etiqueta de estado (B&W) */
         .estado-texto {
             font-size: 0.85rem;
             font-weight: 600;
@@ -259,7 +251,6 @@
             border-color: #aaa;
         }
 
-        /* total y botón */
         .total-section {
             display: flex;
             flex-wrap: wrap;
@@ -343,7 +334,6 @@
             font-weight: 600;
         }
 
-        /* ----- ANIMACIÓN DE AGRADECIMIENTO ----- */
         .gracias-overlay {
             position: fixed;
             top: 0;
@@ -431,7 +421,6 @@
             transform: scale(1.05);
         }
 
-        /* ----- FUEGOS ARTIFICIALES (canvas) ----- */
         #fireworksCanvas {
             position: fixed;
             top: 0;
@@ -447,7 +436,6 @@
             display: block;
         }
 
-        /* Animaciones */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -463,7 +451,6 @@
             50% { transform: scale(1.15); }
         }
 
-        /* responsive */
         @media (max-width: 650px) {
             .card {
                 padding: 1.8rem 1.2rem;
@@ -554,27 +541,22 @@
 </head>
 <body>
     <div class="card">
-        <!-- LOGO CIRCULAR ARRIBA DEL NOMBRE -->
         <div class="logo-container">
             <div class="logo-circle">
                 <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl-C2FWUPqhXScoTAnIi5KiqCJy93JtmYMytb1J4I9wt0DiIgz1r8eFwN2kEnX1SIUI_HBxEpUX2w1M7sL94vE8LV_NeTpuOP0hvURBnW4_-VDHUFmKQPCA_USZqeRYqTAoYcr6Af4uOi9l=s680-w680-h510-rw" alt="KERIM MUSIC Logo">
             </div>
         </div>
 
-        <!-- encabezado -->
         <div class="brand">
             <h1>KERIM MUSIC</h1>
             <span class="sub"><i class="fas fa-headphones" style="margin-right: 6px;"></i> producción</span>
         </div>
 
-        <!-- Texto "Crea tu paquete de grabación" -->
         <div class="crea-tu-paquete">
             <i class="fas fa-plus-circle"></i> Crea tu paquete de grabación
         </div>
 
-        <!-- lista de servicios (paquetes) - TODOS APAGADOS (agregar) -->
         <div class="servicios" id="serviciosContainer">
-            <!-- Beat -->
             <div class="servicio-item" data-servicio="beat" data-precio="600">
                 <div class="servicio-info">
                     <i class="fas fa-drum"></i>
@@ -589,7 +571,6 @@
                 </div>
             </div>
 
-            <!-- Grabación de voz -->
             <div class="servicio-item" data-servicio="voz" data-precio="900">
                 <div class="servicio-info">
                     <i class="fas fa-microphone"></i>
@@ -604,7 +585,6 @@
                 </div>
             </div>
 
-            <!-- Masterización -->
             <div class="servicio-item" data-servicio="master" data-precio="400">
                 <div class="servicio-info">
                     <i class="fas fa-sliders-h"></i>
@@ -619,7 +599,6 @@
                 </div>
             </div>
 
-            <!-- Diseño de portada -->
             <div class="servicio-item" data-servicio="portada" data-precio="600">
                 <div class="servicio-info">
                     <i class="fas fa-paint-brush"></i>
@@ -634,7 +613,6 @@
                 </div>
             </div>
 
-            <!-- MANEJO DE ARTISTAS Y PUBLICIDAD -->
             <div class="servicio-item" data-servicio="artistas" data-precio="800">
                 <div class="servicio-info">
                     <i class="fas fa-users"></i>
@@ -650,7 +628,6 @@
                 </div>
             </div>
 
-            <!-- KERIM MUSIC+ BENEFICIO -->
             <div class="servicio-item" data-servicio="kerimplus" data-precio="2000">
                 <div class="servicio-info">
                     <i class="fas fa-star"></i>
@@ -667,7 +644,6 @@
             </div>
         </div>
 
-        <!-- TOTAL + BOTÓN WHATSAPP -->
         <div class="total-section">
             <div class="total-label">
                 <i class="fas fa-coins"></i> TOTAL
@@ -683,7 +659,6 @@
         </div>
     </div>
 
-    <!-- OVERLAY DE AGRADECIMIENTO -->
     <div class="gracias-overlay" id="graciasOverlay">
         <div class="gracias-modal">
             <i class="fas fa-star"></i>
@@ -696,11 +671,40 @@
         </div>
     </div>
 
-    <!-- Canvas para fuegos artificiales -->
     <canvas id="fireworksCanvas"></canvas>
 
     <script>
-        // ----- FUEGOS ARTIFICIALES -----
+        // ============================================================
+        // SONIDO DE CLIC - SIN RETRASO (PRECARGA)
+        // ============================================================
+        // El sonido se precarga al iniciar la página para que no haya retraso
+        const CLICK_SOUND_URL = 'https://www.dropbox.com/scl/fi/dbkqe6yb8t1j73n3dpd2w/click-sound-effect_yChMMh7e.mp3?rlkey=2rsja9ti4m2eexp8sumu5ngue&st=zsfvyu29&dl=1';
+
+        // Crear el objeto Audio UNA SOLA VEZ y precargarlo
+        const clickAudio = new Audio();
+        clickAudio.src = CLICK_SOUND_URL;
+        clickAudio.volume = 0.5;
+        clickAudio.preload = 'auto'; // Precarga el sonido completamente
+        clickAudio.load(); // Inicia la carga
+
+        function reproducirClick() {
+            try {
+                // Reiniciar el audio y reproducir inmediatamente (sin retraso)
+                clickAudio.currentTime = 0;
+                clickAudio.play().catch(function(e) {
+                    // Si falla, recrear el audio
+                    const audio = new Audio(CLICK_SOUND_URL);
+                    audio.volume = 0.5;
+                    audio.play().catch(() => {});
+                });
+            } catch (e) {
+                // Silenciar errores
+            }
+        }
+
+        // ============================================================
+        // FUEGOS ARTIFICIALES
+        // ============================================================
         const canvas = document.getElementById('fireworksCanvas');
         const ctx = canvas.getContext('2d');
         let fireworksActive = false;
@@ -714,9 +718,8 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // Colores en blanco/negro/grises con toques dorados
         const colores = [
-            '#FFFFFF', '#F5F5F5', '#E0E0E0', '#CCCCCC', 
+            '#FFFFFF', '#F5F5F5', '#E0E0E0', '#CCCCCC',
             '#D4AF37', '#C9A832', '#B8860B', '#FFD700',
             '#AAAAAA', '#888888'
         ];
@@ -752,7 +755,6 @@
             }
 
             draw(ctx) {
-                // Estela
                 for (let i = 0; i < this.trail.length; i++) {
                     const alpha = (i / this.trail.length) * this.life * 0.5;
                     ctx.beginPath();
@@ -761,7 +763,6 @@
                     ctx.fill();
                 }
 
-                // Partícula principal
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fillStyle = this.color;
@@ -770,7 +771,6 @@
                 ctx.fill();
                 ctx.shadowBlur = 0;
 
-                // Brillo extra
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size * 0.3, 0, Math.PI * 2);
                 ctx.fillStyle = '#FFFFFF';
@@ -792,7 +792,6 @@
 
         function generarFuegosArtificiales() {
             if (!fireworksActive) return;
-
             const numExplosions = 5 + Math.floor(Math.random() * 4);
             for (let i = 0; i < numExplosions; i++) {
                 const x = Math.random() * canvas.width * 0.8 + canvas.width * 0.1;
@@ -801,13 +800,11 @@
                     if (fireworksActive) crearExplosion(x, y);
                 }, i * 200 + Math.random() * 150);
             }
-
             setTimeout(generarFuegosArtificiales, 800 + Math.random() * 600);
         }
 
         function animarFuegos() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
             for (let i = particles.length - 1; i >= 0; i--) {
                 const p = particles[i];
                 p.update();
@@ -816,7 +813,6 @@
                     particles.splice(i, 1);
                 }
             }
-
             animationId = requestAnimationFrame(animarFuegos);
         }
 
@@ -840,7 +836,9 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
 
-        // ----- LÓGICA DE SERVICIOS -----
+        // ============================================================
+        // LÓGICA DE SERVICIOS
+        // ============================================================
         const PRECIOS = {
             beat: 600,
             voz: 900,
@@ -892,6 +890,11 @@
             const servicio = element.dataset.servicio;
             if (!servicio) return;
 
+            // Reproducir sonido de clic (excepto para Kerim Music+)
+            if (servicio !== 'kerimplus') {
+                reproducirClick();
+            }
+
             const estabaActivo = estado[servicio];
             estado[servicio] = !estado[servicio];
             actualizarSwitch(servicio);
@@ -923,6 +926,8 @@
         }
 
         function enviarPedidoWhatsApp() {
+            reproducirClick();
+
             let mensaje = '🎵 *KERIM MUSIC* - Pedido de producción%0A%0A';
             let serviciosSeleccionados = [];
             let total = 0;
@@ -973,6 +978,7 @@
         document.getElementById('whatsappBtn').addEventListener('click', enviarPedidoWhatsApp);
 
         document.getElementById('btnEnviarPedidoGracias').addEventListener('click', function() {
+            reproducirClick();
             cerrarGracias();
             enviarPedidoWhatsApp();
         });
