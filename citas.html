@@ -328,6 +328,57 @@
         }
 
         /* ============================================================
+           NUEVO: CAMPO DE TEXTO PARA BEAT
+           ============================================================ */
+        .beat-notes-wrapper {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.4s ease, margin 0.3s ease;
+            opacity: 0;
+            margin: 0 0 0 0;
+            padding: 0 1.8rem;
+        }
+
+        .beat-notes-wrapper.visible {
+            max-height: 200px;
+            opacity: 1;
+            margin: 0.5rem 0 0.5rem 0;
+        }
+
+        .beat-notes-wrapper textarea {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border-radius: 30px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+            font-size: 0.95rem;
+            resize: vertical;
+            min-height: 70px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        .beat-notes-wrapper textarea:focus {
+            border-color: #0c9cdf;
+            box-shadow: 0 0 0 3px rgba(12, 156, 223, 0.2);
+        }
+
+        .beat-notes-wrapper label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.3rem;
+            margin-left: 0.5rem;
+        }
+
+        .beat-notes-wrapper label i {
+            color: #0c9cdf;
+            margin-right: 6px;
+        }
+
+        /* ============================================================
            CONTENEDOR TOTAL – OCULTO POR DEFECTO
            ============================================================ */
         .total-section {
@@ -427,7 +478,7 @@
         }
 
         /* ============================================================
-           NUEVO: BOTÓN PDF – OCULTO POR DEFECTO
+           BOTÓN PDF – OCULTO POR DEFECTO
            ============================================================ */
         .btn-pdf-wrapper {
             display: flex;
@@ -794,6 +845,9 @@
                 font-size: 0.85rem;
                 padding: 0.2rem 0.8rem;
             }
+            .beat-notes-wrapper {
+                padding: 0 0.8rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -830,6 +884,11 @@
             }
             .btn-compartir i {
                 font-size: 0.8rem;
+            }
+            .beat-notes-wrapper textarea {
+                font-size: 0.85rem;
+                min-height: 60px;
+                padding: 0.6rem 1rem;
             }
         }
     </style>
@@ -878,6 +937,11 @@
                         </div>
                         <span class="estado-texto" id="estado-beat">agregar</span>
                     </div>
+                </div>
+                <!-- Campo de notas para BEAT (aparece cuando el switch está activo) -->
+                <div class="beat-notes-wrapper" id="beatNotesWrapper">
+                    <label for="beatNotes"><i class="fas fa-pencil-alt"></i> Describe cómo quieres tu beat:</label>
+                    <textarea id="beatNotes" placeholder="Ej: estilo trap, tempo 140 BPM, con 808s, atmósfera oscura..." rows="2"></textarea>
                 </div>
 
                 <!-- Grabación de voz -->
@@ -974,10 +1038,10 @@
             </button>
         </div>
 
-        <!-- NUEVO: BOTÓN PDF OCULTO INICIALMENTE -->
+        <!-- BOTÓN PDF OCULTO INICIALMENTE -->
         <div class="btn-pdf-wrapper" id="btnPDFWrapper">
             <button class="btn-pdf" id="pdfBtn">
-                <i class="fas fa-file-pdf"></i> Descargar PDF
+                <i class="fas fa-file-pdf"></i> Descargar Recivo
             </button>
         </div>
 
@@ -1276,6 +1340,7 @@
         const totalSection = document.getElementById('totalSection');
         const btnWhatsAppWrapper = document.getElementById('btnWhatsAppWrapper');
         const btnPDFWrapper = document.getElementById('btnPDFWrapper');
+        const beatNotesWrapper = document.getElementById('beatNotesWrapper');
         const estadoTextos = {
             beat: document.getElementById('estado-beat'),
             voz: document.getElementById('estado-voz'),
@@ -1298,6 +1363,14 @@
                 switchEl.classList.remove('active');
                 textoEl.textContent = 'agregar';
                 textoEl.classList.remove('activo');
+            }
+            // Controlar visibilidad del campo de notas para BEAT
+            if (servicio === 'beat') {
+                if (estado[servicio]) {
+                    beatNotesWrapper.classList.add('visible');
+                } else {
+                    beatNotesWrapper.classList.remove('visible');
+                }
             }
         }
 
@@ -1381,7 +1454,15 @@
                         kerimplus: 'Kerim Music+ (2 grabaciones · paquete completo)'
                     };
                     const precio = PRECIOS[key];
-                    serviciosSeleccionados.push(`✅ ${nombreMap[key]}  $${precio} MXN`);
+                    let servicioTexto = `✅ ${nombreMap[key]}  $${precio} MXN`;
+                    // Si es Beat y hay notas, agregarlas
+                    if (key === 'beat') {
+                        const notas = document.getElementById('beatNotes').value.trim();
+                        if (notas) {
+                            servicioTexto += `%0A   📝 Notas: ${notas}`;
+                        }
+                    }
+                    serviciosSeleccionados.push(servicioTexto);
                     total += precio;
                 }
             }
@@ -1401,12 +1482,11 @@
         }
 
         // ============================================================
-        // NUEVO: GENERAR PDF
+        // GENERAR PDF (incluye notas de beat)
         // ============================================================
         function descargarPDF() {
             reproducirClick();
 
-            // Obtener servicios seleccionados
             const seleccionados = [];
             let total = 0;
             const nombreMap = {
@@ -1417,10 +1497,19 @@
                 artistas: 'Manejo de artistas (3 meses + publicidad)',
                 kerimplus: 'Kerim Music+ (2 grabaciones · paquete completo)'
             };
+            let notasBeat = '';
 
             for (let key in estado) {
                 if (estado[key]) {
-                    seleccionados.push({ nombre: nombreMap[key] || key, precio: PRECIOS[key] });
+                    const item = { nombre: nombreMap[key] || key, precio: PRECIOS[key] };
+                    if (key === 'beat') {
+                        const notas = document.getElementById('beatNotes').value.trim();
+                        if (notas) {
+                            item.notas = notas;
+                            notasBeat = notas;
+                        }
+                    }
+                    seleccionados.push(item);
                     total += PRECIOS[key];
                 }
             }
@@ -1430,14 +1519,12 @@
                 return;
             }
 
-            // Crear PDF con jsPDF
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
             const pageWidth = doc.internal.pageSize.getWidth();
             const margin = 20;
             let y = margin;
 
-            // Título
             doc.setFontSize(24);
             doc.setFont('helvetica', 'bold');
             doc.text('KERIM MUSIC', pageWidth / 2, y, { align: 'center' });
@@ -1448,7 +1535,6 @@
             doc.text('Detalle de tu paquete de producción', pageWidth / 2, y, { align: 'center' });
             y += 10;
 
-            // Fecha y hora
             const ahora = new Date();
             const fechaStr = ahora.toLocaleString('es-MX', {
                 day: '2-digit',
@@ -1463,12 +1549,10 @@
             doc.text(`Generado el: ${fechaStr}`, margin, y);
             y += 12;
 
-            // Línea separadora
             doc.setDrawColor(200);
             doc.line(margin, y, pageWidth - margin, y);
             y += 8;
 
-            // Lista de servicios
             doc.setFontSize(14);
             doc.setFont('helvetica', 'bold');
             doc.text('Servicios seleccionados:', margin, y);
@@ -1477,26 +1561,30 @@
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(12);
             seleccionados.forEach((item, index) => {
-                const texto = `${index + 1}. ${item.nombre} — $${item.precio.toLocaleString('es-MX')} MXN`;
+                let texto = `${index + 1}. ${item.nombre} — $${item.precio.toLocaleString('es-MX')} MXN`;
                 doc.text(texto, margin + 5, y);
                 y += 7;
+                // Si tiene notas, mostrarlas
+                if (item.notas) {
+                    doc.setFontSize(10);
+                    doc.text(`   Notas: ${item.notas}`, margin + 10, y);
+                    y += 6;
+                    doc.setFontSize(12);
+                }
             });
 
             y += 4;
-            // Total
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(16);
             doc.text(`TOTAL: $${total.toLocaleString('es-MX')} MXN`, margin, y);
             y += 12;
 
-            // Mensaje final
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(11);
             doc.text('Gracias por confiar en KERIM MUSIC.', margin, y);
             y += 6;
-            doc.text('¡Haremos realidad tu proyecto!', margin, y);
+            doc.text('¡Imprime este recivo y presentalo al estudio!', margin, y);
 
-            // Guardar PDF
             doc.save(`paquete_KERIM_${ahora.getFullYear()}-${(ahora.getMonth()+1).toString().padStart(2,'0')}-${ahora.getDate().toString().padStart(2,'0')}.pdf`);
         }
 
@@ -1519,6 +1607,7 @@
             totalBajoLogo.classList.remove('visible');
             btnWhatsAppWrapper.classList.remove('visible');
             btnPDFWrapper.classList.remove('visible');
+            beatNotesWrapper.classList.remove('visible');
             opcionesVisibles = false;
         }
 
@@ -1529,7 +1618,6 @@
             enviarPedidoWhatsApp();
         });
 
-        // Evento para el botón PDF
         document.getElementById('pdfBtn').addEventListener('click', descargarPDF);
 
         window.toggleServicio = toggleServicio;
