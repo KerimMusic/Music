@@ -40,7 +40,8 @@
 
         .logo-container {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
             margin-bottom: 0.5rem;
         }
 
@@ -60,6 +61,35 @@
             height: 100%;
             object-fit: cover;
             display: block;
+        }
+
+        /* ----- TOTAL OCULTO DEBAJO DE LA IMAGEN ----- */
+        .total-bajo-logo {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #000;
+            opacity: 0;
+            transition: opacity 0.4s ease, transform 0.3s ease;
+            transform: translateY(-5px);
+            pointer-events: none;
+            background: #e8e8e8;
+            padding: 0.3rem 1.5rem;
+            border-radius: 40px;
+            border: 1px solid #ccc;
+            display: inline-block;
+        }
+
+        .total-bajo-logo.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .total-bajo-logo i {
+            margin-right: 6px;
+            color: #222;
         }
 
         .brand {
@@ -91,31 +121,57 @@
             border: 1px solid #ccc;
         }
 
-        .crea-tu-paquete {
-            text-align: center;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #111;
-            letter-spacing: 0.5px;
-            margin-bottom: 1.2rem;
-            padding: 0.6rem 1rem;
-            background: #ececec;
-            border-radius: 60px;
-            border: 1px solid #ccc;
-            display: inline-block;
-            width: 100%;
+        /* ----- CONTENEDOR DE SERVICIOS (oculto inicialmente) ----- */
+        .servicios-wrapper {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease, margin 0.4s ease;
+            opacity: 0;
+            margin: 0;
         }
 
-        .crea-tu-paquete i {
-            margin-right: 8px;
-            color: #222;
+        .servicios-wrapper.abierto {
+            max-height: 800px;
+            opacity: 1;
+            margin: 1.5rem 0 2.5rem 0;
         }
 
         .servicios {
             display: flex;
             flex-direction: column;
             gap: 0.9rem;
-            margin: 1.5rem 0 2.5rem 0;
+        }
+
+        /* ----- BOTÓN "CREA TU PAQUETE" (ahora con cursor pointer) ----- */
+        .crea-tu-paquete {
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #111;
+            letter-spacing: 0.5px;
+            padding: 0.6rem 1rem;
+            background: #ececec;
+            border-radius: 60px;
+            border: 1px solid #ccc;
+            display: inline-block;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            user-select: none;
+        }
+
+        .crea-tu-paquete:hover {
+            background: #ddd;
+            transform: scale(1.01);
+        }
+
+        .crea-tu-paquete:active {
+            transform: scale(0.98);
+        }
+
+        .crea-tu-paquete i {
+            margin-right: 8px;
+            color: #222;
         }
 
         .servicio-item {
@@ -283,6 +339,23 @@
             font-weight: 800;
             color: #000;
             margin-left: 0.5rem;
+        }
+
+        /* ----- BOTÓN WHATSAPP OCULTO INICIALMENTE ----- */
+        .btn-whatsapp-wrapper {
+            display: flex;
+            justify-content: center;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.5s ease, max-height 0.5s ease, margin 0.4s ease;
+            margin: 0;
+        }
+
+        .btn-whatsapp-wrapper.visible {
+            opacity: 1;
+            max-height: 100px;
+            margin-top: 0.5rem;
         }
 
         .btn-whatsapp {
@@ -484,6 +557,7 @@
                 justify-content: center;
                 padding: 0.9rem;
                 font-size: 1.1rem;
+                width: 100%;
             }
             .switch {
                 width: 50px;
@@ -512,6 +586,13 @@
             .gracias-modal h2 {
                 font-size: 1.7rem;
             }
+            .total-bajo-logo {
+                font-size: 1rem;
+                padding: 0.2rem 1rem;
+            }
+            .servicios-wrapper.abierto {
+                max-height: 1200px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -536,14 +617,22 @@
                 width: 65px;
                 height: 65px;
             }
+            .servicios-wrapper.abierto {
+                max-height: 1400px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="card">
+        <!-- LOGO CIRCULAR ARRIBA DEL NOMBRE -->
         <div class="logo-container">
             <div class="logo-circle">
                 <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl-C2FWUPqhXScoTAnIi5KiqCJy93JtmYMytb1J4I9wt0DiIgz1r8eFwN2kEnX1SIUI_HBxEpUX2w1M7sL94vE8LV_NeTpuOP0hvURBnW4_-VDHUFmKQPCA_USZqeRYqTAoYcr6Af4uOi9l=s680-w680-h510-rw" alt="KERIM MUSIC Logo">
+            </div>
+            <!-- TOTAL OCULTO DEBAJO DE LA IMAGEN -->
+            <div class="total-bajo-logo" id="totalBajoLogo">
+                <i class="fas fa-coins"></i> TOTAL: <span id="totalBajoNumero">$0</span>
             </div>
         </div>
 
@@ -552,94 +641,104 @@
             <span class="sub"><i class="fas fa-headphones" style="margin-right: 6px;"></i> producción</span>
         </div>
 
-        <div class="crea-tu-paquete">
+        <!-- BOTÓN "CREA TU PAQUETE" (ahora con onclick) -->
+        <div class="crea-tu-paquete" id="btnMostrarOpciones">
             <i class="fas fa-plus-circle"></i> Crea tu paquete de grabación
         </div>
 
-        <div class="servicios" id="serviciosContainer">
-            <div class="servicio-item" data-servicio="beat" data-precio="600">
-                <div class="servicio-info">
-                    <i class="fas fa-drum"></i>
-                    <span class="nombre">BEAT</span>
-                    <span class="precio">$600 MXN</span>
-                </div>
-                <div class="toggle-wrapper">
-                    <div class="switch" data-servicio="beat" onclick="toggleServicio(this)">
-                        <div class="thumb"></div>
+        <!-- CONTENEDOR DE SERVICIOS (oculto inicialmente) -->
+        <div class="servicios-wrapper" id="serviciosWrapper">
+            <div class="servicios" id="serviciosContainer">
+                <!-- Beat -->
+                <div class="servicio-item" data-servicio="beat" data-precio="600">
+                    <div class="servicio-info">
+                        <i class="fas fa-drum"></i>
+                        <span class="nombre">BEAT</span>
+                        <span class="precio">$600 MXN</span>
                     </div>
-                    <span class="estado-texto" id="estado-beat">agregar</span>
+                    <div class="toggle-wrapper">
+                        <div class="switch" data-servicio="beat" onclick="toggleServicio(this)">
+                            <div class="thumb"></div>
+                        </div>
+                        <span class="estado-texto" id="estado-beat">agregar</span>
+                    </div>
                 </div>
-            </div>
 
-            <div class="servicio-item" data-servicio="voz" data-precio="900">
-                <div class="servicio-info">
-                    <i class="fas fa-microphone"></i>
-                    <span class="nombre">GRABACIÓN DE VOZ</span>
-                    <span class="precio">$900 MXN</span>
-                </div>
-                <div class="toggle-wrapper">
-                    <div class="switch" data-servicio="voz" onclick="toggleServicio(this)">
-                        <div class="thumb"></div>
+                <!-- Grabación de voz -->
+                <div class="servicio-item" data-servicio="voz" data-precio="900">
+                    <div class="servicio-info">
+                        <i class="fas fa-microphone"></i>
+                        <span class="nombre">GRABACIÓN DE VOZ</span>
+                        <span class="precio">$900 MXN</span>
                     </div>
-                    <span class="estado-texto" id="estado-voz">agregar</span>
+                    <div class="toggle-wrapper">
+                        <div class="switch" data-servicio="voz" onclick="toggleServicio(this)">
+                            <div class="thumb"></div>
+                        </div>
+                        <span class="estado-texto" id="estado-voz">agregar</span>
+                    </div>
                 </div>
-            </div>
 
-            <div class="servicio-item" data-servicio="master" data-precio="400">
-                <div class="servicio-info">
-                    <i class="fas fa-sliders-h"></i>
-                    <span class="nombre">MASTERIZACIÓN</span>
-                    <span class="precio">$400 MXN</span>
-                </div>
-                <div class="toggle-wrapper">
-                    <div class="switch" data-servicio="master" onclick="toggleServicio(this)">
-                        <div class="thumb"></div>
+                <!-- Masterización -->
+                <div class="servicio-item" data-servicio="master" data-precio="400">
+                    <div class="servicio-info">
+                        <i class="fas fa-sliders-h"></i>
+                        <span class="nombre">MASTERIZACIÓN</span>
+                        <span class="precio">$400 MXN</span>
                     </div>
-                    <span class="estado-texto" id="estado-master">agregar</span>
+                    <div class="toggle-wrapper">
+                        <div class="switch" data-servicio="master" onclick="toggleServicio(this)">
+                            <div class="thumb"></div>
+                        </div>
+                        <span class="estado-texto" id="estado-master">agregar</span>
+                    </div>
                 </div>
-            </div>
 
-            <div class="servicio-item" data-servicio="portada" data-precio="600">
-                <div class="servicio-info">
-                    <i class="fas fa-paint-brush"></i>
-                    <span class="nombre">DISEÑO DE PORTADA</span>
-                    <span class="precio">$600 MXN</span>
-                </div>
-                <div class="toggle-wrapper">
-                    <div class="switch" data-servicio="portada" onclick="toggleServicio(this)">
-                        <div class="thumb"></div>
+                <!-- Diseño de portada -->
+                <div class="servicio-item" data-servicio="portada" data-precio="600">
+                    <div class="servicio-info">
+                        <i class="fas fa-paint-brush"></i>
+                        <span class="nombre">DISEÑO DE PORTADA</span>
+                        <span class="precio">$600 MXN</span>
                     </div>
-                    <span class="estado-texto" id="estado-portada">agregar</span>
+                    <div class="toggle-wrapper">
+                        <div class="switch" data-servicio="portada" onclick="toggleServicio(this)">
+                            <div class="thumb"></div>
+                        </div>
+                        <span class="estado-texto" id="estado-portada">agregar</span>
+                    </div>
                 </div>
-            </div>
 
-            <div class="servicio-item" data-servicio="artistas" data-precio="800">
-                <div class="servicio-info">
-                    <i class="fas fa-users"></i>
-                    <span class="nombre">MANEJO DE ARTISTAS</span>
-                    <span class="precio">$800 MXN</span>
-                    <span class="detalle">3 meses · publicidad</span>
-                </div>
-                <div class="toggle-wrapper">
-                    <div class="switch" data-servicio="artistas" onclick="toggleServicio(this)">
-                        <div class="thumb"></div>
+                <!-- MANEJO DE ARTISTAS Y PUBLICIDAD -->
+                <div class="servicio-item" data-servicio="artistas" data-precio="800">
+                    <div class="servicio-info">
+                        <i class="fas fa-users"></i>
+                        <span class="nombre">MANEJO DE ARTISTAS</span>
+                        <span class="precio">$800 MXN</span>
+                        <span class="detalle">3 meses · publicidad</span>
                     </div>
-                    <span class="estado-texto" id="estado-artistas">agregar</span>
+                    <div class="toggle-wrapper">
+                        <div class="switch" data-servicio="artistas" onclick="toggleServicio(this)">
+                            <div class="thumb"></div>
+                        </div>
+                        <span class="estado-texto" id="estado-artistas">agregar</span>
+                    </div>
                 </div>
-            </div>
 
-            <div class="servicio-item" data-servicio="kerimplus" data-precio="2000">
-                <div class="servicio-info">
-                    <i class="fas fa-star"></i>
-                    <span class="nombre">KERIM MUSIC+</span>
-                    <span class="precio">$2,000 MXN</span>
-                    <span class="detalle">2 grabaciones · paquete completo</span>
-                </div>
-                <div class="toggle-wrapper">
-                    <div class="switch" data-servicio="kerimplus" onclick="toggleServicio(this)">
-                        <div class="thumb"></div>
+                <!-- KERIM MUSIC+ BENEFICIO -->
+                <div class="servicio-item" data-servicio="kerimplus" data-precio="2000">
+                    <div class="servicio-info">
+                        <i class="fas fa-star"></i>
+                        <span class="nombre">KERIM MUSIC+</span>
+                        <span class="precio">$2,000 MXN</span>
+                        <span class="detalle">2 grabaciones · paquete completo</span>
                     </div>
-                    <span class="estado-texto" id="estado-kerimplus">agregar</span>
+                    <div class="toggle-wrapper">
+                        <div class="switch" data-servicio="kerimplus" onclick="toggleServicio(this)">
+                            <div class="thumb"></div>
+                        </div>
+                        <span class="estado-texto" id="estado-kerimplus">agregar</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -649,6 +748,10 @@
                 <i class="fas fa-coins"></i> TOTAL
                 <span class="total-number" id="totalDisplay">$0</span>
             </div>
+        </div>
+
+        <!-- BOTÓN WHATSAPP OCULTO INICIALMENTE -->
+        <div class="btn-whatsapp-wrapper" id="btnWhatsAppWrapper">
             <button class="btn-whatsapp" id="whatsappBtn">
                 <i class="fab fa-whatsapp"></i> Enviar pedido
             </button>
@@ -674,6 +777,29 @@
     <canvas id="fireworksCanvas"></canvas>
 
     <script>
+        // ============================================================
+        // MOSTRAR/OCULTAR OPCIONES AL HACER CLIC EN "CREA TU PAQUETE"
+        // ============================================================
+        const btnMostrar = document.getElementById('btnMostrarOpciones');
+        const wrapper = document.getElementById('serviciosWrapper');
+        let opcionesVisibles = false;
+
+        btnMostrar.addEventListener('click', function() {
+            opcionesVisibles = !opcionesVisibles;
+            if (opcionesVisibles) {
+                wrapper.classList.add('abierto');
+                btnMostrar.innerHTML = '<i class="fas fa-minus-circle"></i> Ocultar opciones';
+            } else {
+                wrapper.classList.remove('abierto');
+                btnMostrar.innerHTML = '<i class="fas fa-plus-circle"></i> Crea tu paquete de grabación';
+                // Ocultar el total debajo del logo si no hay selección
+                const haySeleccion = Object.values(estado).some(val => val === true);
+                if (!haySeleccion) {
+                    totalBajoLogo.classList.remove('visible');
+                }
+            }
+        });
+
         // ============================================================
         // SONIDO DE CLIC - SIN RETRASO (PRECARGA)
         // ============================================================
@@ -718,9 +844,6 @@
             } catch (e) {}
         }
 
-        // ============================================================
-        // NUEVA FUNCIÓN: DETENER SONIDO DE KERIM MUSIC+
-        // ============================================================
         function detenerSonidoKerim() {
             try {
                 if (kerimAudio) {
@@ -886,6 +1009,9 @@
         };
 
         const totalSpan = document.getElementById('totalDisplay');
+        const totalBajoSpan = document.getElementById('totalBajoNumero');
+        const totalBajoLogo = document.getElementById('totalBajoLogo');
+        const btnWhatsAppWrapper = document.getElementById('btnWhatsAppWrapper');
         const switches = document.querySelectorAll('.switch');
         const estadoTextos = {
             beat: document.getElementById('estado-beat'),
@@ -918,7 +1044,6 @@
             const servicio = element.dataset.servicio;
             if (!servicio) return;
 
-            // Reproducir sonido de clic (excepto para Kerim Music+)
             if (servicio !== 'kerimplus') {
                 reproducirClick();
             }
@@ -930,14 +1055,22 @@
 
             if (servicio === 'kerimplus') {
                 if (estado[servicio]) {
-                    // Se activó: reproducir sonido, mostrar gracias y fuegos
                     reproducirSonidoKerim();
                     mostrarGracias();
                     iniciarFuegos();
                 } else {
-                    // Se desactivó: detener el sonido
                     detenerSonidoKerim();
                 }
+            }
+
+            // Mostrar u ocultar el total debajo del logo y el botón de WhatsApp
+            const haySeleccion = Object.values(estado).some(val => val === true);
+            if (haySeleccion && opcionesVisibles) {
+                totalBajoLogo.classList.add('visible');
+                btnWhatsAppWrapper.classList.add('visible');
+            } else {
+                totalBajoLogo.classList.remove('visible');
+                btnWhatsAppWrapper.classList.remove('visible');
             }
         }
 
@@ -948,7 +1081,9 @@
                     total += PRECIOS[key];
                 }
             }
-            totalSpan.textContent = `$${total.toLocaleString('es-MX')}`;
+            const totalFormateado = `$${total.toLocaleString('es-MX')}`;
+            totalSpan.textContent = totalFormateado;
+            totalBajoSpan.textContent = totalFormateado;
         }
 
         function mostrarGracias() {
@@ -958,7 +1093,6 @@
         function cerrarGracias() {
             graciasOverlay.classList.remove('mostrar');
             detenerFuegos();
-            // También detener el sonido al cerrar la ventana
             detenerSonidoKerim();
         }
 
@@ -1010,6 +1144,8 @@
                 actualizarSwitch(key);
             }
             actualizarTotal();
+            totalBajoLogo.classList.remove('visible');
+            btnWhatsAppWrapper.classList.remove('visible');
         }
 
         document.getElementById('whatsappBtn').addEventListener('click', enviarPedidoWhatsApp);
