@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KERIM MUSIC · Bintang</title>
+    <!-- FAVICON - Imagen circular -->
+    <link rel="icon" type="image/png" sizes="32x32" href="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl-C2FWUPqhXScoTAnIi5KiqCJy93JtmYMytb1J4I9wt0DiIgz1r8eFwN2kEnX1SIUI_HBxEpUX2w1M7sL94vE8LV_NeTpuOP0hvURBnW4_-VDHUFmKQPCA_USZqeRYqTAoYcr6Af4uOi9l=s680-w680-h510-rw">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl-C2FWUPqhXScoTAnIi5KiqCJy93JtmYMytb1J4I9wt0DiIgz1r8eFwN2kEnX1SIUI_HBxEpUX2w1M7sL94vE8LV_NeTpuOP0hvURBnW4_-VDHUFmKQPCA_USZqeRYqTAoYcr6Af4uOi9l=s680-w680-h510-rw">
+    <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl-C2FWUPqhXScoTAnIi5KiqCJy93JtmYMytb1J4I9wt0DiIgz1r8eFwN2kEnX1SIUI_HBxEpUX2w1M7sL94vE8LV_NeTpuOP0hvURBnW4_-VDHUFmKQPCA_USZqeRYqTAoYcr6Af4uOi9l=s680-w680-h510-rw">
     <!-- Font Awesome (íconos) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -59,6 +63,56 @@
             transform: translateX(-20px);
             animation: fadeInLeft 0.8s ease forwards;
             animation-delay: 0.3s;
+        }
+
+        /* Grupo de elementos a la derecha del encabezado */
+        .brand-right {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .brand .sub {
+            color: #444;
+            font-weight: 500;
+            letter-spacing: 1px;
+            font-size: 0.95rem;
+            background: #eaeaea;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            border: 1px solid #ccc;
+        }
+
+        /* BOTÓN DE COMPARTIR */
+        .btn-compartir {
+            background: #eaeaea;
+            border: 1px solid #ccc;
+            color: #444;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-compartir:hover {
+            background: #ddd;
+            transform: scale(1.05);
+        }
+
+        .btn-compartir:active {
+            transform: scale(0.95);
+        }
+
+        .btn-compartir i {
+            font-size: 1rem;
+            color: #444;
         }
 
         .crea-tu-paquete {
@@ -435,17 +489,6 @@
             text-shadow: none;
         }
 
-        .brand .sub {
-            color: #444;
-            font-weight: 500;
-            letter-spacing: 1px;
-            font-size: 0.95rem;
-            background: #eaeaea;
-            padding: 0.3rem 1.2rem;
-            border-radius: 40px;
-            border: 1px solid #ccc;
-        }
-
         .gracias-overlay {
             position: fixed;
             top: 0;
@@ -621,6 +664,15 @@
             .brand h1 {
                 font-size: 2.2rem;
             }
+            .brand {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+            .brand-right {
+                justify-content: flex-start;
+                width: 100%;
+            }
             .servicio-item {
                 padding: 0.8rem 1.2rem;
                 border-radius: 40px;
@@ -678,6 +730,10 @@
             .servicios-wrapper.abierto {
                 max-height: 1200px;
             }
+            .btn-compartir {
+                font-size: 0.85rem;
+                padding: 0.2rem 0.8rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -705,6 +761,16 @@
             .servicios-wrapper.abierto {
                 max-height: 1400px;
             }
+            .brand h1 {
+                font-size: 1.8rem;
+            }
+            .btn-compartir {
+                font-size: 0.75rem;
+                padding: 0.2rem 0.6rem;
+            }
+            .btn-compartir i {
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
@@ -723,7 +789,13 @@
 
         <div class="brand">
             <h1>KERIM MUSIC</h1>
-            <span class="sub"><i class="fas fa-headphones" style="margin-right: 6px;"></i> producción</span>
+            <div class="brand-right">
+                <span class="sub"><i class="fas fa-headphones" style="margin-right: 6px;"></i> producción</span>
+                <!-- BOTÓN DE COMPARTIR -->
+                <button class="btn-compartir" id="btnCompartir" title="Compartir esta página">
+                    <i class="fas fa-share-alt"></i> Compartir
+                </button>
+            </div>
         </div>
 
         <!-- BOTÓN "CREA TU PAQUETE" -->
@@ -862,6 +934,43 @@
     <canvas id="fireworksCanvas"></canvas>
 
     <script>
+        // ============================================================
+        // COMPARTIR PÁGINA
+        // ============================================================
+        document.getElementById('btnCompartir').addEventListener('click', function() {
+            const url = window.location.href;
+            const titulo = 'KERIM MUSIC · Producción Musical';
+
+            if (navigator.share) {
+                // API de compartir nativa (móviles)
+                navigator.share({
+                    title: titulo,
+                    text: '🎵 KERIM MUSIC - Producción musical profesional',
+                    url: url
+                }).catch(() => {});
+            } else {
+                // Fallback: copiar al portapapeles
+                navigator.clipboard.writeText(url).then(() => {
+                    // Feedback visual
+                    const btn = document.getElementById('btnCompartir');
+                    const originalHTML = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+                    btn.style.background = '#d4edda';
+                    btn.style.borderColor = '#28a745';
+                    btn.style.color = '#155724';
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.style.background = '#eaeaea';
+                        btn.style.borderColor = '#ccc';
+                        btn.style.color = '#444';
+                    }, 2000);
+                }).catch(() => {
+                    // Si falla, abrir diálogo de compartir con URL
+                    alert('Comparte esta URL: ' + url);
+                });
+            }
+        });
+
         // ============================================================
         // MOSTRAR/OCULTAR OPCIONES AL HACER CLIC EN "CREA TU PAQUETE"
         // ============================================================
