@@ -111,6 +111,33 @@
             color: #444;
         }
 
+        /* Texto "Información" con comportamiento de botón */
+        .info-toggle {
+            color: #aaa;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            letter-spacing: 0.3px;
+            transition: color 0.2s ease, transform 0.2s ease;
+            user-select: none;
+            border-bottom: 1px dashed #666;
+            padding-bottom: 2px;
+        }
+        .info-toggle:hover {
+            color: #fff;
+            transform: scale(1.05);
+        }
+        .info-toggle:active {
+            transform: scale(0.95);
+        }
+        .info-toggle i {
+            font-size: 0.9rem;
+            color: #0c9cdf;
+        }
+
         .crea-tu-paquete {
             background: #0c9cdf;
             color: #fff;
@@ -688,6 +715,28 @@
             display: block;
         }
 
+        /* ---- MENSAJE DE BIENVENIDA (oculto por defecto) ---- */
+        .mensaje-bienvenida {
+            text-align: center;
+            color: #f0f0f0;
+            max-width: 600px;
+            margin: 0.8rem auto 0.3rem;
+            padding: 0 1rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            display: none; /* oculto inicialmente */
+        }
+        .mensaje-bienvenida.visible {
+            display: block;
+        }
+        .mensaje-bienvenida p {
+            margin: 0.3rem 0;
+        }
+        .mensaje-bienvenida strong {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -821,12 +870,16 @@
             .servicios-wrapper.abierto {
                 max-height: 1200px;
             }
-            .btn-compartir {
+            .btn-compartir, .info-toggle {
                 font-size: 0.85rem;
-                padding: 0.2rem 0.8rem;
             }
             .beat-notes-wrapper {
                 padding: 0 0.8rem;
+            }
+            .mensaje-bienvenida {
+                font-size: 0.9rem;
+                padding: 0 0.8rem;
+                margin: 0.6rem auto 0.2rem;
             }
         }
 
@@ -858,17 +911,21 @@
             .brand h1 {
                 font-size: 1.8rem;
             }
-            .btn-compartir {
+            .btn-compartir, .info-toggle {
                 font-size: 0.75rem;
-                padding: 0.2rem 0.6rem;
             }
-            .btn-compartir i {
+            .btn-compartir i, .info-toggle i {
                 font-size: 0.8rem;
             }
             .beat-notes-wrapper textarea {
                 font-size: 0.85rem;
                 min-height: 60px;
                 padding: 0.6rem 1rem;
+            }
+            .mensaje-bienvenida {
+                font-size: 0.8rem;
+                padding: 0 0.5rem;
+                margin: 0.5rem auto 0.1rem;
             }
         }
     </style>
@@ -882,6 +939,12 @@
             <div class="total-bajo-logo" id="totalBajoLogo">
                 <i class="fas fa-coins"></i> TOTAL: <span id="totalBajoNumero">$0</span>
             </div>
+            <!-- MENSAJE DE BIENVENIDA (oculto inicialmente) -->
+            <div class="mensaje-bienvenida" id="mensajeBienvenida">
+                <p>🎵 <strong>¡Crea tu proyecto libremente!</strong></p>
+                <p>Tú tienes la libertad de crear y desarrollar tu proyecto como quieras. Al realizar tu pedido, recibirás tu <strong>comprobante descargable</strong> y podrás darle seguimiento a través de <strong>WhatsApp</strong>.</p>
+                <p>📲 <strong>Realiza tu pedido por WhatsApp y comienza tu proyecto.</strong></p>
+            </div>
         </div>
 
         <div class="brand">
@@ -891,6 +954,10 @@
                 <button class="btn-compartir" id="btnCompartir" title="Compartir esta página">
                     <i class="fas fa-share-alt"></i> Compartir
                 </button>
+                <!-- TEXTO "Información" con comportamiento de botón -->
+                <span class="info-toggle" id="btnInformacion">
+                    <i class="fas fa-info-circle"></i> Información
+                </span>
             </div>
         </div>
 
@@ -1628,6 +1695,21 @@
 
         document.getElementById('pdfBtn').addEventListener('click', function() {
             descargarPDF(false);
+        });
+
+        // ============================================================
+        // TOGGLE INFORMACIÓN (texto clickeable)
+        // ============================================================
+        const btnInfo = document.getElementById('btnInformacion');
+        const mensajeInfo = document.getElementById('mensajeBienvenida');
+        let infoVisible = false;
+
+        btnInfo.addEventListener('click', function() {
+            infoVisible = !infoVisible;
+            mensajeInfo.classList.toggle('visible', infoVisible);
+            btnInfo.innerHTML = infoVisible
+                ? '<i class="fas fa-info-circle"></i> Ocultar'
+                : '<i class="fas fa-info-circle"></i> Información';
         });
 
         window.toggleServicio = toggleServicio;
