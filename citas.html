@@ -175,6 +175,40 @@
             color: #fff;
         }
 
+        /* Botón Ver Anuncio (estilo similar pero diferente color) */
+        .btn-ver-anuncio {
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            padding: 0.8rem 2.5rem;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1.4rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            display: block;
+            width: fit-content;
+            margin: 1rem auto 0;
+            user-select: none;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        }
+        .btn-ver-anuncio:hover {
+            background: #c0392b;
+            transform: scale(1.02);
+            box-shadow: 0 6px 18px rgba(231, 76, 60, 0.4);
+        }
+        .btn-ver-anuncio:active {
+            transform: scale(0.97);
+        }
+        .btn-ver-anuncio i {
+            margin-right: 8px;
+            color: #fff;
+        }
+        .btn-ver-anuncio.oculto {
+            display: none;
+        }
+
         .servicios-wrapper {
             max-height: 0;
             overflow: hidden;
@@ -754,6 +788,11 @@
             margin-bottom: 0.3rem;
         }
 
+        /* Ocultar texto descriptivo en modo anuncio */
+        .mensaje-bienvenida.modo-anuncio .texto-descriptivo {
+            display: none;
+        }
+
         /* Contenedor de medios (video + portada) */
         .mensaje-bienvenida .media-container {
             display: flex;
@@ -863,6 +902,7 @@
         body.info-mode .brand .sub,
         body.info-mode .btn-compartir,
         body.info-mode .crea-tu-paquete,
+        body.info-mode .btn-ver-anuncio,
         body.info-mode .servicios-wrapper,
         body.info-mode .total-section,
         body.info-mode .btn-whatsapp-wrapper,
@@ -1001,7 +1041,7 @@
                 font-size: 0.75rem;
                 padding: 0.1rem 0.6rem;
             }
-            .crea-tu-paquete {
+            .crea-tu-paquete, .btn-ver-anuncio {
                 font-size: 1.1rem;
                 padding: 0.6rem 1.5rem;
             }
@@ -1063,7 +1103,7 @@
                 min-width: 48px;
                 padding: 0.1rem 0.4rem;
             }
-            .crea-tu-paquete {
+            .crea-tu-paquete, .btn-ver-anuncio {
                 font-size: 0.95rem;
                 padding: 0.5rem 1.2rem;
             }
@@ -1135,20 +1175,23 @@
                     </a>
                 </div>
 
-                <p style="font-size:1.1rem; font-weight:bold; text-align:center;">🎵 Crea tu proyecto a tu manera</p>
-                <p>En nuestro servicio tienes la libertad de <strong>crear tu propio proyecto de la manera que tú quieras</strong>. Tú decides qué deseas realizar, cómo quieres llevarlo a cabo y qué detalles quieres incluir en tu proyecto.</p>
-                <p>Una vez que hayas definido lo que necesitas, podrás <strong>realizar tu pedido directamente por WhatsApp</strong>, donde podremos atenderte, resolver tus dudas y confirmar contigo todos los detalles antes de comenzar.</p>
-                <p>Después de realizar tu pedido, recibirás un <strong>comprobante descargable</strong> como respaldo de tu solicitud. Este comprobante te permitirá tener constancia de que tu pedido fue realizado y conservar la información correspondiente a tu proyecto.</p>
-                <p style="font-weight:bold;">📲 ¿Cómo funciona?</p>
-                <ol>
-                    <li><strong>Crea tu proyecto:</strong> Decide qué quieres realizar y prepara los detalles de tu idea.</li>
-                    <li><strong>Realiza tu pedido:</strong> Envíanos tu solicitud directamente por <strong>WhatsApp</strong>.</li>
-                    <li><strong>Confirma los detalles:</strong> Revisaremos contigo la información de tu proyecto para asegurarnos de que todo esté correcto.</li>
-                    <li><strong>Recibe tu comprobante:</strong> Una vez realizado el pedido, tendrás disponible un <strong>comprobante descargable</strong> para que puedas guardarlo.</li>
-                    <li><strong>Dale seguimiento:</strong> Mantendremos la comunicación contigo por WhatsApp para que puedas estar informado sobre tu proyecto.</li>
-                </ol>
-                <p>Queremos que tengas una experiencia sencilla, clara y segura. <strong>Tu proyecto comienza con tu idea, tú decides cómo quieres crearlo y nosotros te ayudamos a llevarlo a cabo.</strong></p>
-                <p style="font-weight:bold; text-align:center;">📱 <strong>Haz tu pedido por WhatsApp y comienza a crear tu proyecto.</strong></p>
+                <!-- TEXTO DESCRIPTIVO (se oculta en modo anuncio) -->
+                <div class="texto-descriptivo">
+                    <p style="font-size:1.1rem; font-weight:bold; text-align:center;">🎵 Crea tu proyecto a tu manera</p>
+                    <p>En nuestro servicio tienes la libertad de <strong>crear tu propio proyecto de la manera que tú quieras</strong>. Tú decides qué deseas realizar, cómo quieres llevarlo a cabo y qué detalles quieres incluir en tu proyecto.</p>
+                    <p>Una vez que hayas definido lo que necesitas, podrás <strong>realizar tu pedido directamente por WhatsApp</strong>, donde podremos atenderte, resolver tus dudas y confirmar contigo todos los detalles antes de comenzar.</p>
+                    <p>Después de realizar tu pedido, recibirás un <strong>comprobante descargable</strong> como respaldo de tu solicitud. Este comprobante te permitirá tener constancia de que tu pedido fue realizado y conservar la información correspondiente a tu proyecto.</p>
+                    <p style="font-weight:bold;">📲 ¿Cómo funciona?</p>
+                    <ol>
+                        <li><strong>Crea tu proyecto:</strong> Decide qué quieres realizar y prepara los detalles de tu idea.</li>
+                        <li><strong>Realiza tu pedido:</strong> Envíanos tu solicitud directamente por <strong>WhatsApp</strong>.</li>
+                        <li><strong>Confirma los detalles:</strong> Revisaremos contigo la información de tu proyecto para asegurarnos de que todo esté correcto.</li>
+                        <li><strong>Recibe tu comprobante:</strong> Una vez realizado el pedido, tendrás disponible un <strong>comprobante descargable</strong> para que puedas guardarlo.</li>
+                        <li><strong>Dale seguimiento:</strong> Mantendremos la comunicación contigo por WhatsApp para que puedas estar informado sobre tu proyecto.</li>
+                    </ol>
+                    <p>Queremos que tengas una experiencia sencilla, clara y segura. <strong>Tu proyecto comienza con tu idea, tú decides cómo quieres crearlo y nosotros te ayudamos a llevarlo a cabo.</strong></p>
+                    <p style="font-weight:bold; text-align:center;">📱 <strong>Haz tu pedido por WhatsApp y comienza a crear tu proyecto.</strong></p>
+                </div>
             </div>
         </div>
 
@@ -1165,9 +1208,15 @@
             </div>
         </div>
 
-        <div class="crea-tu-paquete" id="btnMostrarOpciones">
+        <!-- Botón Crea tu paquete -->
+        <button class="crea-tu-paquete" id="btnMostrarOpciones">
             <i class="fas fa-plus-circle"></i> Crea tu paquete de grabación
-        </div>
+        </button>
+
+        <!-- Botón Ver Anuncio -->
+        <button class="btn-ver-anuncio" id="btnVerAnuncio">
+            <i class="fas fa-play-circle"></i> Ver Anuncio
+        </button>
 
         <div class="servicios-wrapper" id="serviciosWrapper">
             <div class="servicios" id="serviciosContainer">
@@ -1336,15 +1385,19 @@
         });
 
         // ============================================================
-        // MOSTRAR/OCULTAR OPCIONES
+        // MOSTRAR/OCULTAR OPCIONES (Crea tu paquete)
         // ============================================================
         const btnMostrar = document.getElementById('btnMostrarOpciones');
+        const btnVerAnuncio = document.getElementById('btnVerAnuncio');
         const wrapper = document.getElementById('serviciosWrapper');
         let opcionesVisibles = false;
 
         btnMostrar.addEventListener('click', function() {
-            // Reproducir sonido de clic
+            // Sonido de clic
             reproducirClick();
+
+            // Ocultar el botón "Ver Anuncio"
+            btnVerAnuncio.classList.add('oculto');
 
             opcionesVisibles = !opcionesVisibles;
             if (opcionesVisibles) {
@@ -1944,29 +1997,70 @@
             ocultarPortada();
         }
 
-        btnInfo.addEventListener('click', function() {
-            infoVisible = !infoVisible;
-            mensajeInfo.classList.toggle('visible', infoVisible);
-            document.body.classList.toggle('info-mode', infoVisible);
-            btnInfo.innerHTML = infoVisible
-                ? '<i class="fas fa-info-circle"></i> Ocultar'
-                : '<i class="fas fa-info-circle"></i> Información';
+        // Función para abrir la información (modo completo o solo anuncio)
+        function abrirInformacion(modoAnuncio = false) {
+            infoVisible = true;
+            mensajeInfo.classList.add('visible');
+            document.body.classList.add('info-mode');
+            btnInfo.innerHTML = '<i class="fas fa-info-circle"></i> Ocultar';
 
+            // Si es modo anuncio, ocultar el texto descriptivo
+            if (modoAnuncio) {
+                mensajeInfo.classList.add('modo-anuncio');
+            } else {
+                mensajeInfo.classList.remove('modo-anuncio');
+            }
+
+            // Reiniciar video y reproducir
+            reiniciarVideo();
+            video.play().catch(function(e) {});
+            if (video.ended) {
+                mostrarPortada();
+            } else {
+                ocultarPortada();
+            }
+        }
+
+        function cerrarInformacion() {
+            infoVisible = false;
+            mensajeInfo.classList.remove('visible');
+            document.body.classList.remove('info-mode');
+            btnInfo.innerHTML = '<i class="fas fa-info-circle"></i> Información';
+            reiniciarVideo();
+            ocultarPortada();
+        }
+
+        // Evento para el botón "Información" (muestra todo)
+        btnInfo.addEventListener('click', function() {
             if (infoVisible) {
-                // Mostrar información: reiniciar video y ocultar portada por si acaso
-                reiniciarVideo();
-                // Iniciar reproducción del video (solo cuando se abre la información)
-                video.play().catch(function(e) {});
-                // Si el video ya estaba terminado (por ejemplo, si se cierra y abre rápido), mostramos portada
-                if (video.ended) {
-                    mostrarPortada();
+                cerrarInformacion();
+            } else {
+                abrirInformacion(false); // modo completo con texto
+            }
+        });
+
+        // Evento para el botón "Ver Anuncio" (solo video y portada)
+        btnVerAnuncio.addEventListener('click', function() {
+            reproducirClick();
+            if (infoVisible) {
+                // Si ya está abierto, cerramos y abrimos en modo anuncio?
+                // Mejor: si está abierto y se hace clic en Ver Anuncio, cambiamos a modo anuncio
+                if (mensajeInfo.classList.contains('modo-anuncio')) {
+                    // Ya está en modo anuncio, no hacer nada (o cerrar y abrir de nuevo?)
+                    // Lo dejamos así: si ya está abierto y en modo anuncio, no hacemos nada.
                 } else {
-                    ocultarPortada();
+                    // Si está abierto en modo completo, cambiamos a modo anuncio
+                    mensajeInfo.classList.add('modo-anuncio');
                 }
             } else {
-                // Ocultar información: pausar video, reiniciar y ocultar todo
-                reiniciarVideo();
-                ocultarPortada();
+                abrirInformacion(true);
+            }
+        });
+
+        // Cerrar información al hacer clic fuera del mensaje (si está abierto)
+        document.addEventListener('click', function(e) {
+            if (infoVisible && !mensajeInfo.contains(e.target) && e.target !== btnInfo && e.target !== btnVerAnuncio) {
+                cerrarInformacion();
             }
         });
 
