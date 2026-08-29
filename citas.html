@@ -1213,7 +1213,7 @@
             <i class="fas fa-plus-circle"></i> Crea tu paquete de grabación
         </button>
 
-        <!-- Botón Ver Anuncio -->
+        <!-- Botón Ver Anuncio (corregido: id y clase únicos) -->
         <button class="btn-ver-anuncio" id="btnVerAnuncio">
             <i class="fas fa-play-circle"></i> Ver Anuncio
         </button>
@@ -2043,13 +2043,8 @@
         btnVerAnuncio.addEventListener('click', function() {
             reproducirClick();
             if (infoVisible) {
-                // Si ya está abierto, cerramos y abrimos en modo anuncio?
-                // Mejor: si está abierto y se hace clic en Ver Anuncio, cambiamos a modo anuncio
-                if (mensajeInfo.classList.contains('modo-anuncio')) {
-                    // Ya está en modo anuncio, no hacer nada (o cerrar y abrir de nuevo?)
-                    // Lo dejamos así: si ya está abierto y en modo anuncio, no hacemos nada.
-                } else {
-                    // Si está abierto en modo completo, cambiamos a modo anuncio
+                // Si ya está abierto, cambiamos a modo anuncio si no lo está
+                if (!mensajeInfo.classList.contains('modo-anuncio')) {
                     mensajeInfo.classList.add('modo-anuncio');
                 }
             } else {
