@@ -772,7 +772,7 @@
             transition: opacity 0.8s ease, transform 0.8s ease;
         }
         .mensaje-bienvenida .media-container .portada-container {
-            max-width: 60%; /* más pequeña */
+            max-width: 60%;
             width: 60%;
             height: auto;
             border-radius: 12px;
@@ -1119,7 +1119,7 @@
             <div class="mensaje-bienvenida" id="mensajeBienvenida">
                 <!-- Contenedor de medios: video + portada -->
                 <div class="media-container" id="mediaContainer">
-                    <video id="infoVideo" autoplay playsinline>
+                    <video id="infoVideo" playsinline>
                         <source src="https://www.dropbox.com/scl/fi/fozpdad1tujwuaiiie1gb/Anuncio-placoso-de-la-L.mp4?rlkey=q8wvxc8a6odvs3uwj2sxh1vkk&st=4rvkysbl&raw=1" type="video/mp4">
                         Tu navegador no soporta videos.
                     </video>
@@ -1343,6 +1343,9 @@
         let opcionesVisibles = false;
 
         btnMostrar.addEventListener('click', function() {
+            // Reproducir sonido de clic
+            reproducirClick();
+
             opcionesVisibles = !opcionesVisibles;
             if (opcionesVisibles) {
                 wrapper.classList.add('abierto');
@@ -1952,6 +1955,7 @@
             if (infoVisible) {
                 // Mostrar información: reiniciar video y ocultar portada por si acaso
                 reiniciarVideo();
+                // Iniciar reproducción del video (solo cuando se abre la información)
                 video.play().catch(function(e) {});
                 // Si el video ya estaba terminado (por ejemplo, si se cierra y abre rápido), mostramos portada
                 if (video.ended) {
