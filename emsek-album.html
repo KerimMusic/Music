@@ -12,24 +12,23 @@
       box-sizing: border-box;
     }
     body {
-  /* Los colores del gradiente ahora son variables que se actualizan con JS */
-  background: linear-gradient(var(--overlay-color1, rgba(10,14,26,0.85)), var(--overlay-color2, rgba(10,14,26,0.85))),
-              var(--bg-image, url('https://i.postimg.cc/XNP1xdB2/IMG-20260207-WA0000.jpg')) no-repeat center center fixed;
-  background-size: cover;
-  color: #e8ecf4;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  padding: 1rem;
-  padding-bottom: 80px;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: background 0.8s ease; /* transición suave */
-}
+      background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.95)),
+                  var(--bg-image, url('https://i.postimg.cc/XNP1xdB2/IMG-20260207-WA0000.jpg')) no-repeat center center fixed;
+      background-size: cover;
+      color: #ffffff;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      padding: 1rem;
+      padding-bottom: 80px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: background 0.8s ease;
+    }
     h1 {
       font-size: 1.8rem;
       font-weight: 700;
-      background: linear-gradient(135deg, #2b6df6, #1a4fd6);
+      background: linear-gradient(135deg, #ffffff, #888888);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -45,9 +44,9 @@
       margin: 0.5rem auto 1.5rem auto;
       border-radius: 12px;
       overflow: hidden;
-      border: 2px solid #1a2a5e;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-      background: #0a0e1a;
+      border: 2px solid #333333;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+      background: #000000;
     }
     .album-cover img {
       width: 100%;
@@ -64,8 +63,8 @@
       gap: 0.5rem;
     }
     .track-item {
-      background: rgba(17, 26, 51, 0.85);
-      border: 1px solid #1a2a5e;
+      background: rgba(26, 26, 26, 0.9);
+      border: 1px solid #333333;
       border-radius: 8px;
       padding: 0.8rem 1rem;
       cursor: pointer;
@@ -76,7 +75,7 @@
       backdrop-filter: blur(2px);
     }
     .track-item:hover {
-      background: #1a2a5e;
+      background: #333333;
       transform: scale(1.01);
     }
     .track-item img {
@@ -92,10 +91,11 @@
     .track-title {
       font-weight: 600;
       font-size: 0.95rem;
+      color: #ffffff;
     }
     .track-artist {
       font-size: 0.75rem;
-      color: #7a9ad6;
+      color: #888888;
     }
 
     /* ===== TOAST ===== */
@@ -104,11 +104,11 @@
       top: 20px;
       left: 50%;
       transform: translateX(-50%) translateY(-80px);
-      background: rgba(10, 14, 26, 0.9);
-      color: #e8ecf4;
+      background: rgba(0, 0, 0, 0.9);
+      color: #ffffff;
       padding: 0.5rem 1.2rem;
       border-radius: 30px;
-      border: 1px solid #2b6df6;
+      border: 1px solid #ffffff;
       font-size: 0.85rem;
       font-weight: 500;
       z-index: 9999;
@@ -116,7 +116,7 @@
       opacity: 0;
       pointer-events: none;
       backdrop-filter: blur(4px);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.8);
     }
     .toast.show {
       transform: translateX(-50%) translateY(0);
@@ -130,7 +130,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(180deg, #0d162b 0%, #0a0e1a 100%);
+      background: linear-gradient(180deg, #000000 0%, #0a0a0a 100%);
       z-index: 3000;
       display: flex;
       align-items: center;
@@ -154,8 +154,8 @@
       margin: 0 auto 1.2rem auto;
       border-radius: 8px;
       overflow: hidden;
-      border: 1px solid #1a2a5e;
-      background: #0a0e1a;
+      border: 1px solid #333333;
+      background: #000000;
     }
     .player-cover img {
       width: 100%;
@@ -167,9 +167,10 @@
       font-size: 1.2rem;
       font-weight: 700;
       margin-bottom: 0.2rem;
+      color: #ffffff;
     }
     .song-details .category {
-      color: #2b6df6;
+      color: #888888;
       font-size: 0.8rem;
       font-weight: 500;
     }
@@ -184,22 +185,22 @@
       background: transparent;
       border: none;
       font-size: 1.3rem;
-      color: #5a7fc7;
+      color: #666666;
       cursor: pointer;
       transition: 0.2s;
       padding: 0.2rem 0.4rem;
       border-radius: 6px;
     }
     .shuffle-btn.active {
-      color: #2b6df6;
+      color: #ffffff;
     }
     .repeat-btn.active-all {
-      color: #2b6df6;
-      background: rgba(43, 109, 246, 0.2);
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
     }
     .repeat-btn.active-one {
-      color: #4ade80;
-      background: rgba(74, 222, 128, 0.2);
+      color: #aaaaaa;
+      background: rgba(255, 255, 255, 0.05);
     }
     .progress-area {
       margin: 1.2rem 0;
@@ -208,19 +209,19 @@
       display: flex;
       justify-content: space-between;
       font-size: 0.7rem;
-      color: #5a7fc7;
+      color: #666666;
     }
     .progress-bar-bg {
       width: 100%;
       height: 4px;
-      background: #111a33;
+      background: #1a1a1a;
       border-radius: 2px;
       cursor: pointer;
     }
     .progress-fill {
       width: 0%;
       height: 100%;
-      background: #2b6df6;
+      background: #ffffff;
       border-radius: 2px;
     }
     .controls {
@@ -238,37 +239,37 @@
       border-radius: 50%;
       font-size: 1.2rem;
       cursor: pointer;
-      color: #5a7fc7;
+      color: #666666;
       transition: 0.2s;
       display: inline-flex;
       align-items: center;
       justify-content: center;
     }
     .ctrl-btn:hover {
-      color: #e8ecf4;
+      color: #ffffff;
       transform: scale(1.05);
     }
     .ctrl-btn.play-pause {
       width: 64px;
       height: 64px;
-      background: #1a4fd6;
-      color: #fff;
+      background: #ffffff;
+      color: #000000;
       font-size: 1.8rem;
-      box-shadow: 0 0 30px rgba(43, 109, 246, 0.2);
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
     }
     .ctrl-btn.play-pause:hover {
-      background: #2b6df6;
+      background: #cccccc;
     }
     .close-player {
       position: absolute;
       top: 20px;
       right: 20px;
-      background: rgba(10, 14, 26, 0.8);
-      border: 1px solid #1a2a5e;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid #333333;
       border-radius: 50%;
       width: 40px;
       height: 40px;
-      color: #5a7fc7;
+      color: #666666;
       font-size: 1.2rem;
       cursor: pointer;
       display: flex;
@@ -277,8 +278,8 @@
       transition: 0.2s;
     }
     .close-player:hover {
-      color: #e8ecf4;
-      border-color: #2b6df6;
+      color: #ffffff;
+      border-color: #ffffff;
     }
 
     /* ===== MINI REPRODUCTOR ===== */
@@ -287,8 +288,8 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: #0a0e1a;
-      border-top: 1px solid #1a2a5e;
+      background: #000000;
+      border-top: 1px solid #333333;
       padding: 0.6rem 1rem;
       display: flex;
       align-items: center;
@@ -307,7 +308,7 @@
       border-radius: 4px;
       overflow: hidden;
       flex-shrink: 0;
-      border: 1px solid #1a2a5e;
+      border: 1px solid #333333;
     }
     .mini-cover img {
       width: 100%;
@@ -324,6 +325,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      color: #ffffff;
     }
     .mini-controls {
       display: flex;
@@ -337,10 +339,10 @@
       border-radius: 50%;
       font-size: 0.9rem;
       cursor: pointer;
-      color: #5a7fc7;
+      color: #666666;
     }
     .mini-btn:hover {
-      color: #e8ecf4;
+      color: #ffffff;
     }
     .mini-progress-bg {
       position: absolute;
@@ -348,12 +350,12 @@
       left: 0;
       right: 0;
       height: 2px;
-      background: #111a33;
+      background: #1a1a1a;
     }
     .mini-progress-fill {
       width: 0%;
       height: 100%;
-      background: #2b6df6;
+      background: #ffffff;
     }
 
     /* ===== SUGERENCIAS DENTRO DEL REPRODUCTOR ===== */
@@ -370,17 +372,21 @@
     .player-suggestions-title {
       font-size: 0.7rem;
       font-weight: 600;
-      color: #5a7fc7;
+      color: #666666;
       letter-spacing: 0.5px;
     }
     .toggle-suggestions-btn {
       background: transparent;
-      border: 1px solid #1a2a5e;
+      border: 1px solid #333333;
       border-radius: 500px;
       padding: 0.15rem 0.7rem;
       font-size: 0.55rem;
       cursor: pointer;
-      color: #5a7fc7;
+      color: #666666;
+    }
+    .toggle-suggestions-btn:hover {
+      border-color: #ffffff;
+      color: #ffffff;
     }
     .player-suggestions-track {
       display: flex;
@@ -391,24 +397,24 @@
     }
     .player-suggestions-track::-webkit-scrollbar {
       height: 3px;
-      background: #111a33;
+      background: #1a1a1a;
     }
     .player-suggestions-track::-webkit-scrollbar-thumb {
-      background: #2b6df6;
+      background: #ffffff;
       border-radius: 10px;
     }
     .player-suggestion-item {
       flex: 0 0 80px;
-      background: #0d162b;
+      background: #1a1a1a;
       border-radius: 6px;
       cursor: pointer;
       text-align: center;
-      border: 1px solid #1a2a5e;
+      border: 1px solid #333333;
       overflow: hidden;
       transition: 0.2s;
     }
     .player-suggestion-item:hover {
-      background: #1a2a5e;
+      background: #333333;
     }
     .player-suggestion-img {
       width: 100%;
@@ -425,7 +431,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: #e8ecf4;
+      color: #ffffff;
     }
     .hidden-suggestions {
       display: none !important;
@@ -534,8 +540,8 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // ---- CONTADOR GLOBAL DE VISITAS (opcional) ----
-    const contadorRef = doc(db, "Radio Muisc", "Kerim Music+");
+    // ---- CONTADOR GLOBAL DE VISITAS ----
+    const contadorRef = doc(db, "Radio_Muisc", "Kerim Music+");
     const CAMPO_CONTADOR = "total";
     let userId = localStorage.getItem('visitor_id_kerim');
     if (!userId) {
@@ -545,15 +551,11 @@
     const userRef = doc(collection(contadorRef, 'usuarios'), userId);
 
     // ================================================================
-    //  NUEVA LÓGICA DE CONTADOR POR CANCIÓN CON CADUCIDAD DE 3 MESES
+    //  LÓGICA DE CONTADOR POR CANCIÓN CON CADUCIDAD DE 3 MESES
     // ================================================================
 
-    const TRES_MESES_MS = 3 * 30 * 24 * 60 * 60 * 1000;  // ~ 7.776.000.000 ms
+    const TRES_MESES_MS = 3 * 30 * 24 * 60 * 60 * 1000;
 
-    /**
-     * Migra el campo antiguo (array) a objeto con fechas actuales.
-     * Se llama una sola vez por usuario si es necesario.
-     */
     async function migrarSiEsArray(userData) {
       const historial = userData.canciones_escuchadas;
       if (Array.isArray(historial)) {
@@ -567,17 +569,9 @@
       return historial || {};
     }
 
-    /**
-     * Incrementa la reproducción de una canción para el usuario actual.
-     * Solo cuenta si es la primera vez o han pasado más de 3 meses desde la última escucha.
-     * Además, limpia automáticamente cualquier otra canción expirada del historial del usuario.
-     * @param {string} songId - ID de la canción.
-     * @returns {Promise<number|null>} Nuevo total de reproducciones de la canción, o null si error.
-     */
     window.incrementarReproduccion = async function(songId) {
       if (!songId) return null;
       try {
-        // 1. Asegurar que el usuario existe
         const userSnap = await getDoc(userRef);
         if (!userSnap.exists()) {
           await setDoc(userRef, { 
@@ -587,37 +581,29 @@
           });
         }
 
-        // 2. Obtener datos actuales del usuario
         const userData = (await getDoc(userRef)).data() || {};
         let historial = await migrarSiEsArray(userData);
 
         const ahora = Date.now();
         const fechaExpiracion = ahora - TRES_MESES_MS;
 
-        // 3. Preparar transacción para actualizar usuario y canción(es)
         let resultado = null;
 
         await runTransaction(db, async (transaction) => {
-          // Leer el documento de la canción
-          const songRef = doc(db, "Radio Muisc", String(songId));
+          const songRef = doc(db, "Radio_Muisc", String(songId));
           const songSnap = await transaction.get(songRef);
           let currentPlays = songSnap.exists() ? songSnap.data().reproducciones || 0 : 0;
 
-          // --- Manejo de la canción actual ---
           const lastPlayed = historial[songId] || 0;
           let incrementar = false;
 
           if (lastPlayed === 0) {
-            // Nunca escuchada → nueva reproducción
             incrementar = true;
           } else if (lastPlayed < fechaExpiracion) {
-            // Expiró → se elimina y se vuelve a contar
             incrementar = true;
-            // Decrementar el contador porque estaba expirada
             currentPlays = Math.max(0, currentPlays - 1);
             delete historial[songId];
           } else {
-            // Dentro de los 3 meses → solo actualizar fecha, no incrementar
             incrementar = false;
           }
 
@@ -625,11 +611,9 @@
             currentPlays += 1;
             historial[songId] = ahora;
           } else {
-            // Solo actualizar timestamp (reinicia el contador de 3 meses)
             historial[songId] = ahora;
           }
 
-          // --- Limpieza de otras canciones expiradas en el historial ---
           const idsAEliminar = [];
           for (const [id, timestamp] of Object.entries(historial)) {
             if (id !== songId && timestamp < fechaExpiracion) {
@@ -637,10 +621,9 @@
             }
           }
 
-          // Eliminar las expiradas y decrementar sus contadores
           for (const id of idsAEliminar) {
             delete historial[id];
-            const ref = doc(db, "Radio Muisc", String(id));
+            const ref = doc(db, "Radio_Muisc", String(id));
             const snap = await transaction.get(ref);
             if (snap.exists()) {
               const plays = snap.data().reproducciones || 0;
@@ -649,10 +632,8 @@
             }
           }
 
-          // Actualizar el documento del usuario
           transaction.update(userRef, { canciones_escuchadas: historial });
 
-          // Actualizar el documento de la canción actual
           if (!songSnap.exists()) {
             transaction.set(songRef, { reproducciones: currentPlays });
           } else {
@@ -671,13 +652,9 @@
       }
     };
 
-    /**
-     * Obtiene el total de reproducciones de una canción (usuarios únicos en los últimos 3 meses).
-     * Lee el campo `reproducciones` del documento de la canción.
-     */
     window.obtenerReproducciones = async function(songId) {
       try {
-        const ref = doc(db, "Radio Muisc", String(songId));
+        const ref = doc(db, "Radio_Muisc", String(songId));
         const docSnap = await getDoc(ref);
         if (docSnap.exists()) {
           return docSnap.data().reproducciones || 0;
@@ -689,13 +666,13 @@
       }
     };
 
-    // ---- Inicialización ----
     document.addEventListener("DOMContentLoaded", () => {
       console.log("✅ Módulo Firebase con caducidad de 3 meses cargado.");
+      console.log("📌 Colección: Radio_Muisc (con guión bajo)");
     });
   </script>
 
-  <!-- ========== SCRIPT PRINCIPAL DEL REPRODUCTOR (MODIFICADO) ========== -->
+  <!-- ========== SCRIPT PRINCIPAL DEL REPRODUCTOR ========== -->
   <script>
     (function() {
       // ==================== DATOS ====================
@@ -708,7 +685,7 @@
         { id: "Los tiempos cambian Emsek", title: "Los tiempos cambian", artist: "Emsek Ft Charles wed", category: "Rap", url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1', music: 'https://www.dropbox.com/scl/fi/scvt36sujqhsk7abj4q9g/Los-tiempos-cambian-Emsek-ft-Charl-s-weed.wav?rlkey=hbvmut3vj4wyx166y6nv53vi9&st=7ytsyfvs&raw=1' },
         { id: "Musa Emsek", title: "Musa", artist: "Emsek", category: "Rap", url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1', music: 'https://www.dropbox.com/scl/fi/vyrkq3cz1d32v6cbrml99/Mi-mussa-Emsek-HFcompany-Estudios.wav?rlkey=8mzfyjhjbqasi7cvcynku8e29&st=f6rkh9hu&raw=1' },
         { id: "Dada es sencillo Emsek", title: "Nada es sencillo", artist: "Emsek", category: "Rap", url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1', music: 'https://www.dropbox.com/scl/fi/0b08k7lmf6bi3unghwi0o/Nada-es-secillo-Oswaldo.wav?rlkey=00zjb5omwsyc7lpa4epk2dxzx&st=owffemlr&raw=1' },
-        { id: "Perdoname Esmek", title: "Perdoname", artist: "Emsek", category: "Rap", url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1', music: 'https://www.dropbox.com/scl/fi/09x3ro2pgjk5uytus7qnf/perdoname-emsek-video-oficial.mp3?rlkey=w5wnge74deqrg9j5cugdgso93&st=l9jqz3s2&raw=1' },
+        { id: "Perdoname Emsek", title: "Perdoname", artist: "Emsek", category: "Rap", url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1', music: 'https://www.dropbox.com/scl/fi/09x3ro2pgjk5uytus7qnf/perdoname-emsek-video-oficial.mp3?rlkey=w5wnge74deqrg9j5cugdgso93&st=l9jqz3s2&raw=1' },
         { id: "Todo acabo Emsek", title: "Todo acabo", artist: "Emsek", category: "Rap", url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1', music: 'https://www.dropbox.com/scl/fi/8rxh1zmz1jnbw3jnyw30u/Todo-se-Acabo-Emsek.wav?rlkey=gdjt2d5ixehg02f66zrmn2oo4&st=11wubvyf&raw=1' },
       ];
 
@@ -719,9 +696,8 @@
       let isPlaying = false;
       let shuffleActive = false;
       let originalQueue = [];
-      let repeatMode = 'none'; // 'none' | 'all' | 'one'
+      let repeatMode = 'none';
 
-      // *** NUEVAS VARIABLES PARA CONTAR SOLO AL FINAL ***
       let pendingCount = false;
       let pendingSongId = null;
 
@@ -753,7 +729,6 @@
       const toggleSuggestionsBtn = document.getElementById('toggleSuggestionsBtn');
       const suggestionsTrack = document.getElementById('playerSuggestionsTrack');
       const toast = document.getElementById('toast');
-      // Portada principal
       const albumCoverImg = document.getElementById('albumCoverImg');
 
       // ==================== TOAST ====================
@@ -784,7 +759,6 @@
         return `${m}:${s < 10 ? '0' : ''}${s}`;
       }
 
-      // ===== CONTADOR DE REPRODUCCIONES (Firebase con caducidad) =====
       async function incrementPlayCount(songId) {
         if (window.incrementarReproduccion) {
           const nuevoValor = await window.incrementarReproduccion(songId);
@@ -796,7 +770,6 @@
         }
       }
 
-      // ===== RENDER PLAYLIST =====
       function renderPlaylist() {
         playlistEl.innerHTML = '';
         songs.forEach((song) => {
@@ -816,11 +789,9 @@
         });
       }
 
-      // ===== REPRODUCIR CANCIÓN (MODIFICADA) =====
       function playSong(song) {
         if (!song) return;
 
-        // Cancelar cualquier conteo pendiente de la canción anterior (no se completó)
         if (pendingCount) {
           pendingCount = false;
           pendingSongId = null;
@@ -830,7 +801,6 @@
         const idx = queue.findIndex(s => s.id === song.id);
         if (idx !== -1) currentIndex = idx;
 
-        // Marcar como pendiente para contar al final
         pendingCount = true;
         pendingSongId = song.id;
 
@@ -845,13 +815,10 @@
 
       function updateUI() {
         if (!currentSong) return;
-        // Actualizar portada principal (fuera del reproductor)
         albumCoverImg.src = currentSong.url;
-        // Actualizar portada del reproductor completo
         fullCover.src = currentSong.url;
         fullTitle.textContent = currentSong.title;
         fullCategory.textContent = currentSong.category || '';
-        // Actualizar mini reproductor
         miniCover.src = currentSong.url;
         miniTitle.textContent = currentSong.title;
         updatePlayPauseIcon();
@@ -875,7 +842,6 @@
         updatePlayPauseIcon();
       }
 
-      // ===== SHUFFLE =====
       function toggleShuffle() {
         shuffleActive = !shuffleActive;
         shuffleBtn.classList.toggle('active', shuffleActive);
@@ -900,7 +866,6 @@
         }
       }
 
-      // ===== REPEAT =====
       function toggleRepeat() {
         if (repeatMode === 'none') {
           repeatMode = 'all';
@@ -921,7 +886,6 @@
         else if (repeatMode === 'one') repeatBtn.classList.add('active-one');
       }
 
-      // ===== NAVEGACIÓN =====
       function nextTrack() {
         if (!queue.length) return;
         if (shuffleActive) {
@@ -942,14 +906,13 @@
         playSong(queue[currentIndex]);
       }
 
-      // ===== SUGERENCIAS =====
       function renderSuggestions() {
         if (!currentSong) return;
         const sameArtist = songs.filter(s => s.id !== currentSong.id && s.artist === currentSong.artist);
         const others = songs.filter(s => s.id !== currentSong.id && s.artist !== currentSong.artist);
         const combined = [...sameArtist, ...others].slice(0, 6);
         if (combined.length === 0) {
-          suggestionsTrack.innerHTML = '<div style="color:#5a7fc7;font-size:0.7rem;padding:0.3rem;">Sin sugerencias</div>';
+          suggestionsTrack.innerHTML = '<div style="color:#666666;font-size:0.7rem;padding:0.3rem;">Sin sugerencias</div>';
           return;
         }
         let html = '';
@@ -1005,19 +968,14 @@
         updatePlayPauseIcon();
       });
 
-      // ===== COMPORTAMIENTO AL TERMINAR (MODIFICADO) =====
       audio.addEventListener('ended', () => {
-        // Si hay un pendiente y coincide con la canción actual, contar la reproducción
         if (pendingCount && pendingSongId === currentSong?.id) {
           const songId = pendingSongId;
-          // Contar en Firebase (usuarios únicos con caducidad)
           incrementPlayCount(songId);
-          // Reiniciar bandera de pendiente
           pendingCount = false;
           pendingSongId = null;
         }
 
-        // Comportamiento de repetición
         if (repeatMode === 'one') {
           audio.currentTime = 0;
           audio.play().catch(() => {});
@@ -1067,12 +1025,14 @@
 
       console.log('🎵 Reproductor con Firebase (caducidad 3 meses) activo.');
       console.log('✅ Las reproducciones solo se cuentan cuando la canción se escucha COMPLETA.');
+      console.log('📌 Colección: Radio_Muisc (con guión bajo)');
     })();
 
-    // Generar colores dinámicos basados en la portada (simulación)
-    const hue = Math.floor(Math.random() * 360);
-    const color1 = `hsl(${hue}, 30%, 8%)`;
-    const color2 = `hsl(${(hue + 40) % 360}, 40%, 5%)`;
+    // Generar colores en escala de grises
+    const gray = Math.floor(Math.random() * 20) + 5;
+    const color1 = `rgb(${gray}, ${gray}, ${gray})`;
+    const gray2 = Math.floor(Math.random() * 10) + 0;
+    const color2 = `rgb(${gray2}, ${gray2}, ${gray2})`;
     document.documentElement.style.setProperty('--overlay-color1', color1);
     document.documentElement.style.setProperty('--overlay-color2', color2);
   </script>
