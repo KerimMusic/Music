@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contadores · Kerim Music+</title>
+    <title>Visitas Kerim Music+</title>
     <style>
         /* Reset básico */
         * {
@@ -20,19 +20,19 @@
             align-items: flex-start;
             padding: 20px;
             transition: background-color 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            background-color: #1a1a2e;
+            background-color: #000000;
             padding-top: 40px;
         }
 
         .container {
             max-width: 700px;
             width: 100%;
-            background: rgba(26, 26, 46, 0.85);
+            background: rgba(20, 20, 20, 0.9);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-radius: 40px;
             padding: 30px 25px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 8px 20px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 8px 20px rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
@@ -40,7 +40,7 @@
             text-align: center;
             font-weight: 700;
             font-size: 1.8rem;
-            color: #f0f0f0;
+            color: #ffffff;
             letter-spacing: -0.5px;
             margin-bottom: 8px;
             padding-bottom: 12px;
@@ -60,7 +60,7 @@
             background: rgba(255, 255, 255, 0.06);
             padding: 4px 16px;
             border-radius: 40px;
-            color: #b0b0d0;
+            color: #888888;
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .total-global .numero {
@@ -81,16 +81,16 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(4px);
-            color: #f0f0f0;
+            color: #ffffff;
             font-size: 1rem;
             outline: none;
             transition: border 0.3s, box-shadow 0.3s;
         }
         .buscador-input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.3);
         }
         .buscador-input:focus {
-            border-color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
             box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
         }
 
@@ -100,7 +100,7 @@
             top: calc(100% + 8px);
             left: 0;
             right: 0;
-            background: #1e1e32;
+            background: #1a1a1a;
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.08);
             max-height: 200px;
@@ -109,14 +109,14 @@
             z-index: 10;
             backdrop-filter: blur(10px);
             padding: 6px 0;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
         }
         .sugerencias.visible {
             display: block;
         }
         .sugerencia-item {
             padding: 12px 20px;
-            color: #e0e0f0;
+            color: #cccccc;
             cursor: pointer;
             transition: background 0.15s;
             display: flex;
@@ -131,7 +131,7 @@
             height: 32px;
             border-radius: 50%;
             object-fit: cover;
-            background: #12121f;
+            background: #1a1a1a;
         }
 
         /* ---------- PERFIL DEL ARTISTA ---------- */
@@ -139,10 +139,10 @@
             display: none;
             margin: 20px 0 24px 0;
             padding: 20px 24px;
-            background: #24243a;
+            background: #1a1a1a;
             border-radius: 24px;
             border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
             animation: fadeSlideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
         .perfil-artista.visible {
@@ -172,17 +172,17 @@
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid rgba(255, 255, 255, 0.1);
-            background: #12121f;
+            background: #1a1a1a;
         }
         .perfil-nombre {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #f0f0f0;
+            color: #ffffff;
             letter-spacing: -0.5px;
         }
         .perfil-total {
             font-size: 1.2rem;
-            color: #b0b0d0;
+            color: #888888;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -202,7 +202,7 @@
         .perfil-lista-titulo {
             font-size: 0.9rem;
             font-weight: 600;
-            color: #a0a0c0;
+            color: #888888;
             letter-spacing: 0.02em;
             margin-bottom: 12px;
         }
@@ -210,7 +210,7 @@
             display: flex;
             justify-content: space-between;
             padding: 8px 0;
-            color: #d0d0e0;
+            color: #cccccc;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
         .perfil-cancion:last-child {
@@ -220,7 +220,7 @@
             font-weight: 500;
         }
         .perfil-cancion-repros {
-            color: #b0b0d0;
+            color: #888888;
         }
 
         /* ---------- TARJETA DE ÁLBUM DESTACADO ---------- */
@@ -238,16 +238,16 @@
             display: flex;
             align-items: center;
             gap: 20px;
-            background: #24243a;
+            background: #1a1a1a;
             padding: 18px 24px;
             border-radius: 24px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.06);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .destacado-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
         }
 
         .destacado-imagen {
@@ -257,8 +257,8 @@
             object-fit: cover;
             border: 2px solid rgba(255, 255, 255, 0.08);
             flex-shrink: 0;
-            background: #1a1a2e;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            background: #000000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .destacado-info {
@@ -274,7 +274,7 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: #a0a0c0;
+            color: #888888;
             background: rgba(255, 255, 255, 0.06);
             display: inline-block;
             padding: 2px 12px;
@@ -285,7 +285,7 @@
         .destacado-nombre {
             font-size: 1.6rem;
             font-weight: 700;
-            color: #f0f0f0;
+            color: #ffffff;
             letter-spacing: -0.5px;
             line-height: 1.2;
             white-space: nowrap;
@@ -296,7 +296,7 @@
         .destacado-visitas {
             font-size: 1.2rem;
             font-weight: 600;
-            color: #b0b0d0;
+            color: #888888;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -309,8 +309,8 @@
         }
 
         .destacado-badge {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            color: #0f0f1a;
+            background: linear-gradient(135deg, #cccccc, #888888);
+            color: #000000;
             font-weight: 700;
             font-size: 0.7rem;
             padding: 4px 12px;
@@ -320,7 +320,7 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
         }
 
         /* ---------- BOTÓN TOGGLE ---------- */
@@ -331,14 +331,14 @@
             background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 60px;
-            color: #f0f0f0;
+            color: #ffffff;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
             backdrop-filter: blur(4px);
             letter-spacing: 0.3px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -347,7 +347,7 @@
         .toggle-button:hover {
             background: rgba(255, 255, 255, 0.14);
             transform: scale(1.02);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
         }
         .toggle-button:active {
             transform: scale(0.97);
@@ -385,11 +385,11 @@
             display: flex;
             align-items: center;
             gap: 18px;
-            background: #1e1e32;
+            background: #1a1a1a;
             padding: 16px 22px;
             border-radius: 60px;
             margin-bottom: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             transition: all 0.2s ease;
             border: 1px solid rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(4px);
@@ -397,7 +397,7 @@
         }
         .usuario-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
             border-color: rgba(255, 255, 255, 0.12);
         }
 
@@ -408,7 +408,7 @@
             object-fit: cover;
             border: 2px solid rgba(255, 255, 255, 0.08);
             flex-shrink: 0;
-            background: #12121f;
+            background: #1a1a1a;
         }
 
         .info {
@@ -423,7 +423,7 @@
         .nombre {
             font-size: 1.35rem;
             font-weight: 600;
-            color: #f0f0f0;
+            color: #ffffff;
             letter-spacing: -0.3px;
             word-break: break-word;
         }
@@ -431,8 +431,8 @@
         .contador {
             font-size: 2.2rem;
             font-weight: 700;
-            color: #f0f0f0;
-            background: #12121f;
+            color: #ffffff;
+            background: #000000;
             padding: 0 18px;
             border-radius: 40px;
             line-height: 1.5;
@@ -441,7 +441,7 @@
             transition: background 0.2s;
         }
         .usuario-card:hover .contador {
-            background: #1a1a2e;
+            background: #1a1a1a;
         }
 
         .contador .numero {
@@ -457,11 +457,11 @@
             border-radius: 30px;
             white-space: nowrap;
             letter-spacing: 0.02em;
-            background: #2a2a4a;
-            color: #ccc;
+            background: #2a2a2a;
+            color: #888888;
             border: 1px solid rgba(255, 255, 255, 0.1);
             text-transform: uppercase;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
         }
 
         .insignia.visible {
@@ -469,22 +469,22 @@
         }
 
         .insignia.kerim {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            color: #0f0f1a;
-            border-color: #fbbf24;
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+            background: linear-gradient(135deg, #e0e0e0, #aaaaaa);
+            color: #000000;
+            border-color: #cccccc;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
         }
         .insignia.tema-plus {
-            background: linear-gradient(135deg, #60a5fa, #3b82f6);
-            color: #fff;
-            border-color: #60a5fa;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, #888888, #555555);
+            color: #ffffff;
+            border-color: #777777;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
         }
         .insignia.mas-escuchado {
-            background: linear-gradient(135deg, #34d399, #10b981);
-            color: #0f1a1a;
-            border-color: #34d399;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+            background: linear-gradient(135deg, #444444, #222222);
+            color: #ffffff;
+            border-color: #444444;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
         }
 
         /* ========== NUEVOS ESTILOS PARA CARRUSEL Y CUADRÍCULA ========== */
@@ -503,12 +503,12 @@
             margin-bottom: 12px;
         }
         .carrusel-titulo {
-            color: #f0f0f0;
+            color: #ffffff;
             font-weight: 600;
             font-size: 1.1rem;
         }
         .carrusel-ver-todos {
-            color: #a0a0c0;
+            color: #888888;
             cursor: pointer;
             font-size: 0.9rem;
             text-decoration: underline;
@@ -518,7 +518,7 @@
             padding: 0;
         }
         .carrusel-ver-todos:hover {
-            color: #f0f0f0;
+            color: #ffffff;
         }
 
         .carrusel-container {
@@ -542,11 +542,11 @@
         .carrusel-item {
             flex: 0 0 160px;
             scroll-snap-align: start;
-            background: #1e1e32;
+            background: #1a1a1a;
             border-radius: 20px;
             padding: 12px;
             border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
             transition: transform 0.2s;
             display: flex;
             flex-direction: column;
@@ -561,12 +561,12 @@
             aspect-ratio: 1/1;
             object-fit: cover;
             border-radius: 12px;
-            background: #12121f;
+            background: #000000;
             margin-bottom: 8px;
         }
         .carrusel-item .titulo {
             font-weight: 600;
-            color: #f0f0f0;
+            color: #ffffff;
             font-size: 0.9rem;
             line-height: 1.2;
             margin-bottom: 2px;
@@ -577,17 +577,17 @@
         }
         .carrusel-item .artista {
             font-size: 0.75rem;
-            color: #b0b0d0;
+            color: #888888;
             margin-bottom: 4px;
         }
         .carrusel-item .reproducciones {
             font-size: 0.85rem;
             font-weight: 600;
-            color: #f0f0f0;
+            color: #ffffff;
         }
         .carrusel-item .fecha-hora {
             font-size: 0.65rem;
-            color: #8888aa;
+            color: #666666;
             display: flex;
             align-items: center;
             gap: 4px;
@@ -605,7 +605,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(8px);
             z-index: 1000;
             padding: 20px;
@@ -620,11 +620,11 @@
             width: 100%;
             margin: auto;
             position: relative;
-            background: #1a1a2e;
+            background: #000000;
             border-radius: 30px;
             padding: 30px 25px;
             border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
             max-height: 90vh;
             overflow-y: auto;
         }
@@ -634,7 +634,7 @@
             float: right;
             background: rgba(255, 255, 255, 0.08);
             border: none;
-            color: #f0f0f0;
+            color: #ffffff;
             font-size: 2rem;
             cursor: pointer;
             padding: 6px 16px;
@@ -646,7 +646,7 @@
             background: rgba(255, 255, 255, 0.16);
         }
         .modal-titulo {
-            color: #f0f0f0;
+            color: #ffffff;
             font-size: 1.6rem;
             font-weight: 700;
             margin-bottom: 20px;
@@ -658,11 +658,11 @@
             gap: 20px;
         }
         .grid-item {
-            background: #1e1e32;
+            background: #1a1a1a;
             border-radius: 20px;
             padding: 14px;
             border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
             transition: transform 0.2s;
             display: flex;
             flex-direction: column;
@@ -677,12 +677,12 @@
             aspect-ratio: 1/1;
             object-fit: cover;
             border-radius: 12px;
-            background: #12121f;
+            background: #000000;
             margin-bottom: 8px;
         }
         .grid-item .titulo {
             font-weight: 600;
-            color: #f0f0f0;
+            color: #ffffff;
             font-size: 0.9rem;
             line-height: 1.2;
             margin-bottom: 2px;
@@ -693,17 +693,17 @@
         }
         .grid-item .artista {
             font-size: 0.75rem;
-            color: #b0b0d0;
+            color: #888888;
             margin-bottom: 4px;
         }
         .grid-item .reproducciones {
             font-size: 0.85rem;
             font-weight: 600;
-            color: #f0f0f0;
+            color: #ffffff;
         }
         .grid-item .fecha-hora {
             font-size: 0.65rem;
-            color: #8888aa;
+            color: #666666;
             display: flex;
             align-items: center;
             gap: 4px;
@@ -931,13 +931,47 @@
         coleccion: "Radio_Muisc",
         url: 'https://www.dropbox.com/scl/fi/qker6uqxmojvnvuuzgzob/Dile.jpg?rlkey=76hsqmpzj3r4ctpexesyehok5&st=offbzalp&raw=1', 
         },
-            //======================Kerim Msuic==================
-            { id: "Amor del Grinch", 
-        title: "Amor del Grinch", 
-        artist: "Amor del Grinch", 
-        category: "Acustica",
+        //======================Kerim Msuic==================
+        //=================El placoso de la L=========================
+         { id: "No Te Importo EPDL", 
+        title: "No Te Importo EPDL", 
+        artist: "El placoso de la L", 
+        category: "Rap",
         coleccion: "Radio_Muisc",
-        url: 'https://www.dropbox.com/scl/fi/qaljv0hddgtvmcl18tbzp/Grinch.jpg?rlkey=zhcwpzt3jsudf4oq4tr03mz7q&st=gmivxjmo&raw=1', 
+        url: 'https://www.dropbox.com/scl/fi/otojz7yc0de3xqyb9t6yh/783588703_1047085541468353_6915517615099943137_n.jpg?rlkey=paxdkveuyztjmzbusfupn7sge&st=xx7xwgzw&raw=1', 
+        music: 'https://www.dropbox.com/scl/fi/u81ryisgb72g89ya0md8l/No-Te-Importo-EPDL.wav?rlkey=le8nk4ap3uzoo7uv8yn4yig46&st=ksvr1ckd&raw=1'
+        },
+        { id: "Una Estrella Más EPDL", 
+        title: "Una Estrella Más EPDL", 
+        artist: "El placoso de la L", 
+        category: "Rap",
+        coleccion: "Radio_Muisc",
+        url: 'https://www.dropbox.com/scl/fi/otojz7yc0de3xqyb9t6yh/783588703_1047085541468353_6915517615099943137_n.jpg?rlkey=paxdkveuyztjmzbusfupn7sge&st=xx7xwgzw&raw=1', 
+        music: 'https://www.dropbox.com/scl/fi/xqbo86t3l06pc3xiaekwg/Una-Estrella-M-s-EPDL.wav?rlkey=2dbgpfeogsbwtci26frbvau7p&st=yj9504uy&raw=1'
+        },
+        { id: "Quemen El Toque EPDL", 
+        title: "Qumen el Toque EPDL", 
+        artist: "El placoso de la L", 
+        category: "Rap",
+        coleccion: "Radio_Muisc",
+        url: 'https://www.dropbox.com/scl/fi/otojz7yc0de3xqyb9t6yh/783588703_1047085541468353_6915517615099943137_n.jpg?rlkey=paxdkveuyztjmzbusfupn7sge&st=xx7xwgzw&raw=1', 
+        music: 'https://www.dropbox.com/scl/fi/zmcybg4pe5jdot0nlj1hw/Quemen-El-Toque-EPDL.wav?rlkey=8ea9fwhcc8ydxdpv0cj5v0xvx&st=584gqe3m&raw=1'
+        },
+        { id: "Mi Viejo Me Dijo EPDL", 
+        title: "Mi Viejo Me Dijo EPDL", 
+        artist: "El placoso de la L", 
+        category: "Rap",
+        coleccion: "Radio_Muisc",
+        url: 'https://www.dropbox.com/scl/fi/otojz7yc0de3xqyb9t6yh/783588703_1047085541468353_6915517615099943137_n.jpg?rlkey=paxdkveuyztjmzbusfupn7sge&st=xx7xwgzw&raw=1', 
+        music: 'https://www.dropbox.com/scl/fi/rr0m9gvd0wpdhcvrsjvh8/Mi-Viejo-Me-Dijo-EPDL.wav?rlkey=4lx2qb0thgoxcum0t6z1ud7yh&st=wdn7so5r&raw=1'
+        },
+        { id: "Loco EPDL", 
+        title: "LOCO EPDL", 
+        artist: "El placoso de la L", 
+        category: "Rap",
+        coleccion: "Radio_Muisc",
+        url: 'https://www.dropbox.com/scl/fi/otojz7yc0de3xqyb9t6yh/783588703_1047085541468353_6915517615099943137_n.jpg?rlkey=paxdkveuyztjmzbusfupn7sge&st=xx7xwgzw&raw=1', 
+        music: 'https://www.dropbox.com/scl/fi/addl4wsvy6ez49r30pwwz/Master_L-Klan-Oficial-Loco-Video-Oficial.wav?rlkey=ptxn39acppgeekjfg6x9qtmi3&st=62dp1u6y&raw=1'
         },
             //=======================Dany Zm=====================
         { id: "Dile que tu eres mia Dany Zm", 
@@ -1715,7 +1749,7 @@
         function renderizarGrid(temas) {
             gridContainer.innerHTML = '';
             if (temas.length === 0) {
-                gridContainer.innerHTML = '<p style="color: #b0b0d0; text-align: center;">No hay temas en esta categoría.</p>';
+                gridContainer.innerHTML = '<p style="color: #888888; text-align: center;">No hay temas en esta categoría.</p>';
                 return;
             }
             temas.forEach(tema => {
@@ -1765,8 +1799,8 @@
 
         // ─── FONDO ALEATORIO ─────────────────────────────────────────────
         const palette = [
-            '#1a1a2e', '#16213e', '#0f0f1a', '#1e1e2f', '#14142b',
-            '#1c1c30', '#12121f', '#202035', '#18182a', '#1f1f33'
+            '#000000', '#0a0a0a', '#111111', '#050505', 
+            '#0d0d0d', '#080808', '#0f0f0f', '#030303'
         ];
 
         function changeBackground() {
