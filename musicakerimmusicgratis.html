@@ -11,6 +11,29 @@
   <link rel="dns-prefetch" href="https://www.gstatic.com">
   <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
   <link rel="dns-prefetch" href="https://firestore.googleapis.com">
+  
+  <!-- ===== MEDIA SESSION API (CONTROLES DEL NAVEGADOR) ===== -->
+  <script>
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.setActionHandler('play', () => {
+        const audio = document.querySelector('audio');
+        if (audio) audio.play();
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        const audio = document.querySelector('audio');
+        if (audio) audio.pause();
+      });
+      navigator.mediaSession.setActionHandler('previoustrack', () => {
+        const prevBtn = document.getElementById('fullPrevBtn');
+        if (prevBtn) prevBtn.click();
+      });
+      navigator.mediaSession.setActionHandler('nexttrack', () => {
+        const nextBtn = document.getElementById('fullNextBtn');
+        if (nextBtn) nextBtn.click();
+      });
+    }
+  </script>
+  
   <style>
     /* ===== ESTILOS OPTIMIZADOS ===== */
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -363,7 +386,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     <button class="chip-sort" data-sort="firstFirst">Más antiguas</button>
   </div>
 
-  <!-- ===== NUEVO: CONTROLES DE VISTA PARA BÚSQUEDA ===== -->
+  <!-- ===== CONTROLES DE VISTA PARA BÚSQUEDA ===== -->
   <div id="searchViewControls">
     <button class="view-btn active" data-view="grid">▦ Cuadrícula</button>
     <button class="view-btn" data-view="list">☰ Lista</button>
@@ -375,7 +398,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
   <div class="attribution">Kerim Music+ · Stream your vibe</div>
 </main>
 
-<!-- ===== REPRODUCTOR (sin cambios) ===== -->
+<!-- ===== REPRODUCTOR ===== -->
 <div class="fullscreen-player" id="fullscreenPlayer">
   <div class="player-card" id="playerCard">
     <div class="player-cover" id="playerCover">
@@ -419,7 +442,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
   <div class="mini-progress-bg"><div class="mini-progress-fill" id="miniProgressFill"></div></div>
 </div>
 
-<!-- ========== FIREBASE MODULE (sin cambios) ========== -->
+<!-- ========== FIREBASE MODULE ========== -->
 <script type="importmap">
   {
     "imports": {
@@ -444,7 +467,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  const contadorRef = doc(db, "Radio Muisc", "Kerim Music+");
+  const contadorRef = doc(db, "Radio_Muisc", "Kerim Music+");
   const CAMPO_CONTADOR = "total";
   const contadorSpan = document.getElementById("contador");
 
@@ -528,7 +551,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       let resultado = null;
 
       await runTransaction(db, async (transaction) => {
-        const songRef = doc(db, "Radio Muisc", String(songId));
+        const songRef = doc(db, "Radio_Muisc", String(songId));
         const songSnap = await transaction.get(songRef);
         let currentPlays = songSnap.exists() ? songSnap.data().reproducciones || 0 : 0;
 
@@ -559,7 +582,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
         for (const id of idsAEliminar) {
           delete historial[id];
-          const ref = doc(db, "Radio Muisc", String(id));
+          const ref = doc(db, "Radio_Muisc", String(id));
           const snap = await transaction.get(ref);
           if (snap.exists()) {
             const plays = snap.data().reproducciones || 0;
@@ -591,7 +614,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       return playCache.get(songId);
     }
     try {
-      const ref = doc(db, "Radio Muisc", String(songId));
+      const ref = doc(db, "Radio_Muisc", String(songId));
       const docSnap = await getDoc(ref);
       const count = docSnap.exists() ? docSnap.data().reproducciones || 0 : 0;
       playCache.set(songId, count);
@@ -611,7 +634,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
   (function(){
     'use strict';
 
-    // ==================== CONFIGURACIÓN (sin cambios) ====================
+    // ==================== CONFIGURACIÓN ====================
     let hasKerimMusicPlus = false;
     const ADS = [
       { id: 'ad9', url: 'https://www.dropbox.com/scl/fi/l41bs2ooxh6ccnewgnvd1/1785466259517.png?rlkey=czf0bcn58v0irh5qdfeg9tnef&st=pbd0d7v5&raw=1', title: 'Anuncio 8', category: 'ANUNCIO', music: 'https://www.dropbox.com/scl/fi/9tsc6vvge3ukcao3w8hiy/elimina-basura-spotyfi.mp3?rlkey=pogumn7wjmhepbtocb16km25w&st=3oh3m9tu&raw=1', isAd: true },
@@ -800,7 +823,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     ];
 
-    // ==================== FUNCIONES AUXILIARES (sin cambios) ====================
+    // ==================== FUNCIONES AUXILIARES ====================
     function shuffleArray(arr) {
       const array = [...arr];
       for (let i = array.length - 1; i > 0; i--) {
@@ -814,7 +837,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
     function formatTime(sec){ if(isNaN(sec)) return '0:00'; let m=Math.floor(sec/60), s=Math.floor(sec%60); return `${m}:${s<10?'0':''}${s}`; }
 
-    // ==================== TOAST (sin cambios) ====================
+    // ==================== TOAST ====================
     let toastTimeout = null;
     function showToast(message, duration = 2500) {
       const toast = document.getElementById('toastNotification');
@@ -825,7 +848,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       toastTimeout = setTimeout(() => toast.classList.remove('show'), duration);
     }
 
-    // ==================== INICIALIZACIÓN (sin cambios) ====================
+    // ==================== INICIALIZACIÓN ====================
     const shuffledSongs = shuffleArray(ORIGINAL_SONGS);
     let masterSongs = [...shuffledSongs];
     const allSongs = [...ORIGINAL_SONGS];
@@ -862,7 +885,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== FUNCIONES DE ESTADO (sin cambios) ====================
+    // ==================== FUNCIONES DE ESTADO ====================
     function getLeastPlayedSuggestions(limit = 6){ 
       let songsWithCount = masterSongs.map(song => ({
         ...song, 
@@ -883,7 +906,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       return artistsArray.slice(0, limit);
     }
 
-    // ==================== UI (sin cambios) ====================
+    // ==================== UI ====================
     function updateUIPlan() {
       const planBadge = document.getElementById('planBadge');
       if (!planBadge) return;
@@ -900,10 +923,27 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== REPRODUCCIÓN (sin cambios) ====================
+    // ==================== REPRODUCCIÓN ====================
     let currentPlayQueue = [], currentQueueIndex = 0, currentSong = null, audio = new Audio(), isPlaying = false, currentSearch = '', shuffleActive = false, originalQueue = [], isPlaylistsMode = false;
     let adCounter = 0, isAdPlaying = false, previousSong = null, pendingNextSong = null, adPlaylist = [], currentAdIndex = 0, adCallback = null, videoElement = null, isVideoAd = false;
 
+    // ===== ACTIVAR MEDIA SESSION =====
+    function updateMediaSession(song) {
+      if (!song) return;
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: song.title,
+          artist: song.artist || 'Artista',
+          album: song.album || 'Kerim Music',
+          artwork: [
+            { src: song.url, sizes: '512x512', type: 'image/jpeg' }
+          ]
+        });
+        navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+      }
+    }
+
+    // ===== PRECARGA =====
     const preloadAudio = new Audio();
     preloadAudio.preload = 'auto';
     let preloadSong = null;
@@ -1036,7 +1076,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     const viewBtns = document.querySelectorAll('.view-btn');
 
     // ==================== VARIABLE DE MODO DE VISTA ====================
-    // Por defecto 'grid', guardado en localStorage
     let searchViewMode = localStorage.getItem('kerim_search_view_mode') || 'grid';
 
     // ==================== FUNCIONES DEL CONTROL DE VISTA ====================
@@ -1044,17 +1083,15 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if (mode !== 'grid' && mode !== 'list') return;
       searchViewMode = mode;
       localStorage.setItem('kerim_search_view_mode', mode);
-      // Actualizar clases de los botones
       viewBtns.forEach(btn => {
         btn.classList.toggle('active', btn.dataset.view === mode);
       });
-      // Re-renderizar contenido si hay búsqueda activa
       if (currentSearch.trim() !== '') {
         renderContent();
       }
     }
 
-    // ==================== FONDO (sin cambios) ====================
+    // ==================== FONDO ====================
     const mattePalette = ['#0a0e1a', '#0d162b', '#111a33', '#0f1428', '#0b1222', '#0e1930', '#0c1528', '#09101e'];
     let bgTimeout = null;
     let bgInterval = null;
@@ -1075,7 +1112,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       bgTimeout = setTimeout(() => changeBackgroundRandomly(), 50);
     }
 
-    // ==================== SHUFFLE (sin cambios) ====================
+    // ==================== SHUFFLE ====================
     function toggleShuffle() {
       shuffleActive = !shuffleActive;
       
@@ -1117,7 +1154,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       schedulePreloadNext();
     }
 
-    // ==================== FUNCIONES DE COLA (sin cambios) ====================
+    // ==================== FUNCIONES DE COLA ====================
     function getActiveListForQueue(){
       let base = [...masterSongs];
       if(currentSearch.trim() !== '') base = base.filter(s => 
@@ -1172,7 +1209,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if(currentPlayQueue.length && !currentSong) currentSong = currentPlayQueue[0]; 
     }
 
-    // ==================== FUNCIÓN PARA MOSTRAR VIDEO (sin cambios) ====================
+    // ==================== FUNCIÓN PARA MOSTRAR VIDEO ====================
     function showVideoInPlayer(videoHtml) {
       if (!fullCover || !videoContainer) return;
       fullCover.style.display = 'none';
@@ -1227,7 +1264,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== ANUNCIOS (sin cambios) ====================
+    // ==================== ANUNCIOS ====================
     let preloadAdIndex = -1;
     let preloadAdAudio = new Audio();
     preloadAdAudio.preload = 'auto';
@@ -1324,6 +1361,9 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if (miniCover) miniCover.src = adSong.url;
       if (miniTitle) miniTitle.innerText = adSong.title;
       
+      // Actualizar Media Session para anuncios
+      updateMediaSession(adSong);
+      
       if (adSong.music && !ad.video) {
         if (preloadAdAudio.src && preloadAdAudio.src === adSong.music) {
           audio.src = preloadAdAudio.src;
@@ -1408,7 +1448,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== REPRODUCIR CANCIONES (sin cambios) ====================
+    // ==================== REPRODUCIR CANCIONES ====================
     function playSong(song, customQueue = null) {
       if (!song) return;
       if (isAdPlaying) return;
@@ -1452,6 +1492,9 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         pendingCount = false;
         pendingSongId = null;
       }
+      
+      // Actualizar Media Session
+      updateMediaSession(song);
       
       if (customQueue) {
         currentPlayQueue = customQueue;
@@ -1535,6 +1578,11 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       const icon = isPlaying ? '⏸' : '▶'; 
       if (fullPlayPause) fullPlayPause.innerText = icon; 
       if (miniPlayPause) miniPlayPause.innerText = icon; 
+      
+      // Actualizar Media Session
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+      }
     }
 
     function nextTrack(){ 
@@ -1564,7 +1612,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       isPlaying ? audio.pause() : audio.play(); 
     }
 
-    // ==================== SUGERENCIAS (sin cambios) ====================
+    // ==================== SUGERENCIAS ====================
     function renderSuggestions(){ 
       if (!suggestionsContainer) return;
       if(isPlaylistsMode || currentSearch.trim() !== '') { 
@@ -1588,7 +1636,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }); 
     }
 
-    // ==================== SUGERENCIAS DEL REPRODUCTOR (sin cambios) ====================
+    // ==================== SUGERENCIAS DEL REPRODUCTOR ====================
     let suggestionsHidden = false;
 
     function getPlayerSuggestions(currentSongObj, limit = 6) {
@@ -1646,7 +1694,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== RENDER TOP ARTISTS (sin cambios) ====================
+    // ==================== RENDER TOP ARTISTS ====================
     function renderTopArtists() {
       const topArtistsSection = document.getElementById('topArtistsSection');
       const artistsContainer = document.getElementById('artistsContainer');
@@ -1666,7 +1714,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       artistsContainer.innerHTML = html;
     }
 
-    // ==================== RENDER CONTENIDO (con soporte para modo lista) ====================
+    // ==================== RENDER CONTENIDO ====================
     let renderTimeout = null;
 
     function updateCounterVisibility() { 
@@ -1688,7 +1736,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         const items = getActiveListForQueue();
         const isSearching = currentSearch.trim() !== ''; 
 
-        // Mostrar/ocultar controles de vista según búsqueda activa
         if (isSearching) {
           searchViewControls.style.display = 'flex';
         } else {
@@ -1713,10 +1760,8 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           }
         }
         
-        // ===== DECISIÓN DE VISTA: GRID O LISTA =====
         let html = '';
         if (isSearching && searchViewMode === 'list') {
-          // Modo Lista
           html = `<div class="search-results-list">`;
           items.forEach(song => {
             html += `<div class="list-item" data-id="${song.id}">
@@ -1729,7 +1774,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           });
           html += `</div>`;
         } else {
-          // Modo Cuadrícula (por defecto)
           html = `<div class="gallery-grid">`;
           items.forEach(song => {
             html += `<div class="image-card" data-id="${song.id}">
@@ -1744,7 +1788,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         }
         contentContainer.innerHTML = html;
         
-        // Event listeners para todos los elementos clickeables
         contentContainer.querySelectorAll('.image-card, .list-item').forEach(card => { 
           card.addEventListener('click', () => { 
             const id = card.dataset.id; 
@@ -1756,7 +1799,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       });
     }
 
-    // ==================== OBTENER REPRODUCCIONES FIRESTORE (sin cambios) ====================
+    // ==================== OBTENER REPRODUCCIONES FIRESTORE ====================
     async function obtenerReproduccionesFirestore(songId) {
       try {
         if (window.obtenerReproducciones) {
@@ -1769,7 +1812,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== FILTROS Y ORDEN (sin cambios) ====================
+    // ==================== FILTROS Y ORDEN ====================
     function updateSortChipsVisibility() { 
       if (sortChipsContainer) sortChipsContainer.style.display = 'none'; 
     }
@@ -1780,7 +1823,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       searchContainer.style.display = 'block';
       searchInput.value = '';
       searchInput.focus();
-      // Al abrir, resetear búsqueda actual
       currentSearch = '';
       renderContent();
       renderSuggestions();
@@ -1799,7 +1841,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         renderTopArtists();
         updateQueueAndMode();
       }
-      // Ocultar controles de vista
       searchViewControls.style.display = 'none';
     }
 
@@ -1807,7 +1848,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       const query = searchInput.value.trim();
       currentSearch = query;
       renderContent();
-      renderSuggestions(); // se ocultará automáticamente si hay búsqueda
+      renderSuggestions();
       renderTopArtists();
       updateQueueAndMode();
     }
@@ -1829,7 +1870,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       });
     }
 
-    // Eventos del buscador
     if (searchToggleBtn) {
       searchToggleBtn.addEventListener('click', openSearch);
     }
@@ -1853,7 +1893,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       });
     }
 
-    // Eventos de los botones de vista
     viewBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const mode = btn.dataset.view;
@@ -1861,7 +1900,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       });
     });
 
-    // ==================== AUDIO EVENTOS (sin cambios) ====================
+    // ==================== AUDIO EVENTOS ====================
     let audioUpdateFrame = null;
 
     audio.addEventListener('timeupdate', () => {
@@ -1881,8 +1920,21 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if(audio.duration && durationSpan) durationSpan.innerText = formatTime(audio.duration); 
     });
 
-    audio.addEventListener('play', () => { isPlaying = true; updatePlayPauseIcon(); });
-    audio.addEventListener('pause', () => { isPlaying = false; updatePlayPauseIcon(); });
+    audio.addEventListener('play', () => { 
+      isPlaying = true; 
+      updatePlayPauseIcon(); 
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = 'playing';
+      }
+    });
+    
+    audio.addEventListener('pause', () => { 
+      isPlaying = false; 
+      updatePlayPauseIcon(); 
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = 'paused';
+      }
+    });
 
     audio.addEventListener('ended', () => {
       if (isAdPlaying) return;
@@ -1908,7 +1960,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       nextTrack();
     });
 
-    // ==================== PROGRESS BAR (sin cambios) ====================
+    // ==================== PROGRESS BAR ====================
     if (progressBarBg) {
       progressBarBg.addEventListener('click', (e) => { 
         if(audio.duration){ 
@@ -1919,7 +1971,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       });
     }
 
-    // ==================== CONTROLES (sin cambios) ====================
+    // ==================== CONTROLES ====================
     if (fullPlayPause) fullPlayPause.addEventListener('click', togglePlayPause);
     if (fullNext) fullNext.addEventListener('click', nextTrack);
     if (fullPrev) fullPrev.addEventListener('click', prevTrack);
@@ -1936,7 +1988,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     if (shuffleBtnPlayer) shuffleBtnPlayer.addEventListener('click', toggleShuffle);
     if (toggleSuggestionsBtnElem) toggleSuggestionsBtnElem.addEventListener('click', toggleSuggestions);
 
-    // ==================== WELCOME MODAL (sin cambios) ====================
+    // ==================== WELCOME MODAL ====================
     const welcomeModal = document.getElementById('welcomeModal');
     const acceptBtn = document.getElementById('acceptWelcomeBtn');
     if (localStorage.getItem('kerim_welcome_accepted') === 'true') {
@@ -1951,7 +2003,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== GESTO DE ARRASTRE (sin cambios) ====================
+    // ==================== GESTO DE ARRASTRE ====================
     let dragState = {
       isDragging: false,
       startY: 0,
@@ -2072,13 +2124,11 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     currentSearch = '';
     updateSortChipsVisibility();
     
-    // Configurar el control de vista según el modo guardado
     viewBtns.forEach(btn => {
       btn.classList.toggle('active', btn.dataset.view === searchViewMode);
     });
-    searchViewControls.style.display = 'none'; // oculto por defecto
+    searchViewControls.style.display = 'none';
 
-    // Asegurar que el buscador esté oculto al inicio
     searchContainer.style.display = 'none';
     searchToggleBtn.style.display = 'inline-block';
     
@@ -2090,6 +2140,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       audio.volume = 0.9;
       if (currentSong && currentSong.music) {
         precargarAudio(currentSong);
+        updateMediaSession(currentSong);
       }
     });
 
@@ -2112,6 +2163,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     console.log('⚡ Reproducción ultra fluida sin cortes');
     console.log('👆 Arrastra el reproductor hacia abajo para minimizar');
     console.log('🔍 Buscador con cambio de vista (Lista / Cuadrícula)');
+    console.log('🎮 Controles del navegador (Media Session API) activados');
     
   })();
 </script>
