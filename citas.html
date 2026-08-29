@@ -14,7 +14,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         /* ============================================================
-           DISEÑO MINIMALISTA TIPO SPOTIFY SIN CONTENEDORES EXCESIVOS
+           DISEÑO MODERNO BLANCO Y NEGRO
            ============================================================ */
         * {
             margin: 0;
@@ -24,7 +24,7 @@
         }
 
         body {
-            background: #121212;
+            background: #000000;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -35,7 +35,7 @@
         .card {
             max-width: 860px;
             width: 100%;
-            color: #fff;
+            color: #ffffff;
             position: relative;
             z-index: 1;
         }
@@ -56,9 +56,9 @@
             height: 160px;
             border-radius: 50%;
             overflow: hidden;
-            border: 3px solid #1db954;
-            box-shadow: 0 8px 30px rgba(29, 185, 84, 0.25);
-            background: #282828;
+            border: 3px solid #ffffff;
+            box-shadow: 0 8px 30px rgba(255, 255, 255, 0.15);
+            background: #1a1a1a;
             flex-shrink: 0;
             transition: transform 0.3s ease;
         }
@@ -77,7 +77,7 @@
             margin-top: 0.8rem;
             font-size: 1.1rem;
             font-weight: 700;
-            color: #1db954;
+            color: #ffffff;
             opacity: 0;
             transition: opacity 0.4s ease, transform 0.3s ease;
             transform: translateY(-5px);
@@ -98,7 +98,7 @@
             display: flex;
             justify-content: space-between;
             align-items: baseline;
-            border-bottom: 1px solid #282828;
+            border-bottom: 1px solid #333333;
             padding-bottom: 0.6rem;
             margin-bottom: 1.8rem;
             flex-wrap: wrap;
@@ -112,10 +112,9 @@
             font-size: 2.4rem;
             font-weight: 900;
             letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #1db954 0%, #1ed760 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #ffffff;
+            -webkit-text-fill-color: #ffffff;
+            background: none;
         }
 
         .brand-right {
@@ -126,7 +125,7 @@
         }
 
         .brand .sub {
-            color: #b3b3b3;
+            color: #999999;
             font-weight: 500;
             letter-spacing: 1px;
             font-size: 0.85rem;
@@ -135,7 +134,7 @@
 
         .btn-compartir {
             background: rgba(255,255,255,0.06);
-            border: 1px solid #282828;
+            border: 1px solid #333333;
             color: #fff;
             padding: 0.25rem 1rem;
             border-radius: 40px;
@@ -157,11 +156,11 @@
         }
         .btn-compartir i {
             font-size: 0.9rem;
-            color: #1db954;
+            color: #ffffff;
         }
 
         .info-toggle {
-            color: #b3b3b3;
+            color: #999999;
             font-weight: 500;
             font-size: 0.85rem;
             cursor: pointer;
@@ -183,13 +182,13 @@
         }
         .info-toggle i {
             font-size: 0.85rem;
-            color: #1db954;
+            color: #ffffff;
         }
 
         .crea-tu-paquete,
         .btn-ver-anuncio {
-            background: #1db954;
-            color: #fff;
+            background: #ffffff;
+            color: #000000;
             border: none;
             padding: 0.7rem 2.5rem;
             border-radius: 60px;
@@ -202,13 +201,13 @@
             width: fit-content;
             margin: 0.8rem auto 0;
             user-select: none;
-            box-shadow: 0 6px 20px rgba(29, 185, 84, 0.2);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
         }
         .crea-tu-paquete:hover,
         .btn-ver-anuncio:hover {
-            background: #1ed760;
+            background: #e0e0e0;
             transform: scale(1.02);
-            box-shadow: 0 8px 28px rgba(29, 185, 84, 0.3);
+            box-shadow: 0 8px 28px rgba(255, 255, 255, 0.25);
         }
         .crea-tu-paquete:active,
         .btn-ver-anuncio:active {
@@ -220,12 +219,13 @@
         }
 
         .btn-ver-anuncio {
-            background: #3d3d3d;
+            background: #2a2a2a;
+            color: #ffffff;
             box-shadow: 0 6px 20px rgba(0,0,0,0.3);
             margin-top: 0.5rem;
         }
         .btn-ver-anuncio:hover {
-            background: #4f4f4f;
+            background: #3d3d3d;
             box-shadow: 0 8px 28px rgba(0,0,0,0.4);
         }
         .btn-ver-anuncio.oculto {
@@ -258,7 +258,7 @@
             background: rgba(255,255,255,0.04);
             padding: 0.8rem 1.6rem;
             border-radius: 60px;
-            border: 1px solid #282828;
+            border: 1px solid #333333;
             transition: all 0.2s ease;
             flex-wrap: wrap;
             gap: 0.5rem 1rem;
@@ -268,7 +268,7 @@
         }
         .servicio-item:hover {
             background: rgba(255,255,255,0.08);
-            border-color: #404040;
+            border-color: #555555;
         }
 
         .servicio-item:nth-child(1) { animation-delay: 0.1s; }
@@ -294,27 +294,27 @@
             flex-wrap: wrap;
         }
         .servicio-info i {
-            color: #1db954;
+            color: #ffffff;
             font-size: 1.4rem;
             width: 2rem;
             text-align: center;
         }
         .servicio-info .nombre {
-            color: #fff;
+            color: #ffffff;
             font-size: 1.15rem;
             font-weight: 600;
         }
         .servicio-info .precio {
-            color: #b3b3b3;
+            color: #999999;
             font-weight: 500;
             font-size: 0.9rem;
             background: rgba(255,255,255,0.06);
             padding: 0.15rem 1rem;
             border-radius: 40px;
-            border: 1px solid #282828;
+            border: 1px solid #333333;
         }
         .servicio-info .detalle {
-            color: #888;
+            color: #777777;
             font-size: 0.8rem;
             font-weight: 400;
             background: rgba(255,255,255,0.04);
@@ -342,7 +342,7 @@
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
         }
         .switch.active {
-            background: #1db954;
+            background: #ffffff;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
         }
         .switch .thumb {
@@ -351,19 +351,20 @@
             left: 3px;
             width: 22px;
             height: 22px;
-            background: #fff;
+            background: #888888;
             border-radius: 50%;
             transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
         .switch.active .thumb {
             left: 27px;
+            background: #000000;
         }
 
         .estado-texto {
             font-size: 0.75rem;
             font-weight: 600;
-            color: #888;
+            color: #888888;
             min-width: 55px;
             letter-spacing: 0.3px;
             transition: 0.2s ease;
@@ -371,12 +372,12 @@
             padding: 0.15rem 0.6rem;
             border-radius: 30px;
             text-align: center;
-            border: 1px solid #282828;
+            border: 1px solid #333333;
         }
         .estado-texto.activo {
-            color: #1db954;
-            background: rgba(29, 185, 84, 0.12);
-            border-color: #1db954;
+            color: #ffffff;
+            background: rgba(255,255,255,0.12);
+            border-color: #ffffff;
         }
 
         .beat-notes-wrapper {
@@ -396,31 +397,31 @@
             width: 100%;
             padding: 0.8rem 1.2rem;
             border-radius: 30px;
-            border: 1px solid #282828;
+            border: 1px solid #333333;
             background: rgba(255,255,255,0.04);
-            color: #fff;
+            color: #ffffff;
             font-size: 0.9rem;
             resize: vertical;
             min-height: 70px;
             outline: none;
         }
         .beat-notes-wrapper textarea:focus {
-            border-color: #1db954;
-            box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.15);
+            border-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
         }
         .beat-notes-wrapper textarea::placeholder {
-            color: #666;
+            color: #666666;
         }
         .beat-notes-wrapper label {
             display: block;
             font-size: 0.85rem;
             font-weight: 600;
-            color: #b3b3b3;
+            color: #999999;
             margin-bottom: 0.3rem;
             margin-left: 0.5rem;
         }
         .beat-notes-wrapper label i {
-            color: #1db954;
+            color: #ffffff;
             margin-right: 6px;
         }
 
@@ -440,25 +441,25 @@
             max-height: 200px;
             margin-top: 1.8rem;
             padding: 1rem 0.5rem;
-            border-top: 1px solid #282828;
+            border-top: 1px solid #333333;
         }
         .total-label {
             display: flex;
             align-items: baseline;
             gap: 0.5rem;
-            color: #b3b3b3;
+            color: #999999;
             font-size: 1rem;
             font-weight: 600;
             letter-spacing: 0.5px;
         }
         .total-label i {
-            color: #1db954;
+            color: #ffffff;
             margin-right: 4px;
         }
         .total-number {
             font-size: 2.2rem;
             font-weight: 900;
-            color: #1db954;
+            color: #ffffff;
             margin-left: 0.5rem;
         }
 
@@ -477,20 +478,20 @@
             margin-top: 0.5rem;
         }
         .btn-whatsapp {
-            background: #1db954;
+            background: #ffffff;
             border: none;
             padding: 0.7rem 2.2rem;
             border-radius: 60px;
             font-weight: 700;
             font-size: 1.1rem;
-            color: #fff;
+            color: #000000;
             display: inline-flex;
             align-items: center;
             gap: 0.8rem;
             cursor: pointer;
             transition: 0.2s ease;
-            box-shadow: 0 6px 20px rgba(29, 185, 84, 0.2);
-            border: 1px solid #1ed760;
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
+            border: 1px solid #ffffff;
             letter-spacing: 0.5px;
         }
         .btn-whatsapp i {
@@ -498,7 +499,7 @@
         }
         .btn-whatsapp:hover {
             transform: scale(1.03);
-            background: #1ed760;
+            background: #e0e0e0;
         }
         .btn-whatsapp:active {
             transform: scale(0.97);
@@ -520,12 +521,12 @@
         }
         .btn-pdf {
             background: rgba(255,255,255,0.06);
-            border: 1px solid #282828;
+            border: 1px solid #333333;
             padding: 0.7rem 2.2rem;
             border-radius: 60px;
             font-weight: 700;
             font-size: 1.1rem;
-            color: #fff;
+            color: #ffffff;
             display: inline-flex;
             align-items: center;
             gap: 0.8rem;
@@ -535,12 +536,12 @@
         }
         .btn-pdf i {
             font-size: 1.5rem;
-            color: #1db954;
+            color: #ffffff;
         }
         .btn-pdf:hover {
             transform: scale(1.03);
             background: rgba(255,255,255,0.1);
-            border-color: #404040;
+            border-color: #555555;
         }
         .btn-pdf:active {
             transform: scale(0.97);
@@ -549,17 +550,17 @@
         .footer-kerim {
             margin-top: 2rem;
             text-align: center;
-            color: #666;
+            color: #666666;
             font-size: 0.8rem;
             letter-spacing: 0.5px;
-            border-top: 1px solid #282828;
+            border-top: 1px solid #333333;
             padding-top: 1.5rem;
             opacity: 0;
             animation: fadeIn 1s ease forwards;
             animation-delay: 0.9s;
         }
         .footer-kerim span {
-            color: #1db954;
+            color: #ffffff;
             font-weight: 600;
         }
 
@@ -569,7 +570,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.92);
             display: none;
             justify-content: center;
             align-items: center;
@@ -588,35 +589,35 @@
             max-width: 500px;
             width: 90%;
             box-shadow: 0 30px 60px rgba(0,0,0,0.9);
-            border: 1px solid #282828;
+            border: 1px solid #333333;
             animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .gracias-modal i {
             font-size: 4rem;
-            color: #1db954;
+            color: #ffffff;
             margin-bottom: 1rem;
             animation: pulse 1.2s ease infinite;
         }
         .gracias-modal h2 {
             font-size: 2.2rem;
             font-weight: 800;
-            color: #fff;
+            color: #ffffff;
             margin-bottom: 0.5rem;
         }
         .gracias-modal p {
             font-size: 1.1rem;
-            color: #b3b3b3;
+            color: #999999;
             font-weight: 500;
         }
         .gracias-modal .subtexto {
             font-size: 0.9rem;
-            color: #888;
+            color: #888888;
             margin-top: 0.5rem;
         }
         .gracias-modal .btn-cerrar {
             margin-top: 1.8rem;
-            background: #1db954;
-            color: #fff;
+            background: #ffffff;
+            color: #000000;
             border: none;
             padding: 0.7rem 2.5rem;
             border-radius: 40px;
@@ -632,9 +633,10 @@
             font-size: 1.2rem;
             margin: 0;
             animation: none;
+            color: #000000;
         }
         .gracias-modal .btn-cerrar:hover {
-            background: #1ed760;
+            background: #e0e0e0;
             transform: scale(1.05);
         }
 
@@ -652,10 +654,10 @@
             display: block;
         }
 
-        /* ---- MENSAJE DE BIENVENIDA (sin contenedores extra) ---- */
+        /* ---- MENSAJE DE BIENVENIDA ---- */
         .mensaje-bienvenida {
             text-align: left;
-            color: #e0e0e0;
+            color: #cccccc;
             max-width: 600px;
             margin: 0 auto;
             padding: 0;
@@ -680,7 +682,7 @@
             margin: 0.5rem 0;
         }
         .mensaje-bienvenida strong {
-            color: #fff;
+            color: #ffffff;
         }
         .mensaje-bienvenida ol {
             padding-left: 1.5rem;
@@ -707,7 +709,7 @@
             height: auto;
             border-radius: 16px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-            border: 1px solid #282828;
+            border: 1px solid #333333;
             transition: opacity 0.8s ease, transform 0.8s ease;
         }
         .mensaje-bienvenida .media-container .portada-container {
@@ -716,7 +718,7 @@
             height: auto;
             border-radius: 16px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-            border: 1px solid #282828;
+            border: 1px solid #333333;
             opacity: 0;
             transform: scale(0.9);
             transition: opacity 0.8s ease, transform 0.8s ease;
@@ -764,19 +766,19 @@
             display: inline-flex;
             align-items: center;
             gap: 0.8rem;
-            background: #1db954;
-            color: #fff;
+            background: #ffffff;
+            color: #000000;
             font-weight: 700;
             font-size: 1.1rem;
             padding: 0.7rem 2.2rem;
             border-radius: 60px;
             text-decoration: none;
             transition: background 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 6px 20px rgba(29, 185, 84, 0.2);
-            border: 1px solid #1ed760;
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
+            border: 1px solid #ffffff;
         }
         .btn-escucha:hover {
-            background: #1ed760;
+            background: #e0e0e0;
             transform: scale(1.03);
         }
         .btn-escucha:active {
@@ -910,11 +912,11 @@
                 </div>
 
                 <div class="texto-descriptivo">
-                    <p style="font-size:1.1rem; font-weight:bold; text-align:center; color:#fff;">🎵 Crea tu proyecto a tu manera</p>
+                    <p style="font-size:1.1rem; font-weight:bold; text-align:center; color:#ffffff;">🎵 Crea tu proyecto a tu manera</p>
                     <p>En nuestro servicio tienes la libertad de <strong>crear tu propio proyecto de la manera que tú quieras</strong>. Tú decides qué deseas realizar, cómo quieres llevarlo a cabo y qué detalles quieres incluir en tu proyecto.</p>
                     <p>Una vez que hayas definido lo que necesitas, podrás <strong>realizar tu pedido directamente por WhatsApp</strong>, donde podremos atenderte, resolver tus dudas y confirmar contigo todos los detalles antes de comenzar.</p>
                     <p>Después de realizar tu pedido, recibirás un <strong>comprobante descargable</strong> como respaldo de tu solicitud. Este comprobante te permitirá tener constancia de que tu pedido fue realizado y conservar la información correspondiente a tu proyecto.</p>
-                    <p style="font-weight:bold; color:#fff;">📲 ¿Cómo funciona?</p>
+                    <p style="font-weight:bold; color:#ffffff;">📲 ¿Cómo funciona?</p>
                     <ol>
                         <li><strong>Crea tu proyecto:</strong> Decide qué quieres realizar y prepara los detalles de tu idea.</li>
                         <li><strong>Realiza tu pedido:</strong> Envíanos tu solicitud directamente por <strong>WhatsApp</strong>.</li>
@@ -923,7 +925,7 @@
                         <li><strong>Dale seguimiento:</strong> Mantendremos la comunicación contigo por WhatsApp para que puedas estar informado sobre tu proyecto.</li>
                     </ol>
                     <p>Queremos que tengas una experiencia sencilla, clara y segura. <strong>Tu proyecto comienza con tu idea, tú decides cómo quieres crearlo y nosotros te ayudamos a llevarlo a cabo.</strong></p>
-                    <p style="font-weight:bold; text-align:center; color:#fff;">📱 <strong>Haz tu pedido por WhatsApp y comienza a crear tu proyecto.</strong></p>
+                    <p style="font-weight:bold; text-align:center; color:#ffffff;">📱 <strong>Haz tu pedido por WhatsApp y comienza a crear tu proyecto.</strong></p>
                 </div>
             </div>
         </div>
@@ -943,6 +945,10 @@
         <button class="crea-tu-paquete" id="btnMostrarOpciones">
             <i class="fas fa-plus-circle"></i> Crea tu paquete de grabación
         </button>
+
+        <button class="crea-tu-paquete" id="btnMostrarOpciones" onclick="window.location.href='musicakerimmusicgratis.html'">
+              <i class="fas fa-music"></i> Estudio Kerim Music
+         </button>
 
         <button class="btn-ver-anuncio" id="btnVerAnuncio">
             <i class="fas fa-play-circle"></i> Ver Anuncio
@@ -1099,13 +1105,13 @@
                     const btn = document.getElementById('btnCompartir');
                     const originalHTML = btn.innerHTML;
                     btn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
-                    btn.style.background = '#1db954';
-                    btn.style.borderColor = '#1ed760';
-                    btn.style.color = '#fff';
+                    btn.style.background = '#ffffff';
+                    btn.style.borderColor = '#ffffff';
+                    btn.style.color = '#000000';
                     setTimeout(() => {
                         btn.innerHTML = originalHTML;
                         btn.style.background = 'rgba(255,255,255,0.06)';
-                        btn.style.borderColor = '#282828';
+                        btn.style.borderColor = '#333333';
                         btn.style.color = '#fff';
                     }, 2000);
                 }).catch(() => {
