@@ -533,7 +533,7 @@
     const db = getFirestore(app);
 
     // ---- CONTADOR GLOBAL DE VISITAS (opcional) ----
-    const contadorRef = doc(db, "Radio Muisc", "Kerim Music+");
+    const contadorRef = doc(db, "Radio_Muisc", "Kerim Music+");
     const CAMPO_CONTADOR = "total";
     let userId = localStorage.getItem('visitor_id_kerim');
     if (!userId) {
@@ -597,7 +597,7 @@
 
         await runTransaction(db, async (transaction) => {
           // Leer el documento de la canción
-          const songRef = doc(db, "Radio Muisc", String(songId));
+          const songRef = doc(db, "Radio_Muisc", String(songId));
           const songSnap = await transaction.get(songRef);
           let currentPlays = songSnap.exists() ? songSnap.data().reproducciones || 0 : 0;
 
@@ -638,7 +638,7 @@
           // Eliminar las expiradas y decrementar sus contadores
           for (const id of idsAEliminar) {
             delete historial[id];
-            const ref = doc(db, "Radio Muisc", String(id));
+            const ref = doc(db, "Radio_Muisc", String(id));
             const snap = await transaction.get(ref);
             if (snap.exists()) {
               const plays = snap.data().reproducciones || 0;
@@ -675,7 +675,7 @@
      */
     window.obtenerReproducciones = async function(songId) {
       try {
-        const ref = doc(db, "Radio Muisc", String(songId));
+        const ref = doc(db, "Radio_Muisc", String(songId));
         const docSnap = await getDoc(ref);
         if (docSnap.exists()) {
           return docSnap.data().reproducciones || 0;
@@ -690,6 +690,7 @@
     // ---- Inicialización del contador global (opcional) ----
     document.addEventListener("DOMContentLoaded", () => {
       console.log("✅ Módulo Firebase con caducidad de 3 meses cargado.");
+      console.log("📌 Colección: Radio_Muisc (con guión bajo)");
     });
   </script>
 
@@ -1070,6 +1071,7 @@
 
       console.log('🎵 Reproductor con Firebase (caducidad 3 meses) activo.');
       console.log('✅ Las reproducciones solo se cuentan cuando la canción se escucha COMPLETA.');
+      console.log('📌 Colección: Radio_Muisc (con guión bajo)');
     })();
   </script>
 
