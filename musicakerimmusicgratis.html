@@ -855,10 +855,10 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
     function formatTime(sec){ if(isNaN(sec)) return '0:00'; let m=Math.floor(sec/60), s=Math.floor(sec%60); return `${m}:${s<10?'0':''}${s}`; }
 
-    // ===== MEDIA SESSION - NOTIFICACIONES DEL NAVEGADOR =====
+    // ===== MEDIA SESSION - NOTIFICACIONES DEL NAVEGADOR (MEJORADO) =====
     let mediaSessionHandlersSet = false;
 
-    function updateMediaSession(song) {
+    function updateMediaSession(song, forceState) {
       if (!song) return;
       if (!('mediaSession' in navigator)) return;
 
@@ -879,8 +879,12 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           artwork: artwork
         });
 
-        // Estado de reproducción
-        navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+        // Estado: si se forza, usarlo; si no, usar el estado global
+        if (forceState) {
+          navigator.mediaSession.playbackState = forceState;
+        } else {
+          navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+        }
 
         // Sincronizar posición si está disponible
         if (audio.duration && !isNaN(audio.duration) && !isAdPlaying) {
@@ -896,7 +900,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         // Registrar handlers (solo una vez)
         setupMediaSessionHandlers();
         
-        console.log('🎵 Media Session actualizada:', title, '-', artist);
+        console.log('🎵 Media Session actualizada:', title, '-', artist, 'estado:', forceState || (isPlaying ? 'playing' : 'paused'));
       } catch (e) {
         console.warn('Error actualizando Media Session:', e);
       }
@@ -1166,7 +1170,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
       schedulePreloadNext();
       // Actualizar notificación con la nueva cola
-      if (currentSong) updateMediaSession(currentSong);
+      if (currentSong) updateMediaSession(currentSong, 'playing');
     }
 
     // ==================== FUNCIONES DE COLA ====================
@@ -1332,8 +1336,8 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       };
       currentSong = adSong;
       
-      // Actualizar notificación para anuncio
-      updateMediaSession(adSong);
+      // Actualizar notificación para anuncio (forzar playing si tiene audio)
+      updateMediaSession(adSong, 'playing');
       
       preloadNextAd();
       
@@ -1458,7 +1462,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
       
       // Actualizar notificación después de restaurar
-      if (currentSong) updateMediaSession(currentSong);
+      if (currentSong) updateMediaSession(currentSong, 'playing');
       
       if (adCallback) {
         const callback = adCallback;
@@ -1592,8 +1596,8 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       
       currentSong = song;
       
-      // 🔥 ACTUALIZAR NOTIFICACIÓN
-      updateMediaSession(song);
+      // 🔥 FORZAR estado 'playing' en la notificación inmediatamente
+      updateMediaSession(song, 'playing');
       
       hideVideoFromPlayer();
       if (progressArea) progressArea.style.display = 'block';
@@ -2011,7 +2015,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       });
     });
 
-    // ==================== AUDIO EVENTOS ====================
+    // ==================== AUDIO EVENTOS (MEJORADOS) ====================
     let audioUpdateFrame = null;
 
     audio.addEventListener('timeupdate', () => {
@@ -2045,17 +2049,15 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     audio.addEventListener('play', () => { 
       isPlaying = true; 
       updatePlayPauseIcon(); 
-      if ('mediaSession' in navigator) {
-        navigator.mediaSession.playbackState = 'playing';
-      }
+      // Forzar estado playing en la notificación
+      if (currentSong) updateMediaSession(currentSong, 'playing');
     });
     
     audio.addEventListener('pause', () => { 
       isPlaying = false; 
       updatePlayPauseIcon(); 
-      if ('mediaSession' in navigator) {
-        navigator.mediaSession.playbackState = 'paused';
-      }
+      // Actualizar estado paused en la notificación
+      if (currentSong) updateMediaSession(currentSong, 'paused');
     });
 
     audio.addEventListener('ended', () => {
@@ -2077,6 +2079,12 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         }
         pendingCount = false;
         pendingSongId = null;
+      }
+      
+      // 🔥 Antes de cambiar de canción, actualizar la metadata con la siguiente canción (si existe) para evitar que la notificación desaparezca
+      const nextSong = getNextSongInQueue();
+      if (nextSong) {
+        updateMediaSession(nextSong, 'playing');
       }
       
       nextTrack();
@@ -2263,7 +2271,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if (currentSong && currentSong.music) {
         precargarAudio(currentSong);
         // Actualizar notificación al iniciar
-        updateMediaSession(currentSong);
+        updateMediaSession(currentSong, 'playing');
       }
     });
 
