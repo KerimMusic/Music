@@ -10,24 +10,9 @@
   
   <!-- ===== MEDIA SESSION API (CONTROLES DEL NAVEGADOR) ===== -->
   <script>
-    if ('mediaSession' in navigator) {
-      navigator.mediaSession.setActionHandler('play', () => {
-        const audio = document.querySelector('audio');
-        if (audio) audio.play();
-      });
-      navigator.mediaSession.setActionHandler('pause', () => {
-        const audio = document.querySelector('audio');
-        if (audio) audio.pause();
-      });
-      navigator.mediaSession.setActionHandler('previoustrack', () => {
-        const prevBtn = document.getElementById('fullPrevBtn');
-        if (prevBtn) prevBtn.click();
-      });
-      navigator.mediaSession.setActionHandler('nexttrack', () => {
-        const nextBtn = document.getElementById('fullNextBtn');
-        if (nextBtn) nextBtn.click();
-      });
-    }
+    // Los handlers se configuran desde el script principal
+    // para mantener sincronización con el reproductor existente
+    console.log('🎵 Media Session API - Configuración desde script principal');
   </script>
   
   <style>
@@ -870,6 +855,109 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
     function formatTime(sec){ if(isNaN(sec)) return '0:00'; let m=Math.floor(sec/60), s=Math.floor(sec%60); return `${m}:${s<10?'0':''}${s}`; }
 
+    // ===== MEDIA SESSION - NOTIFICACIONES DEL NAVEGADOR =====
+    let mediaSessionHandlersSet = false;
+
+    function updateMediaSession(song) {
+      if (!song) return;
+      if (!('mediaSession' in navigator)) return;
+
+      const title = song.title || 'Sin título';
+      const artist = song.artist || 'Artista desconocido';
+      const album = song.album || 'Kerim Music';
+      const artwork = song.url ? [
+        { src: song.url, sizes: '512x512', type: 'image/jpeg' },
+        { src: song.url, sizes: '256x256', type: 'image/jpeg' },
+        { src: song.url, sizes: '128x128', type: 'image/jpeg' }
+      ] : [];
+
+      try {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: title,
+          artist: artist,
+          album: album,
+          artwork: artwork
+        });
+
+        // Estado de reproducción
+        navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+
+        // Sincronizar posición si está disponible
+        if (audio.duration && !isNaN(audio.duration) && !isAdPlaying) {
+          try {
+            navigator.mediaSession.setPositionState({
+              duration: audio.duration,
+              position: audio.currentTime,
+              playbackRate: audio.playbackRate || 1
+            });
+          } catch (e) { /* No soportado */ }
+        }
+
+        // Registrar handlers (solo una vez)
+        setupMediaSessionHandlers();
+        
+        console.log('🎵 Media Session actualizada:', title, '-', artist);
+      } catch (e) {
+        console.warn('Error actualizando Media Session:', e);
+      }
+    }
+
+    function setupMediaSessionHandlers() {
+      if (mediaSessionHandlersSet) return;
+      if (!('mediaSession' in navigator)) return;
+
+      try {
+        // Play
+        navigator.mediaSession.setActionHandler('play', () => {
+          if (audio.paused && !isAdPlaying) {
+            audio.play().catch(e => console.log('Error al reproducir desde Media Session:', e));
+          }
+        });
+
+        // Pause
+        navigator.mediaSession.setActionHandler('pause', () => {
+          if (!audio.paused && !isAdPlaying) {
+            audio.pause();
+          }
+        });
+
+        // Siguiente
+        navigator.mediaSession.setActionHandler('nexttrack', () => {
+          if (!isAdPlaying) {
+            nextTrack();
+          }
+        });
+
+        // Anterior
+        navigator.mediaSession.setActionHandler('previoustrack', () => {
+          if (!isAdPlaying) {
+            prevTrack();
+          }
+        });
+
+        // Seek (avance/retroceso - opcional)
+        try {
+          navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+            if (audio.duration && !isAdPlaying) {
+              const seekTo = Math.max(0, audio.currentTime - (details.seekOffset || 10));
+              audio.currentTime = seekTo;
+            }
+          });
+          navigator.mediaSession.setActionHandler('seekforward', (details) => {
+            if (audio.duration && !isAdPlaying) {
+              const seekTo = Math.min(audio.duration, audio.currentTime + (details.seekOffset || 10));
+              audio.currentTime = seekTo;
+            }
+          });
+        } catch (e) { /* No soportado en todos los navegadores */ }
+
+        mediaSessionHandlersSet = true;
+        console.log('🎮 Media Session handlers registrados correctamente');
+      } catch (e) {
+        console.warn('Error registrando handlers Media Session:', e);
+      }
+    }
+
     // ==================== TOAST ====================
     let toastTimeout = null;
     function showToast(message, duration = 2500) {
@@ -960,115 +1048,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     let currentPlayQueue = [], currentQueueIndex = 0, currentSong = null, audio = new Audio(), isPlaying = false, currentSearch = '', shuffleActive = false, originalQueue = [], isPlaylistsMode = false;
     let adCounter = 0, isAdPlaying = false, previousSong = null, pendingNextSong = null, adPlaylist = [], currentAdIndex = 0, adCallback = null, videoElement = null, isVideoAd = false;
 
-    // ===== ACTIVAR MEDIA SESSION =====
-    function updateMediaSession(song) {
-      if (!song) return;
-      if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: song.title,
-          artist: song.artist || 'Artista',
-          album: song.album || 'Kerim Music',
-          artwork: [
-            { src: song.url, sizes: '512x512', type: 'image/jpeg' }
-          ]
-        });
-        navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
-      }
-    }
-
-    // ===== PRECARGA =====
-    const preloadAudio = new Audio();
-    preloadAudio.preload = 'auto';
-    let preloadSong = null;
-
-    const CACHE_NAME = 'kerim-audio-cache-v1';
-    let audioCache = null;
-
-    async function getAudioCache() {
-      if (!audioCache) {
-        try {
-          audioCache = await caches.open(CACHE_NAME);
-        } catch (e) {
-          audioCache = null;
-        }
-      }
-      return audioCache;
-    }
-
-    async function precargarAudio(song) {
-      if (!song || !song.music) return;
-      if (preloadSong && preloadSong.id === song.id) return;
-      
-      try {
-        const cache = await getAudioCache();
-        if (cache) {
-          const response = await cache.match(song.music);
-          if (response) {
-            preloadAudio.src = song.music;
-            preloadAudio.load();
-            preloadSong = song;
-            return;
-          }
-        }
-        const response = await fetch(song.music);
-        if (response.ok) {
-          const clonedResponse = response.clone();
-          if (cache) {
-            cache.put(song.music, clonedResponse);
-          }
-          preloadAudio.src = song.music;
-          preloadAudio.load();
-          preloadSong = song;
-        } else {
-          preloadAudio.src = song.music;
-          preloadAudio.load();
-          preloadSong = song;
-        }
-      } catch (e) {
-        preloadAudio.src = song.music;
-        preloadAudio.load();
-        preloadSong = song;
-      }
-    }
-
-    function getNextSongInQueue() {
-      if (!currentPlayQueue.length) return null;
-      let nextIdx = (currentQueueIndex + 1) % currentPlayQueue.length;
-      return currentPlayQueue[nextIdx];
-    }
-
-    function getPrevSongInQueue() {
-      if (!currentPlayQueue.length) return null;
-      let prevIdx = (currentQueueIndex - 1 + currentPlayQueue.length) % currentPlayQueue.length;
-      return currentPlayQueue[prevIdx];
-    }
-
-    let preloadTimer = null;
-
-    function schedulePreloadNext() {
-      if (preloadTimer) clearTimeout(preloadTimer);
-      const nextSong = getNextSongInQueue();
-      if (!nextSong) return;
-      if (preloadSong && preloadSong.id === nextSong.id) return;
-      
-      const checkTime = () => {
-        if (!audio.duration || audio.paused || isAdPlaying) return;
-        const progress = audio.currentTime / audio.duration;
-        if (progress >= 0.80) {
-          precargarAudio(nextSong);
-          audio.removeEventListener('timeupdate', checkTime);
-        }
-      };
-      audio.addEventListener('timeupdate', checkTime);
-      if (audio.duration && (audio.currentTime / audio.duration) >= 0.80) {
-        precargarAudio(nextSong);
-      }
-    }
-
-    let pendingCount = false;
-    let pendingSongId = null;
-
-    // ==================== ELEMENTOS DOM ====================
+    // ===== ELEMENTOS DOM =====
     const contentContainer = document.getElementById('contentContainer');
     const suggestionsContainer = document.getElementById('suggestionsContainer');
     const searchBadge = document.getElementById('searchBadge');
@@ -1185,6 +1165,8 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         }
       }
       schedulePreloadNext();
+      // Actualizar notificación con la nueva cola
+      if (currentSong) updateMediaSession(currentSong);
     }
 
     // ==================== FUNCIONES DE COLA ====================
@@ -1350,6 +1332,9 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       };
       currentSong = adSong;
       
+      // Actualizar notificación para anuncio
+      updateMediaSession(adSong);
+      
       preloadNextAd();
       
       if (ad.video) {
@@ -1393,9 +1378,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if (fullSongCategory) fullSongCategory.innerHTML = `ANUNCIO <span class="ad-badge">AD ${currentAdIndex + 1}/${adPlaylist.length}</span>`;
       if (miniCover) miniCover.src = adSong.url;
       if (miniTitle) miniTitle.innerText = adSong.title;
-      
-      // Actualizar Media Session para anuncios
-      updateMediaSession(adSong);
       
       if (adSong.music && !ad.video) {
         if (preloadAdAudio.src && preloadAdAudio.src === adSong.music) {
@@ -1474,12 +1456,108 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       } else if (currentPlayQueue.length > 0) {
         playSongInternal(currentPlayQueue[0]);
       }
+      
+      // Actualizar notificación después de restaurar
+      if (currentSong) updateMediaSession(currentSong);
+      
       if (adCallback) {
         const callback = adCallback;
         adCallback = null;
         callback();
       }
     }
+
+    // ==================== PRECARGA ====================
+    const preloadAudio = new Audio();
+    preloadAudio.preload = 'auto';
+    let preloadSong = null;
+
+    const CACHE_NAME = 'kerim-audio-cache-v1';
+    let audioCache = null;
+
+    async function getAudioCache() {
+      if (!audioCache) {
+        try {
+          audioCache = await caches.open(CACHE_NAME);
+        } catch (e) {
+          audioCache = null;
+        }
+      }
+      return audioCache;
+    }
+
+    async function precargarAudio(song) {
+      if (!song || !song.music) return;
+      if (preloadSong && preloadSong.id === song.id) return;
+      
+      try {
+        const cache = await getAudioCache();
+        if (cache) {
+          const response = await cache.match(song.music);
+          if (response) {
+            preloadAudio.src = song.music;
+            preloadAudio.load();
+            preloadSong = song;
+            return;
+          }
+        }
+        const response = await fetch(song.music);
+        if (response.ok) {
+          const clonedResponse = response.clone();
+          if (cache) {
+            cache.put(song.music, clonedResponse);
+          }
+          preloadAudio.src = song.music;
+          preloadAudio.load();
+          preloadSong = song;
+        } else {
+          preloadAudio.src = song.music;
+          preloadAudio.load();
+          preloadSong = song;
+        }
+      } catch (e) {
+        preloadAudio.src = song.music;
+        preloadAudio.load();
+        preloadSong = song;
+      }
+    }
+
+    function getNextSongInQueue() {
+      if (!currentPlayQueue.length) return null;
+      let nextIdx = (currentQueueIndex + 1) % currentPlayQueue.length;
+      return currentPlayQueue[nextIdx];
+    }
+
+    function getPrevSongInQueue() {
+      if (!currentPlayQueue.length) return null;
+      let prevIdx = (currentQueueIndex - 1 + currentPlayQueue.length) % currentPlayQueue.length;
+      return currentPlayQueue[prevIdx];
+    }
+
+    let preloadTimer = null;
+
+    function schedulePreloadNext() {
+      if (preloadTimer) clearTimeout(preloadTimer);
+      const nextSong = getNextSongInQueue();
+      if (!nextSong) return;
+      if (preloadSong && preloadSong.id === nextSong.id) return;
+      
+      const checkTime = () => {
+        if (!audio.duration || audio.paused || isAdPlaying) return;
+        const progress = audio.currentTime / audio.duration;
+        if (progress >= 0.80) {
+          precargarAudio(nextSong);
+          audio.removeEventListener('timeupdate', checkTime);
+        }
+      };
+      audio.addEventListener('timeupdate', checkTime);
+      if (audio.duration && (audio.currentTime / audio.duration) >= 0.80) {
+        precargarAudio(nextSong);
+      }
+    }
+
+    let pendingCount = false;
+    let pendingSongId = null;
 
     // ==================== REPRODUCIR CANCIONES ====================
     function playSong(song, customQueue = null) {
@@ -1514,6 +1592,9 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       
       currentSong = song;
       
+      // 🔥 ACTUALIZAR NOTIFICACIÓN
+      updateMediaSession(song);
+      
       hideVideoFromPlayer();
       if (progressArea) progressArea.style.display = 'block';
       
@@ -1525,9 +1606,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         pendingCount = false;
         pendingSongId = null;
       }
-      
-      // Actualizar Media Session
-      updateMediaSession(song);
       
       if (customQueue) {
         currentPlayQueue = customQueue;
@@ -1946,6 +2024,17 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           if (currentTimeSpan) currentTimeSpan.innerText = formatTime(audio.currentTime); 
           if (durationSpan && durationSpan.innerText === '0:00') durationSpan.innerText = formatTime(audio.duration); 
         }
+        
+        // Sincronizar posición en la notificación
+        if ('mediaSession' in navigator && audio.duration && !isNaN(audio.duration) && !isAdPlaying) {
+          try {
+            navigator.mediaSession.setPositionState({
+              duration: audio.duration,
+              position: audio.currentTime,
+              playbackRate: audio.playbackRate || 1
+            });
+          } catch (e) { /* No soportado */ }
+        }
       });
     });
 
@@ -2173,6 +2262,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       audio.volume = 0.9;
       if (currentSong && currentSong.music) {
         precargarAudio(currentSong);
+        // Actualizar notificación al iniciar
         updateMediaSession(currentSong);
       }
     });
@@ -2197,6 +2287,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     console.log('👆 Arrastra el reproductor hacia abajo para minimizar');
     console.log('🔍 Buscador con cambio de vista (Lista / Cuadrícula)');
     console.log('🎮 Controles del navegador (Media Session API) activados');
+    console.log('📱 Reproducción en segundo plano con pantalla bloqueada activada');
     
   })();
 </script>
