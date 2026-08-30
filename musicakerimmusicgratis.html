@@ -144,6 +144,117 @@
     @keyframes fadeUp{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
     .cdrack{text-align:center;max-width:100%;padding:0 10px;box-sizing:border-box}
     .cdrack h1{font-size:0.6rem;font-weight:normal;margin:0;word-wrap:break-word;overflow-wrap:break-word;white-space:normal;max-width:100%;display:block;color:#aaaaaa}
+
+    /* Estilos para vista de artista */
+    .artist-result-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 0.5rem 0 1.5rem;
+      border-bottom: 1px solid #333;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .artist-result-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ffffff;
+      flex-shrink: 0;
+      background: #1a1a1a;
+    }
+    .artist-result-info {
+      flex: 1;
+      min-width: 150px;
+    }
+    .artist-result-name {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      color: #ffffff;
+    }
+    .artist-result-plays {
+      font-size: 0.8rem;
+      color: #aaaaaa;
+    }
+    .artist-album-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #000000;
+      border: none;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 0 20px rgba(255,255,255,.1);
+    }
+    .artist-album-btn:hover {
+      transform: scale(1.05);
+      background: #cccccc;
+    }
+    .artist-songs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .artist-song-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: rgba(26,26,26,0.6);
+      border-radius: 8px;
+      padding: 0.5rem 0.8rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      border: 1px solid #333333;
+    }
+    .artist-song-item:hover {
+      background: #333333;
+      transform: scale(1.01);
+    }
+    .artist-song-item img {
+      width: 48px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .artist-song-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .artist-song-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .artist-song-plays {
+      font-size: 0.65rem;
+      color: #aaaaaa;
+    }
+    .artist-song-category {
+      font-size: 0.55rem;
+      color: #888888;
+      background: #1a1a1a;
+      padding: 0.1rem 0.6rem;
+      border-radius: 20px;
+      border: 1px solid #333;
+      white-space: nowrap;
+    }
+    @media(max-width:480px){
+      .artist-result-header{ flex-direction: column; text-align:center; }
+      .artist-album-btn{ width:48px; height:48px; font-size:0.7rem; }
+    }
   </style>
 </head>
 <body>
@@ -1120,13 +1231,11 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         videoElement = videoEl;
         isVideoAd = true;
         videoEl.addEventListener('ended', onVideoAdEnd);
-        // Ocultar botones de play/pause en anuncios de video
         if (fullPlayPause) fullPlayPause.style.display = 'none';
         if (miniPlayPause) miniPlayPause.style.display = 'none';
         if (progressArea) progressArea.style.display = 'none';
       } else if (iframeEl) {
         isVideoAd = true;
-        // Ocultar botones de play/pause en anuncios de video
         if (fullPlayPause) fullPlayPause.style.display = 'none';
         if (miniPlayPause) miniPlayPause.style.display = 'none';
         if (progressArea) progressArea.style.display = 'none';
@@ -1146,7 +1255,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       videoContainer.innerHTML = '';
       if (fullCover) fullCover.style.display = 'block';
       if (progressArea) progressArea.style.display = 'block';
-      // Restaurar botones de play/pause (se mostrarán según el contexto)
       if (fullPlayPause) fullPlayPause.style.display = 'flex';
       if (miniPlayPause) miniPlayPause.style.display = 'flex';
       if (videoElement) {
@@ -1249,17 +1357,13 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           hideVideoFromPlayer();
           if (fullCover) fullCover.src = adSong.url;
         }
-        // Aseguramos que los botones estén ocultos (showVideoInPlayer ya los oculta)
-        // Pero si no se pudo mostrar video, los mostramos
         if (!videoHtml) {
           if (fullPlayPause) fullPlayPause.style.display = 'flex';
           if (miniPlayPause) miniPlayPause.style.display = 'flex';
         }
-        // Para video, el estado de reproducción lo manejamos con el elemento video
         if (videoElement) {
           videoElement.addEventListener('play', () => {
             isPlaying = true;
-            // Los botones están ocultos, no actualizamos icono
           });
           videoElement.addEventListener('pause', () => {
             isPlaying = false;
@@ -1272,12 +1376,10 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         } else {
           isPlaying = false;
         }
-        // No actualizamos icono porque los botones están ocultos
       } else {
         hideVideoFromPlayer();
         if (fullCover) fullCover.src = adSong.url;
         if (progressArea) progressArea.style.display = 'none';
-        // Mostrar botones para anuncios de audio
         if (fullPlayPause) fullPlayPause.style.display = 'flex';
         if (miniPlayPause) miniPlayPause.style.display = 'flex';
       }
@@ -1305,9 +1407,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         if (miniPlayPause) miniPlayPause.style.display = 'flex';
         updatePlayPauseIcon();
       } else if (ad.video) {
-        // El audio no se usa, el video controla la reproducción
         audio.pause();
-        // Los botones ya están ocultos, no actualizamos icono
       } else {
         audio.pause();
         isPlaying = false;
@@ -1596,7 +1696,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     }
 
     function updatePlayPauseIcon(){ 
-      // Solo actualizar si los botones están visibles (no en video ad)
       if (fullPlayPause && fullPlayPause.style.display !== 'none') {
         const icon = isPlaying ? '⏸' : '▶'; 
         fullPlayPause.innerText = icon; 
@@ -1628,13 +1727,9 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     }
 
     function togglePlayPause(){ 
-      // Si estamos en anuncio de video, los botones están ocultos, esta función no debería llamarse
-      // pero por si acaso, manejamos video ad
       if (isAdPlaying && isVideoAd && videoElement) {
-        // No hacemos nada porque los botones están ocultos
         return;
       }
-      // Si estamos en anuncio de audio (o normal), controlar audio
       if (isAdPlaying && !isVideoAd) {
         if (audio.paused) {
           audio.play().catch(e => console.log('Error al reproducir anuncio:', e));
@@ -1646,7 +1741,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         updatePlayPauseIcon();
         return;
       }
-      // Modo normal (canción)
       if (isPlaying) {
         audio.pause();
       } else {
@@ -1757,7 +1851,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       artistsContainer.innerHTML = html;
     }
 
-    // ==================== RENDER CONTENIDO ====================
+    // ==================== RENDER CONTENIDO (MODIFICADO PARA VISTA DE ARTISTA) ====================
     let renderTimeout = null;
 
     function updateCounterVisibility() { 
@@ -1796,22 +1890,106 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           return; 
         } 
         
+        // Obtener reproducciones para todos los items
         for (let song of items) {
           if (!firestorePlays.has(String(song.id))) {
             const plays = await obtenerReproduccionesFirestore(song.id);
             firestorePlays.set(String(song.id), plays);
           }
         }
-        
+
+        // === DETECTAR SI LA BÚSQUEDA CORRESPONDE A UN ARTISTA ESPECÍFICO ===
+        let targetArtist = null;
+        if (isSearching) {
+          const searchLower = currentSearch.toLowerCase().trim();
+          let exactMatch = masterSongs.find(s => s.artist && s.artist.toLowerCase() === searchLower);
+          if (exactMatch) {
+            targetArtist = exactMatch.artist;
+          } else {
+            let partialMatch = masterSongs.find(s => s.artist && s.artist.toLowerCase().includes(searchLower));
+            if (partialMatch) {
+              targetArtist = partialMatch.artist;
+            }
+          }
+        }
+
+        // Si hay un artista objetivo y estamos buscando, mostrar vista de artista
+        if (targetArtist) {
+          const artistSongs = masterSongs.filter(s => s.artist && s.artist.toLowerCase() === targetArtist.toLowerCase());
+          if (artistSongs.length > 0) {
+            let totalArtistPlays = 0;
+            artistSongs.forEach(s => {
+              totalArtistPlays += firestorePlays.get(String(s.id)) || 0;
+            });
+
+            const artistImage = artistSongs[0].url;
+            const artistName = targetArtist;
+
+            let html = `
+              <div class="artist-result-header">
+                <img class="artist-result-avatar" src="${artistImage}" alt="${escapeHtml(artistName)}">
+                <div class="artist-result-info">
+                  <div class="artist-result-name">${escapeHtml(artistName)}</div>
+                  <div class="artist-result-plays">🎧 ${totalArtistPlays} reproducciones totales · ${artistSongs.length} canciones</div>
+                </div>
+                <button class="artist-album-btn" id="playAlbumBtn" title="Escuchar álbum completo">▶</button>
+              </div>
+              <div class="artist-songs-list">
+            `;
+
+            artistSongs.forEach(song => {
+              const plays = firestorePlays.get(String(song.id)) || 0;
+              html += `
+                <div class="artist-song-item" data-id="${song.id}">
+                  <img src="${song.url}" loading="lazy" alt="${escapeHtml(song.title)}">
+                  <div class="artist-song-info">
+                    <div class="artist-song-title">${escapeHtml(song.title)}</div>
+                    <div class="artist-song-plays">🎧 ${plays} reproducciones</div>
+                  </div>
+                  <span class="artist-song-category">${escapeHtml(song.category || '')}</span>
+                </div>
+              `;
+            });
+
+            html += `</div>`;
+            contentContainer.innerHTML = html;
+
+            contentContainer.querySelectorAll('.artist-song-item').forEach(item => {
+              item.addEventListener('click', () => {
+                const id = item.dataset.id;
+                const found = masterSongs.find(s => s.id === id) || allSongs.find(s => s.id === id);
+                if(found){ updateQueueAndMode(); playSong(found); }
+              });
+            });
+
+            const playAlbumBtn = document.getElementById('playAlbumBtn');
+            if (playAlbumBtn) {
+              playAlbumBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (artistSongs.length === 0) return;
+                const albumQueue = [...artistSongs];
+                playSong(albumQueue[0], albumQueue);
+                showToast(`▶ Reproduciendo álbum de ${artistName}`, 2000);
+              });
+            }
+
+            triggerBackgroundRefresh();
+            return;
+          }
+        }
+
+        // === RENDER NORMAL (cuadrícula o lista) ===
         let html = '';
         if (isSearching && searchViewMode === 'list') {
           html = `<div class="search-results-list">`;
           items.forEach(song => {
+            const plays = firestorePlays.get(String(song.id)) || 0;
             html += `<div class="list-item" data-id="${song.id}">
                       <img src="${song.url}" loading="lazy" alt="${escapeHtml(song.title)}">
                       <div class="list-info">
                         <div class="list-title">${escapeHtml(song.title)}</div>
                         <div class="list-artist">${escapeHtml(song.artist || 'Artista')}</div>
+                        <div style="font-size:0.6rem;color:#666;">🎧 ${plays}</div>
                       </div>
                     </div>`;
           });
@@ -1819,11 +1997,13 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         } else {
           html = `<div class="gallery-grid">`;
           items.forEach(song => {
+            const plays = firestorePlays.get(String(song.id)) || 0;
             html += `<div class="image-card" data-id="${song.id}">
                       <img src="${song.url}" loading="lazy" alt="${escapeHtml(song.title)}" decoding="async" fetchpriority="low">
                       <div class="song-info">
                         <div class="song-title">${escapeHtml(song.title)}</div>
                         <div class="song-artist">${escapeHtml(song.artist || 'Artista')}</div>
+                        <div style="font-size:0.55rem;color:#666;">🎧 ${plays}</div>
                       </div>
                     </div>`;
           });
@@ -1901,7 +2081,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
     // ==================== RESTAURAR ESTADO ====================
     let resumePending = false;
-    // Variable para reanudar anuncios de audio (ya no se usa, pero se mantiene por compatibilidad)
     let resumeAdPending = false;
 
     function restorePlayerState() {
@@ -2033,7 +2212,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
                   hideVideoFromPlayer();
                   if (fullCover) fullCover.src = adSong.url;
                 }
-                // Ocultar botones para video ad
                 if (fullPlayPause) fullPlayPause.style.display = 'none';
                 if (miniPlayPause) miniPlayPause.style.display = 'none';
                 if (videoElement) {
@@ -2042,24 +2220,20 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
                 } else {
                   isPlaying = false;
                 }
-                // No actualizamos icono (botones ocultos)
               } else if (adToPlay.music) {
-                // ** CAMBIO IMPORTANTE: Anuncio de audio se restaura en PAUSA y con Play **
                 hideVideoFromPlayer();
                 if (fullCover) fullCover.src = adSong.url;
                 audio.src = adToPlay.music;
                 savedAdTime = saved.currentTime || 0;
                 audio.currentTime = savedAdTime;
-                // No reproducir automáticamente, solo cargar y pausar
-                audio.pause(); // Asegurar pausa
-                isPlaying = false; // Forzar estado pausado
+                audio.pause();
+                isPlaying = false;
                 if (fullPlayPause) fullPlayPause.style.display = 'flex';
                 if (miniPlayPause) miniPlayPause.style.display = 'flex';
                 audio.removeEventListener('ended', onAdEnd);
                 audio.addEventListener('ended', onAdEnd);
                 if (progressArea) progressArea.style.display = 'none';
-                updatePlayPauseIcon(); // Esto pondrá el ícono de Play (▶)
-                // No establecer resumeAdPending
+                updatePlayPauseIcon();
               } else {
                 if (progressArea) progressArea.style.display = 'none';
                 if (fullPlayPause) fullPlayPause.style.display = 'flex';
@@ -2078,7 +2252,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
               if (miniPlayerDiv) miniPlayerDiv.classList.add('show');
               triggerBackgroundRefresh();
 
-              updateMediaSession(adSong, 'paused'); // Forzar estado paused en Media Session
+              updateMediaSession(adSong, 'paused');
               scheduleSave();
               return true;
             }
@@ -2147,15 +2321,10 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
     function setupResumeListeners() {
       const resumeFn = () => {
-        // Solo reanudar canciones normales, no anuncios de audio (ya que se restauran en pausa)
         if (resumePending && audio.paused && currentSong && !isAdPlaying) {
           audio.play().catch(e => {});
           resumePending = false;
         }
-        // No reanudar anuncios de audio automáticamente
-        // Si el usuario quiere reproducir, debe presionar Play manualmente
-        // Para anuncios de video, si el video está pausado y el usuario hace clic, no lo reanudamos automáticamente,
-        // porque los botones están ocultos, pero por si acaso, no hacemos nada.
       };
 
       document.addEventListener('click', resumeFn);
@@ -2274,6 +2443,8 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
             .then(nuevoValor => {
               if (nuevoValor !== null) {
                 firestorePlays.set(String(songId), nuevoValor);
+                // 🔥 ACTUALIZACIÓN EN TIEMPO REAL: renderizar de nuevo para mostrar el nuevo conteo
+                renderContent();
                 renderSuggestions();
                 renderTopArtists();
               }
@@ -2338,7 +2509,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
               audio.play().catch(() => {});
               resumePending = false;
             }
-            // No reanudar anuncios de audio automáticamente
           }, 500);
         }); 
       }
@@ -2529,6 +2699,8 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     console.log('🎵 Kerim Music+ Optimizado con precarga y caché');
     console.log('♻️ Persistencia de estado activada - la página se restaura al recargar');
     console.log('📢 Anuncios de audio se restauran en pausa (Play manual)');
+    console.log('🔍 Búsqueda de artista con vista de álbum y contador de reproducciones');
+    console.log('🎵 Botón "Escuchar álbum" reproduce todas las canciones del artista');
     console.log('🔄 Botones de control ocultos durante anuncios de video');
     console.log('⚡ Reproducción ultra fluida sin cortes');
     console.log('👆 Arrastra el reproductor hacia abajo para minimizar');
