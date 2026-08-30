@@ -4,19 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>Kerim Music+</title>
-  <!-- FAVICON - Imagen circular corregida (solo se usa una URL válida) -->
   <link rel="icon" type="image/png" sizes="32x32" href="https://www.dropbox.com/scl/fi/ic181hn9urht5rpwq59i8/Kerim-Music.png?rlkey=yrsuxjx4nppskluqn50vwyo6q&st=m4q3ul4i&raw=1">
-  <!-- Preconexiones -->
-  
-  <!-- ===== MEDIA SESSION API (CONTROLES DEL NAVEGADOR) ===== -->
   <script>
-    // Los handlers se configuran desde el script principal
-    // para mantener sincronización con el reproductor existente
     console.log('🎵 Media Session API - Configuración desde script principal');
   </script>
-  
   <style>
-    /* ===== ESTILOS OPTIMIZADOS - BLANCO Y NEGRO ===== */
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     body{background-color:#000000;color:#ffffff;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,sans-serif;line-height:1.4;overflow-x:hidden;width:100%}
     .top-bar{background:#000000;padding:.5rem 1rem;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap;border-bottom:1px solid #333333}
@@ -55,142 +47,24 @@
     .chip-sort:hover:not(.active){background:#333333;transform:scale(1.02);color:#ffffff}
     .random-matte-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;transition:background-color .8s cubic-bezier(.2,.9,.4,1.1);pointer-events:none}
     .random-matte-bg::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 20% 40%,rgba(255,255,255,.03) 0%,rgba(0,0,0,.9) 100%);pointer-events:none}
-
-    /* ===== GALERÍA (cuadrícula y lista) ===== */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.5rem;
-      opacity: 0;
-      animation: fadeUp .3s forwards;
-    }
-    .image-card {
-      display: flex;
-      flex-direction: column;
-      background: transparent;
-      border: none;
-      border-radius: 0;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-    .image-card:hover {
-      transform: scale(1.02);
-    }
-    .image-card img {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      display: block;
-      background: #1a1a1a;
-    }
-    .song-info {
-      padding: 0.3rem 0.2rem 0.4rem;
-      text-align: center;
-      background: transparent;
-    }
-    .song-title {
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: #ffffff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      line-height: 1.3;
-    }
-    .song-artist {
-      font-size: 0.6rem;
-      color: #aaaaaa;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      line-height: 1.3;
-    }
-
-    /* ===== MODO LISTA (resultados de búsqueda) ===== */
-    .search-results-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      opacity: 0;
-      animation: fadeUp .3s forwards;
-    }
-    .list-item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      background: rgba(26, 26, 26, 0.6);
-      border-radius: 8px;
-      padding: 0.4rem 0.6rem;
-      cursor: pointer;
-      transition: background 0.2s ease;
-      border: 1px solid #333333;
-    }
-    .list-item:hover {
-      background: #333333;
-      transform: scale(1.01);
-    }
-    .list-item img {
-      width: 48px;
-      height: 48px;
-      object-fit: cover;
-      border-radius: 4px;
-      flex-shrink: 0;
-    }
-    .list-item .list-info {
-      flex: 1;
-      min-width: 0;
-    }
-    .list-item .list-title {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #ffffff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .list-item .list-artist {
-      font-size: 0.65rem;
-      color: #aaaaaa;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* ===== CONTROLES DE VISTA (búsqueda) ===== */
-    #searchViewControls {
-      display: none;
-      justify-content: center;
-      gap: 0.5rem;
-      margin: 0.5rem 0 0.8rem;
-      flex-wrap: wrap;
-    }
-    .view-btn {
-      background: #1a1a1a;
-      border: 1px solid #333333;
-      border-radius: 500px;
-      padding: 0.3rem 1.2rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      color: #aaaaaa;
-      letter-spacing: 0.3px;
-      white-space: nowrap;
-    }
-    .view-btn.active {
-      background: #ffffff;
-      color: #000000;
-      border-color: #ffffff;
-      box-shadow: 0 0 20px rgba(255,255,255,.1);
-    }
-    .view-btn:hover:not(.active) {
-      background: #333333;
-      transform: scale(1.02);
-      color: #ffffff;
-    }
-
-    /* ===== RESTO DE ESTILOS (sin cambios) ===== */
+    .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;opacity:0;animation:fadeUp .3s forwards}
+    .image-card{display:flex;flex-direction:column;background:transparent;border:none;border-radius:0;overflow:hidden;cursor:pointer;transition:transform 0.2s ease}
+    .image-card:hover{transform:scale(1.02)}
+    .image-card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#1a1a1a}
+    .song-info{padding:0.3rem 0.2rem 0.4rem;text-align:center;background:transparent}
+    .song-title{font-size:0.7rem;font-weight:600;color:#ffffff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+    .song-artist{font-size:0.6rem;color:#aaaaaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+    .search-results-list{display:flex;flex-direction:column;gap:0.5rem;opacity:0;animation:fadeUp .3s forwards}
+    .list-item{display:flex;align-items:center;gap:0.75rem;background:rgba(26,26,26,0.6);border-radius:8px;padding:0.4rem 0.6rem;cursor:pointer;transition:background 0.2s ease;border:1px solid #333333}
+    .list-item:hover{background:#333333;transform:scale(1.01)}
+    .list-item img{width:48px;height:48px;object-fit:cover;border-radius:4px;flex-shrink:0}
+    .list-item .list-info{flex:1;min-width:0}
+    .list-item .list-title{font-size:0.8rem;font-weight:600;color:#ffffff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .list-item .list-artist{font-size:0.65rem;color:#aaaaaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    #searchViewControls{display:none;justify-content:center;gap:0.5rem;margin:0.5rem 0 0.8rem;flex-wrap:wrap}
+    .view-btn{background:#1a1a1a;border:1px solid #333333;border-radius:500px;padding:0.3rem 1.2rem;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.2s ease;color:#aaaaaa;letter-spacing:0.3px;white-space:nowrap}
+    .view-btn.active{background:#ffffff;color:#000000;border-color:#ffffff;box-shadow:0 0 20px rgba(255,255,255,.1)}
+    .view-btn:hover:not(.active){background:#333333;transform:scale(1.02);color:#ffffff}
     .suggestions-section{margin-bottom:2rem;padding:0}
     .suggestions-horizontal{display:flex;gap:1rem;overflow-x:auto;scrollbar-width:thin;padding-bottom:.75rem;-webkit-overflow-scrolling:touch}
     .suggestions-horizontal::-webkit-scrollbar{height:4px;background:#1a1a1a}
@@ -204,47 +78,10 @@
     .suggestion-invite{font-size:.6rem;color:#666666;margin-top:4px;display:flex;align-items:center;gap:4px}
     .no-results{text-align:center;padding:3rem;color:#666666;background:rgba(26,26,26,.9);border-radius:8px;border:1px solid #333333}
     .search-badge{font-size:.8rem;color:#666666;margin-bottom:1rem;padding-left:.5rem}
-
-    /* ===== REPRODUCTOR (sin cambios) ===== */
-    .fullscreen-player {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.95);
-      backdrop-filter: blur(0);
-      z-index: 3000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-      overflow-y: auto;
-      padding: 1rem;
-      pointer-events: none;
-    }
-    .fullscreen-player.show {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-    }
-    .player-card {
-      background: transparent;
-      border: none;
-      max-width: 500px;
-      width: 100%;
-      margin: 0 auto;
-      transform: translateY(0);
-      transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.3s ease;
-      pointer-events: auto;
-      touch-action: none;
-      position: relative;
-    }
-    .fullscreen-player.dragging {
-      transition: none;
-    }
+    .fullscreen-player{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(0);z-index:3000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity 0.3s ease,visibility 0.3s ease;overflow-y:auto;padding:1rem;pointer-events:none}
+    .fullscreen-player.show{opacity:1;visibility:visible;pointer-events:auto}
+    .player-card{background:transparent;border:none;max-width:500px;width:100%;margin:0 auto;transform:translateY(0);transition:transform 0.3s cubic-bezier(0.2,0.9,0.4,1),opacity 0.3s ease;pointer-events:auto;touch-action:none;position:relative}
+    .fullscreen-player.dragging{transition:none}
     .player-cover{width:min(70vw,280px);max-width:280px;margin:0 auto 1.5rem;border-radius:8px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.8),0 0 60px rgba(255,255,255,.03);border:1px solid #333333;background:#000000;min-height:200px;display:flex;align-items:center;justify-content:center;position:relative}
     .player-cover img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
     .player-cover .video-wrapper{width:100%;aspect-ratio:16/9;background:#000;display:flex;align-items:center;justify-content:center}
@@ -305,24 +142,8 @@
     .ad-badge{display:inline-block;background:#666666;color:#ffffff;font-size:.55rem;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:6px;letter-spacing:.5px}
     @media(max-width:480px){.top-bar h1{font-size:1.2rem}.artist-avatar{width:65px;height:65px}.artist-circle-card{width:75px}.suggestion-card{flex:0 0 130px}}
     @keyframes fadeUp{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
-
-    .cdrack {
-      text-align: center;
-      max-width: 100%;
-      padding: 0 10px;
-      box-sizing: border-box;
-    }
-    .cdrack h1 {
-      font-size: 0.6rem;
-      font-weight: normal;
-      margin: 0;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      white-space: normal;
-      max-width: 100%;
-      display: block;
-      color: #aaaaaa;
-    }
+    .cdrack{text-align:center;max-width:100%;padding:0 10px;box-sizing:border-box}
+    .cdrack h1{font-size:0.6rem;font-weight:normal;margin:0;word-wrap:break-word;overflow-wrap:break-word;white-space:normal;max-width:100%;display:block;color:#aaaaaa}
   </style>
 </head>
 <body>
@@ -367,7 +188,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     <button class="chip-sort" data-sort="firstFirst">Más antiguas</button>
   </div>
 
-  <!-- ===== CONTROLES DE VISTA PARA BÚSQUEDA ===== -->
   <div id="searchViewControls">
     <button class="view-btn active" data-view="grid">▦ Cuadrícula</button>
     <button class="view-btn" data-view="list">☰ Lista</button>
@@ -879,14 +699,12 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           artwork: artwork
         });
 
-        // Estado: si se forza, usarlo; si no, usar el estado global
         if (forceState) {
           navigator.mediaSession.playbackState = forceState;
         } else {
           navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
         }
 
-        // Sincronizar posición si está disponible
         if (audio.duration && !isNaN(audio.duration) && !isAdPlaying) {
           try {
             navigator.mediaSession.setPositionState({
@@ -897,10 +715,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           } catch (e) { /* No soportado */ }
         }
 
-        // Registrar handlers (solo una vez)
         setupMediaSessionHandlers();
-        
-        console.log('🎵 Media Session actualizada:', title, '-', artist, 'estado:', forceState || (isPlaying ? 'playing' : 'paused'));
       } catch (e) {
         console.warn('Error actualizando Media Session:', e);
       }
@@ -911,35 +726,30 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if (!('mediaSession' in navigator)) return;
 
       try {
-        // Play
         navigator.mediaSession.setActionHandler('play', () => {
           if (audio.paused && !isAdPlaying) {
             audio.play().catch(e => console.log('Error al reproducir desde Media Session:', e));
           }
         });
 
-        // Pause
         navigator.mediaSession.setActionHandler('pause', () => {
           if (!audio.paused && !isAdPlaying) {
             audio.pause();
           }
         });
 
-        // Siguiente
         navigator.mediaSession.setActionHandler('nexttrack', () => {
           if (!isAdPlaying) {
             nextTrack();
           }
         });
 
-        // Anterior
         navigator.mediaSession.setActionHandler('previoustrack', () => {
           if (!isAdPlaying) {
             prevTrack();
           }
         });
 
-        // Seek (avance/retroceso - opcional)
         try {
           navigator.mediaSession.setActionHandler('seekbackward', (details) => {
             if (audio.duration && !isAdPlaying) {
@@ -962,7 +772,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== TOAST ====================
+    // ===== TOAST =====
     let toastTimeout = null;
     function showToast(message, duration = 2500) {
       const toast = document.getElementById('toastNotification');
@@ -1029,6 +839,69 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
       artistsArray.sort((a, b) => b.plays - a.plays);
       return artistsArray.slice(0, limit);
+    }
+
+    // ====== PERSISTENCIA DE ESTADO (MEJORADA) ======
+    const STATE_KEY = 'kerim_player_full_state_v3';
+
+    function getState() {
+      try {
+        const raw = localStorage.getItem(STATE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch { return null; }
+    }
+
+    function setState(state) {
+      try {
+        localStorage.setItem(STATE_KEY, JSON.stringify(state));
+      } catch { /* ignore */ }
+    }
+
+    let saveTimeout = null;
+    function scheduleSave(delay = 500) {
+      if (saveTimeout) clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(() => {
+        saveTimeout = null;
+        doSaveState();
+      }, delay);
+    }
+
+    function doSaveState() {
+      const state = {
+        currentSongId: currentSong ? currentSong.id : null,
+        currentTime: audio.currentTime || 0,
+        isPlaying: isPlaying || false,
+        queue: currentPlayQueue.map(s => s.id),
+        queueIndex: currentQueueIndex,
+        shuffleActive: shuffleActive || false,
+        isAdPlaying: isAdPlaying || false,
+        adPlaylist: adPlaylist.map(ad => ({
+          id: ad.id,
+          url: ad.url,
+          title: ad.title,
+          category: ad.category,
+          music: ad.music,
+          video: ad.video,
+          isAd: true
+        })),
+        currentAdIndex: currentAdIndex,
+        adCounter: adCounter || 0,
+        currentSearch: currentSearch || '',
+        searchViewMode: searchViewMode || 'grid',
+        volume: audio.volume || 0.9,
+        suggestionsHidden: suggestionsHidden || false,
+        isPlaylistsMode: isPlaylistsMode || false,
+        timestamp: Date.now()
+      };
+      setState(state);
+    }
+
+    function saveStateImmediate() {
+      if (saveTimeout) {
+        clearTimeout(saveTimeout);
+        saveTimeout = null;
+      }
+      doSaveState();
     }
 
     // ==================== UI ====================
@@ -1106,6 +979,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if (currentSearch.trim() !== '') {
         renderContent();
       }
+      scheduleSave();
     }
 
     // ==================== FONDO ====================
@@ -1169,9 +1043,8 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         }
       }
       schedulePreloadNext();
-      // Actualizar notificación con la nueva cola
       if (currentSong) updateMediaSession(currentSong, 'playing');
-      savePlayerState();
+      scheduleSave();
     }
 
     // ==================== FUNCIONES DE COLA ====================
@@ -1227,7 +1100,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         } 
       } 
       if(currentPlayQueue.length && !currentSong) currentSong = currentPlayQueue[0]; 
-      savePlayerState();
+      scheduleSave();
     }
 
     // ==================== FUNCIÓN PARA MOSTRAR VIDEO ====================
@@ -1319,6 +1192,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         preloadAdAudio.load();
       }
       playNextAd();
+      scheduleSave();
     }
 
     function playNextAd() {
@@ -1338,7 +1212,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       };
       currentSong = adSong;
       
-      // Actualizar notificación para anuncio (forzar playing si tiene audio)
       updateMediaSession(adSong, 'playing');
       
       preloadNextAd();
@@ -1391,6 +1264,11 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         } else {
           audio.src = adSong.music;
         }
+        // Restaurar tiempo si venía guardado (útil al recargar)
+        if (savedAdTime && savedAdTime > 0) {
+          audio.currentTime = savedAdTime;
+          savedAdTime = 0;
+        }
         audio.play().catch(e => console.log('Error al reproducir audio del anuncio:', e));
         isPlaying = true;
         audio.removeEventListener('ended', onAdEnd);
@@ -1413,7 +1291,10 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if (miniPlayerDiv) miniPlayerDiv.classList.add('show');
       updatePlayPauseIcon();
       triggerBackgroundRefresh();
+      scheduleSave();
     }
+
+    let savedAdTime = 0; // Para restaurar tiempo de anuncio
 
     function onVideoAdEnd() {
       if (window._adTimer) {
@@ -1463,7 +1344,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         playSongInternal(currentPlayQueue[0]);
       }
       
-      // Actualizar notificación después de restaurar
       if (currentSong) updateMediaSession(currentSong, 'playing');
       
       if (adCallback) {
@@ -1471,6 +1351,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         adCallback = null;
         callback();
       }
+      scheduleSave();
     }
 
     // ==================== PRECARGA ====================
@@ -1571,7 +1452,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if (isAdPlaying) return;
       if (!song.isAd) {
         adCounter++;
-        // 🔥 CAMBIO: los anuncios se muestran cada 6 reproducciones (antes era >= 3)
+        // Anuncios cada 6 reproducciones
         if (adCounter >= 6) {
           adCounter = 0;
           pendingNextSong = song;
@@ -1599,7 +1480,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       
       currentSong = song;
       
-      // 🔥 FORZAR estado 'playing' en la notificación inmediatamente
       updateMediaSession(song, 'playing');
       
       hideVideoFromPlayer();
@@ -1670,7 +1550,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       triggerBackgroundRefresh();
       renderPlayerSuggestions();
       renderContent();
-      savePlayerState();
+      scheduleSave();
     }
 
     function updateUIWithSong(song){ 
@@ -1698,7 +1578,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if (fullPlayPause) fullPlayPause.innerText = icon; 
       if (miniPlayPause) miniPlayPause.innerText = icon; 
       
-      // Actualizar Media Session
       if ('mediaSession' in navigator) {
         navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
       }
@@ -1710,7 +1589,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       let newIdx = (currentQueueIndex + 1) % currentPlayQueue.length; 
       currentQueueIndex = newIdx; 
       playSong(currentPlayQueue[newIdx]); 
-      savePlayerState();
     }
 
     function prevTrack(){ 
@@ -1719,7 +1597,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       let newIdx = (currentQueueIndex - 1 + currentPlayQueue.length) % currentPlayQueue.length; 
       currentQueueIndex = newIdx; 
       playSong(currentPlayQueue[newIdx]); 
-      savePlayerState();
     }
 
     function togglePlayPause(){ 
@@ -1731,7 +1608,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         return;
       }
       isPlaying ? audio.pause() : audio.play(); 
-      savePlayerState();
     }
 
     // ==================== SUGERENCIAS ====================
@@ -1814,6 +1690,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           if(toggleBtn) toggleBtn.innerText = 'Ocultar'; 
         }
       }
+      scheduleSave();
     }
 
     // ==================== RENDER TOP ARTISTS ====================
@@ -1950,6 +1827,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       renderSuggestions();
       renderTopArtists();
       updateQueueAndMode();
+      scheduleSave();
     }
 
     function closeSearch(clear = true) {
@@ -1964,6 +1842,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         updateQueueAndMode();
       }
       searchViewControls.style.display = 'none';
+      scheduleSave();
     }
 
     function performSearch() {
@@ -1973,6 +1852,289 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       renderSuggestions();
       renderTopArtists();
       updateQueueAndMode();
+      scheduleSave();
+    }
+
+    // ==================== RESTAURAR ESTADO (MEJORADO CON REANUDACIÓN AUTOMÁTICA) ====================
+    let resumePending = false;
+    let resumeAdPending = false;
+
+    function restorePlayerState() {
+      const saved = getState();
+      if (!saved) return false;
+
+      console.log('♻️ Restaurando estado guardado...', saved);
+
+      try {
+        // Restaurar modo de vista
+        if (saved.searchViewMode) {
+          setSearchView(saved.searchViewMode);
+        }
+
+        // Restaurar búsqueda
+        if (saved.currentSearch) {
+          currentSearch = saved.currentSearch;
+          searchInput.value = currentSearch;
+          searchContainer.style.display = 'block';
+          searchToggleBtn.style.display = 'none';
+          if (currentSearch.trim() !== '') {
+            searchViewControls.style.display = 'flex';
+          }
+        }
+
+        // Restaurar shuffle
+        if (saved.shuffleActive !== undefined) {
+          shuffleActive = saved.shuffleActive;
+          if (shuffleActive) {
+            shuffleBtnPlayer.classList.add('active');
+          } else {
+            shuffleBtnPlayer.classList.remove('active');
+          }
+        }
+
+        // Restaurar sugerencias ocultas
+        if (saved.suggestionsHidden !== undefined) {
+          suggestionsHidden = saved.suggestionsHidden;
+        }
+
+        // Restaurar isPlaylistsMode
+        if (saved.isPlaylistsMode !== undefined) {
+          isPlaylistsMode = saved.isPlaylistsMode;
+        }
+
+        // Restaurar adCounter
+        if (saved.adCounter !== undefined) {
+          adCounter = saved.adCounter;
+        }
+
+        // Restaurar cola
+        let restoredQueue = [];
+        if (saved.queue && Array.isArray(saved.queue)) {
+          for (let id of saved.queue) {
+            const found = masterSongs.find(s => s.id === id);
+            if (found) restoredQueue.push(found);
+          }
+        }
+
+        if (restoredQueue.length === 0) {
+          restoredQueue = shuffleActive ? shuffleArray([...masterSongs]) : [...masterSongs];
+        }
+
+        currentPlayQueue = restoredQueue;
+        currentQueueIndex = saved.queueIndex !== undefined && saved.queueIndex < currentPlayQueue.length ? saved.queueIndex : 0;
+
+        // Restaurar canción actual
+        let restoredSong = null;
+        if (saved.currentSongId) {
+          restoredSong = masterSongs.find(s => s.id === saved.currentSongId) || allSongs.find(s => s.id === saved.currentSongId);
+        }
+
+        if (!restoredSong && currentPlayQueue.length > 0) {
+          restoredSong = currentPlayQueue[0];
+        }
+
+        // ===== RESTAURAR ANUNCIO SI ESTABA EN CURSO =====
+        if (saved.isAdPlaying && saved.adPlaylist && Array.isArray(saved.adPlaylist) && saved.adPlaylist.length > 0) {
+          console.log('📢 Restaurando anuncio en curso...');
+          const restoredAdPlaylist = saved.adPlaylist.map(adData => ({
+            id: adData.id,
+            url: adData.url || '',
+            title: adData.title || 'Anuncio',
+            category: adData.category || 'ANUNCIO',
+            music: adData.music || '',
+            video: adData.video || '',
+            isAd: true
+          }));
+
+          const validAds = restoredAdPlaylist.filter(ad => ad.music || ad.video);
+          if (validAds.length > 0) {
+            adPlaylist = validAds;
+            currentAdIndex = saved.currentAdIndex !== undefined && saved.currentAdIndex < adPlaylist.length ? saved.currentAdIndex : 0;
+            isAdPlaying = true;
+
+            const adToPlay = adPlaylist[currentAdIndex];
+            if (adToPlay) {
+              const adSong = {
+                id: 'ad_restored_' + Date.now(),
+                url: adToPlay.url || '',
+                category: 'ANUNCIO',
+                title: `${adToPlay.title || 'Anuncio'} (${currentAdIndex + 1}/${adPlaylist.length})`,
+                music: adToPlay.music || '',
+                video: adToPlay.video || '',
+                isAd: true
+              };
+              currentSong = adSong;
+              isPlaying = false;
+              audio.pause();
+
+              if (fullPrev) fullPrev.classList.add('hidden-nav');
+              if (fullNext) fullNext.classList.add('hidden-nav');
+              if (miniPrev) miniPrev.classList.add('hidden-nav');
+              if (miniNext) miniNext.classList.add('hidden-nav');
+
+              // Mostrar anuncio
+              if (adToPlay.video) {
+                let videoHtml = '';
+                if (adToPlay.video.includes('dropbox.com')) {
+                  videoHtml = `<video controls style="width:100%;height:100%;background:#000;object-fit:contain;">
+                                <source src="${adToPlay.video}" type="video/mp4">
+                                Tu navegador no soporta reproducción de video.
+                               </video>`;
+                } else if (adToPlay.video.includes('youtube.com') || adToPlay.video.includes('youtu.be')) {
+                  const videoId = adToPlay.video.includes('youtu.be') ? adToPlay.video.split('/').pop() : adToPlay.video.split('v=')[1]?.split('&')[0];
+                  if (videoId) {
+                    videoHtml = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+                  }
+                } else {
+                  videoHtml = `<video controls style="width:100%;height:100%;background:#000;object-fit:contain;">
+                                <source src="${adToPlay.video}" type="video/mp4">
+                                Tu navegador no soporta reproducción de video.
+                               </video>`;
+                }
+                if (videoHtml) {
+                  showVideoInPlayer(videoHtml);
+                } else {
+                  hideVideoFromPlayer();
+                  if (fullCover) fullCover.src = adSong.url;
+                }
+                if (fullPlayPause) fullPlayPause.style.display = 'none';
+                if (miniPlayPause) miniPlayPause.style.display = 'none';
+                // Para videos, intentamos reproducir automáticamente, pero si falla, lo dejamos para el clic
+                if (videoElement) {
+                  videoElement.play().catch(() => {});
+                }
+              } else if (adToPlay.music) {
+                hideVideoFromPlayer();
+                if (fullCover) fullCover.src = adSong.url;
+                audio.src = adToPlay.music;
+                savedAdTime = saved.currentTime || 0;
+                audio.currentTime = savedAdTime;
+                // Intentar reproducir, si falla se reanuda con clic
+                audio.play().catch(e => {
+                  console.log('Autoplay de anuncio bloqueado, se reanudará con clic');
+                  resumeAdPending = true;
+                });
+                isPlaying = true;
+                if (fullPlayPause) fullPlayPause.style.display = 'flex';
+                if (miniPlayPause) miniPlayPause.style.display = 'flex';
+                audio.removeEventListener('ended', onAdEnd);
+                audio.addEventListener('ended', onAdEnd);
+                if (progressArea) progressArea.style.display = 'none';
+              } else {
+                // Anuncio sin audio ni video: temporizador
+                if (progressArea) progressArea.style.display = 'none';
+                if (fullPlayPause) fullPlayPause.style.display = 'none';
+                if (miniPlayPause) miniPlayPause.style.display = 'none';
+                if (window._adTimer) clearTimeout(window._adTimer);
+                window._adTimer = setTimeout(() => onAdEnd(), 5000);
+              }
+
+              // Actualizar UI
+              if (fullSongTitle) fullSongTitle.innerText = adSong.title;
+              if (fullSongCategory) fullSongCategory.innerHTML = `ANUNCIO <span class="ad-badge">AD ${currentAdIndex + 1}/${adPlaylist.length}</span>`;
+              if (miniCover) miniCover.src = adSong.url;
+              if (miniTitle) miniTitle.innerText = adSong.title;
+              if (fullPlayer) fullPlayer.classList.add('show');
+              if (miniPlayerDiv) miniPlayerDiv.classList.add('show');
+              updatePlayPauseIcon();
+              triggerBackgroundRefresh();
+
+              updateMediaSession(adSong, 'playing');
+              scheduleSave();
+              return true;
+            }
+          }
+        }
+
+        // ===== RESTAURAR CANCIÓN NORMAL =====
+        if (restoredSong) {
+          currentSong = restoredSong;
+          const savedTime = saved.currentTime || 0;
+
+          if (currentSong.music) {
+            if (preloadSong && preloadSong.id === currentSong.id && preloadAudio.src) {
+              audio.src = preloadAudio.src;
+            } else {
+              audio.src = currentSong.music;
+            }
+            audio.currentTime = savedTime;
+            if (saved.isPlaying) {
+              // Intentar reproducir, si falla se reanuda con clic
+              audio.play().catch(e => {
+                console.log('Autoplay bloqueado, se reanudará con clic');
+                resumePending = true;
+              });
+              isPlaying = true;
+            } else {
+              isPlaying = false;
+            }
+          } else {
+            isPlaying = false;
+          }
+
+          if (saved.volume !== undefined) {
+            audio.volume = saved.volume;
+          }
+
+          updateUIWithSong(currentSong);
+          if (fullPlayer) fullPlayer.classList.add('show');
+          if (miniPlayerDiv) miniPlayerDiv.classList.add('show');
+          updatePlayPauseIcon();
+          triggerBackgroundRefresh();
+          renderPlayerSuggestions();
+          renderContent();
+
+          updateMediaSession(currentSong, isPlaying ? 'playing' : 'paused');
+
+          schedulePreloadNext();
+          scheduleSave();
+          return true;
+        }
+
+        if (currentPlayQueue.length > 0 && !currentSong) {
+          currentSong = currentPlayQueue[0];
+          if (currentSong) {
+            updateUIWithSong(currentSong);
+            updateMediaSession(currentSong, 'paused');
+            scheduleSave();
+          }
+        }
+
+        return true;
+      } catch (e) {
+        console.error('Error al restaurar estado:', e);
+        return false;
+      }
+    }
+
+    // ===== REANUDACIÓN CON CLIC GLOBAL =====
+    function setupResumeListeners() {
+      const resumeFn = () => {
+        // Reanudar canción normal
+        if (resumePending && audio.paused && currentSong && !isAdPlaying) {
+          audio.play().catch(e => {});
+          resumePending = false;
+        }
+        // Reanudar anuncio con audio
+        if (resumeAdPending && isAdPlaying && audio.paused && currentSong && currentSong.isAd && currentSong.music) {
+          audio.play().catch(e => {});
+          resumeAdPending = false;
+        }
+        // Reanudar video (si está pausado)
+        if (isAdPlaying && isVideoAd && videoElement && videoElement.paused) {
+          videoElement.play().catch(e => {});
+        }
+      };
+
+      document.addEventListener('click', resumeFn);
+      document.addEventListener('touchstart', resumeFn);
+      // También cuando se acepta el modal
+      const acceptBtn = document.getElementById('acceptWelcomeBtn');
+      if (acceptBtn) {
+        acceptBtn.addEventListener('click', () => {
+          setTimeout(resumeFn, 300);
+        });
+      }
     }
 
     // ==================== EVENTOS ====================
@@ -1989,6 +2151,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         renderContent();
         renderSuggestions();
         updateQueueAndMode();
+        scheduleSave();
       });
     }
 
@@ -2022,85 +2185,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       });
     });
 
-    // ==================== PERSISTENCIA DE ESTADO ====================
-    function savePlayerState() {
-      try {
-        const state = {
-          songId: currentSong ? currentSong.id : null,
-          currentTime: audio.currentTime || 0,
-          isPlaying: isPlaying,
-          queueIds: currentPlayQueue.map(s => s.id),
-          queueIndex: currentQueueIndex,
-          shuffleActive: shuffleActive,
-          originalQueueIds: originalQueue.map(s => s.id)
-        };
-        localStorage.setItem('kerim_player_state', JSON.stringify(state));
-      } catch(e) {}
-    }
-
-    function restorePlayerState() {
-      try {
-        const raw = localStorage.getItem('kerim_player_state');
-        if (!raw) return false;
-        const state = JSON.parse(raw);
-        if (!state.songId) return false;
-        // Buscar la canción en masterSongs
-        const song = masterSongs.find(s => s.id === state.songId) || allSongs.find(s => s.id === state.songId);
-        if (!song) return false;
-        // Restaurar cola
-        const queueIds = state.queueIds || [];
-        const restoredQueue = queueIds.map(id => masterSongs.find(s => s.id === id) || allSongs.find(s => s.id === id)).filter(Boolean);
-        if (restoredQueue.length === 0) return false;
-        // Restaurar shuffle
-        const shuffle = state.shuffleActive || false;
-        let originalQueueIds = state.originalQueueIds || [];
-        const restoredOriginal = originalQueueIds.map(id => masterSongs.find(s => s.id === id) || allSongs.find(s => s.id === id)).filter(Boolean);
-        // Asignar
-        currentSong = song;
-        currentPlayQueue = restoredQueue;
-        currentQueueIndex = Math.min(state.queueIndex, restoredQueue.length - 1);
-        shuffleActive = shuffle;
-        if (shuffleActive && restoredOriginal.length > 0) {
-          originalQueue = restoredOriginal;
-        } else {
-          originalQueue = [];
-        }
-        // Actualizar UI
-        updateUIWithSong(song);
-        // Configurar audio
-        audio.src = song.music;
-        audio.currentTime = state.currentTime || 0;
-        if (state.isPlaying) {
-          audio.play().catch(e => console.log('Error al reanudar:', e));
-          isPlaying = true;
-        } else {
-          isPlaying = false;
-        }
-        updatePlayPauseIcon();
-        // Actualizar notificación
-        if (currentSong) updateMediaSession(currentSong, state.isPlaying ? 'playing' : 'paused');
-        // Mostrar player
-        if (fullPlayer) fullPlayer.classList.add('show');
-        if (miniPlayerDiv) miniPlayerDiv.classList.add('show');
-        renderPlayerSuggestions();
-        renderContent();
-        // Sincronizar shuffle button
-        if (shuffleActive) {
-          shuffleBtnPlayer.classList.add('active');
-        } else {
-          shuffleBtnPlayer.classList.remove('active');
-        }
-        return true;
-      } catch(e) {
-        console.warn('Error restaurando estado:', e);
-        return false;
-      }
-    }
-
-    // Guardar estado periódicamente
-    setInterval(savePlayerState, 10000);
-    window.addEventListener('beforeunload', savePlayerState);
-
     // ==================== AUDIO EVENTOS (MEJORADOS) ====================
     let audioUpdateFrame = null;
 
@@ -2115,7 +2199,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           if (durationSpan && durationSpan.innerText === '0:00') durationSpan.innerText = formatTime(audio.duration); 
         }
         
-        // Sincronizar posición en la notificación
         if ('mediaSession' in navigator && audio.duration && !isNaN(audio.duration) && !isAdPlaying) {
           try {
             navigator.mediaSession.setPositionState({
@@ -2124,6 +2207,9 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
               playbackRate: audio.playbackRate || 1
             });
           } catch (e) { /* No soportado */ }
+        }
+        if (isPlaying && !isAdPlaying && audio.currentTime > 0) {
+          scheduleSave(3000);
         }
       });
     });
@@ -2135,17 +2221,15 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     audio.addEventListener('play', () => { 
       isPlaying = true; 
       updatePlayPauseIcon(); 
-      // Forzar estado playing en la notificación
       if (currentSong) updateMediaSession(currentSong, 'playing');
-      savePlayerState();
+      scheduleSave(300);
     });
     
     audio.addEventListener('pause', () => { 
       isPlaying = false; 
       updatePlayPauseIcon(); 
-      // Actualizar estado paused en la notificación
       if (currentSong) updateMediaSession(currentSong, 'paused');
-      savePlayerState();
+      scheduleSave(300);
     });
 
     audio.addEventListener('ended', () => {
@@ -2169,14 +2253,13 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         pendingSongId = null;
       }
       
-      // 🔥 Antes de cambiar de canción, actualizar la metadata con la siguiente canción (si existe) para evitar que la notificación desaparezca
       const nextSong = getNextSongInQueue();
       if (nextSong) {
         updateMediaSession(nextSong, 'playing');
       }
       
       nextTrack();
-      savePlayerState();
+      scheduleSave(300);
     });
 
     // ==================== PROGRESS BAR ====================
@@ -2186,7 +2269,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           let rect = progressBarBg.getBoundingClientRect(); 
           let perc = (e.clientX - rect.left)/rect.width; 
           audio.currentTime = perc * audio.duration; 
-          savePlayerState();
+          scheduleSave(300);
         } 
       });
     }
@@ -2219,6 +2302,20 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         acceptBtn.addEventListener('click', () => { 
           localStorage.setItem('kerim_welcome_accepted', 'true'); 
           if (welcomeModal) welcomeModal.classList.add('hidden'); 
+          // Reintentar reproducción después de aceptar
+          setTimeout(() => {
+            if (resumePending) {
+              audio.play().catch(() => {});
+              resumePending = false;
+            }
+            if (resumeAdPending) {
+              audio.play().catch(() => {});
+              resumeAdPending = false;
+            }
+            if (isAdPlaying && isVideoAd && videoElement && videoElement.paused) {
+              videoElement.play().catch(() => {});
+            }
+          }, 500);
         }); 
       }
     }
@@ -2351,12 +2448,15 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
     searchContainer.style.display = 'none';
     searchToggleBtn.style.display = 'inline-block';
+    
+    // Configurar listeners de reanudación
+    setupResumeListeners();
 
-    // Intentar restaurar estado guardado
-    const stateRestored = restorePlayerState();
+    // Intentar restaurar estado primero
+    const restored = restorePlayerState();
 
-    if (!stateRestored) {
-      // Inicialización por defecto si no hay estado guardado
+    // Si no se restauró o falló, hacer inicialización normal
+    if (!restored) {
       renderContent().then(() => {
         renderSuggestions(); 
         updateQueueAndMode(); 
@@ -2365,20 +2465,17 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         audio.volume = 0.9;
         if (currentSong && currentSong.music) {
           precargarAudio(currentSong);
-          updateMediaSession(currentSong, 'playing');
+          updateMediaSession(currentSong, 'paused');
         }
+        scheduleSave(1000);
       });
     } else {
-      // El estado ya fue restaurado, solo aseguramos volumen y precarga
-      audio.volume = 0.9;
-      if (currentSong) {
-        precargarAudio(currentSong);
-        // Asegurar que la sesión media está actualizada
-        updateMediaSession(currentSong, isPlaying ? 'playing' : 'paused');
-        // Renderizar sugerencias y top artistas (ya se hizo en restore, pero por si acaso)
+      renderContent().then(() => {
         renderSuggestions();
         renderTopArtists();
-      }
+        renderPlayerSuggestions();
+        scheduleSave(1000);
+      });
     }
 
     window.addEventListener('beforeunload', () => {
@@ -2386,6 +2483,12 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if (bgTimeout) clearTimeout(bgTimeout);
       if (audioUpdateFrame) cancelAnimationFrame(audioUpdateFrame);
       if (renderTimeout) cancelAnimationFrame(renderTimeout);
+      if (saveTimeout) {
+        clearTimeout(saveTimeout);
+        doSaveState();
+      } else {
+        doSaveState();
+      }
       audio.pause();
       audio.src = '';
       preloadAudio.pause();
@@ -2396,14 +2499,23 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       document.removeEventListener('mouseup', onDragEnd);
     });
 
+    setInterval(() => {
+      if (currentSong || isAdPlaying) {
+        scheduleSave(100);
+      }
+    }, 10000);
+
     console.log('🎵 Kerim Music+ Optimizado con precarga y caché');
+    console.log('♻️ Persistencia de estado activada - la página se restaura al recargar');
+    console.log('📢 Anuncios se restauran y continúan automáticamente');
+    console.log('🔄 Si el autoplay es bloqueado, se reanuda con el primer clic');
     console.log('⚡ Reproducción ultra fluida sin cortes');
     console.log('👆 Arrastra el reproductor hacia abajo para minimizar');
     console.log('🔍 Buscador con cambio de vista (Lista / Cuadrícula)');
     console.log('🎮 Controles del navegador (Media Session API) activados');
     console.log('📱 Reproducción en segundo plano con pantalla bloqueada activada');
-    console.log('📢 Anuncios cada 6 reproducciones (actualizado)');
-    console.log('💾 Estado del reproductor guardado y restaurado automáticamente');
+    console.log('📢 Anuncios cada 6 reproducciones');
+    console.log('💾 Estado guardado automáticamente en localStorage');
     
   })();
 </script>
