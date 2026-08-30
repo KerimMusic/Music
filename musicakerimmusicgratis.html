@@ -1120,14 +1120,15 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         videoElement = videoEl;
         isVideoAd = true;
         videoEl.addEventListener('ended', onVideoAdEnd);
-        videoEl.play().catch(e => console.log('Error al reproducir video:', e));
-        if (fullPlayPause) fullPlayPause.style.display = 'none';
-        if (miniPlayPause) miniPlayPause.style.display = 'none';
+        // No ocultamos el botón de play/pause, lo dejamos para que el usuario pueda controlar
+        if (fullPlayPause) fullPlayPause.style.display = 'flex';
+        if (miniPlayPause) miniPlayPause.style.display = 'flex';
         if (progressArea) progressArea.style.display = 'none';
       } else if (iframeEl) {
         isVideoAd = true;
-        if (fullPlayPause) fullPlayPause.style.display = 'none';
-        if (miniPlayPause) miniPlayPause.style.display = 'none';
+        // Para iframes (YouTube, Vimeo) también mostramos el botón, pero el control es limitado
+        if (fullPlayPause) fullPlayPause.style.display = 'flex';
+        if (miniPlayPause) miniPlayPause.style.display = 'flex';
         if (progressArea) progressArea.style.display = 'none';
         const adDuration = 30000;
         if (window._adTimer) clearTimeout(window._adTimer);
@@ -1247,6 +1248,31 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           hideVideoFromPlayer();
           if (fullCover) fullCover.src = adSong.url;
         }
+        // Aseguramos que el botón play/pause esté visible
+        if (fullPlayPause) fullPlayPause.style.display = 'flex';
+        if (miniPlayPause) miniPlayPause.style.display = 'flex';
+        // Para video, el estado de reproducción lo manejamos con el elemento video
+        // pero actualizamos el ícono según el estado del video
+        if (videoElement) {
+          videoElement.addEventListener('play', () => {
+            isPlaying = true;
+            updatePlayPauseIcon();
+          });
+          videoElement.addEventListener('pause', () => {
+            isPlaying = false;
+            updatePlayPauseIcon();
+          });
+          // Si el video ya está reproduciéndose, isPlaying se pondrá en true
+          if (!videoElement.paused) {
+            isPlaying = true;
+          } else {
+            isPlaying = false;
+          }
+          updatePlayPauseIcon();
+        } else {
+          isPlaying = false;
+          updatePlayPauseIcon();
+        }
       } else {
         hideVideoFromPlayer();
         if (fullCover) fullCover.src = adSong.url;
@@ -1264,7 +1290,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         } else {
           audio.src = adSong.music;
         }
-        // Restaurar tiempo si venía guardado (útil al recargar)
         if (savedAdTime && savedAdTime > 0) {
           audio.currentTime = savedAdTime;
           savedAdTime = 0;
@@ -1275,26 +1300,31 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         audio.addEventListener('ended', onAdEnd);
         if (fullPlayPause) fullPlayPause.style.display = 'flex';
         if (miniPlayPause) miniPlayPause.style.display = 'flex';
+        updatePlayPauseIcon();
       } else if (ad.video) {
+        // El audio no se usa, el video controla la reproducción
         audio.pause();
-        isPlaying = false;
-        if (fullPlayPause) fullPlayPause.style.display = 'none';
-        if (miniPlayPause) miniPlayPause.style.display = 'none';
+        // isPlaying se actualiza con los eventos del video
+        if (fullPlayPause) fullPlayPause.style.display = 'flex';
+        if (miniPlayPause) miniPlayPause.style.display = 'flex';
+        updatePlayPauseIcon();
       } else {
         audio.pause();
         isPlaying = false;
         if (window._adTimer) clearTimeout(window._adTimer);
         window._adTimer = setTimeout(() => onAdEnd(), 5000);
+        if (fullPlayPause) fullPlayPause.style.display = 'flex';
+        if (miniPlayPause) miniPlayPause.style.display = 'flex';
+        updatePlayPauseIcon();
       }
       
       if (fullPlayer) fullPlayer.classList.add('show');
       if (miniPlayerDiv) miniPlayerDiv.classList.add('show');
-      updatePlayPauseIcon();
       triggerBackgroundRefresh();
       scheduleSave();
     }
 
-    let savedAdTime = 0; // Para restaurar tiempo de anuncio
+    let savedAdTime = 0;
 
     function onVideoAdEnd() {
       if (window._adTimer) {
@@ -1452,7 +1482,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if (isAdPlaying) return;
       if (!song.isAd) {
         adCounter++;
-        // Anuncios cada 6 reproducciones
         if (adCounter >= 6) {
           adCounter = 0;
           pendingNextSong = song;
@@ -1567,11 +1596,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     }
 
     function updatePlayPauseIcon(){ 
-      if (isVideoAd) {
-        if (fullPlayPause) fullPlayPause.style.display = 'none';
-        if (miniPlayPause) miniPlayPause.style.display = 'none';
-        return;
-      }
+      // Siempre mostramos el botón, incluso en anuncios
       if (fullPlayPause) fullPlayPause.style.display = 'flex';
       if (miniPlayPause) miniPlayPause.style.display = 'flex';
       const icon = isPlaying ? '⏸' : '▶'; 
@@ -1600,14 +1625,36 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     }
 
     function togglePlayPause(){ 
+      // Si estamos en anuncio, controlar el anuncio (audio o video)
       if (isAdPlaying) {
         if (isVideoAd && videoElement) {
-          if (videoElement.paused) videoElement.play();
-          else videoElement.pause();
+          if (videoElement.paused) {
+            videoElement.play().catch(e => console.log('Error al reproducir video:', e));
+            isPlaying = true;
+          } else {
+            videoElement.pause();
+            isPlaying = false;
+          }
+          updatePlayPauseIcon();
+          return;
         }
+        // Anuncio de audio
+        if (audio.paused) {
+          audio.play().catch(e => console.log('Error al reproducir anuncio:', e));
+          isPlaying = true;
+        } else {
+          audio.pause();
+          isPlaying = false;
+        }
+        updatePlayPauseIcon();
         return;
       }
-      isPlaying ? audio.pause() : audio.play(); 
+      // Modo normal (canción)
+      if (isPlaying) {
+        audio.pause();
+      } else {
+        audio.play().catch(e => console.log('Error al reproducir:', e));
+      }
     }
 
     // ==================== SUGERENCIAS ====================
@@ -1855,7 +1902,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       scheduleSave();
     }
 
-    // ==================== RESTAURAR ESTADO (MEJORADO CON REANUDACIÓN AUTOMÁTICA) ====================
+    // ==================== RESTAURAR ESTADO ====================
     let resumePending = false;
     let resumeAdPending = false;
 
@@ -1866,12 +1913,10 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       console.log('♻️ Restaurando estado guardado...', saved);
 
       try {
-        // Restaurar modo de vista
         if (saved.searchViewMode) {
           setSearchView(saved.searchViewMode);
         }
 
-        // Restaurar búsqueda
         if (saved.currentSearch) {
           currentSearch = saved.currentSearch;
           searchInput.value = currentSearch;
@@ -1882,7 +1927,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           }
         }
 
-        // Restaurar shuffle
         if (saved.shuffleActive !== undefined) {
           shuffleActive = saved.shuffleActive;
           if (shuffleActive) {
@@ -1892,22 +1936,18 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           }
         }
 
-        // Restaurar sugerencias ocultas
         if (saved.suggestionsHidden !== undefined) {
           suggestionsHidden = saved.suggestionsHidden;
         }
 
-        // Restaurar isPlaylistsMode
         if (saved.isPlaylistsMode !== undefined) {
           isPlaylistsMode = saved.isPlaylistsMode;
         }
 
-        // Restaurar adCounter
         if (saved.adCounter !== undefined) {
           adCounter = saved.adCounter;
         }
 
-        // Restaurar cola
         let restoredQueue = [];
         if (saved.queue && Array.isArray(saved.queue)) {
           for (let id of saved.queue) {
@@ -1923,7 +1963,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         currentPlayQueue = restoredQueue;
         currentQueueIndex = saved.queueIndex !== undefined && saved.queueIndex < currentPlayQueue.length ? saved.queueIndex : 0;
 
-        // Restaurar canción actual
         let restoredSong = null;
         if (saved.currentSongId) {
           restoredSong = masterSongs.find(s => s.id === saved.currentSongId) || allSongs.find(s => s.id === saved.currentSongId);
@@ -1933,7 +1972,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           restoredSong = currentPlayQueue[0];
         }
 
-        // ===== RESTAURAR ANUNCIO SI ESTABA EN CURSO =====
         if (saved.isAdPlaying && saved.adPlaylist && Array.isArray(saved.adPlaylist) && saved.adPlaylist.length > 0) {
           console.log('📢 Restaurando anuncio en curso...');
           const restoredAdPlaylist = saved.adPlaylist.map(adData => ({
@@ -1972,7 +2010,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
               if (miniPrev) miniPrev.classList.add('hidden-nav');
               if (miniNext) miniNext.classList.add('hidden-nav');
 
-              // Mostrar anuncio
               if (adToPlay.video) {
                 let videoHtml = '';
                 if (adToPlay.video.includes('dropbox.com')) {
@@ -1997,19 +2034,21 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
                   hideVideoFromPlayer();
                   if (fullCover) fullCover.src = adSong.url;
                 }
-                if (fullPlayPause) fullPlayPause.style.display = 'none';
-                if (miniPlayPause) miniPlayPause.style.display = 'none';
-                // Para videos, intentamos reproducir automáticamente, pero si falla, lo dejamos para el clic
+                if (fullPlayPause) fullPlayPause.style.display = 'flex';
+                if (miniPlayPause) miniPlayPause.style.display = 'flex';
                 if (videoElement) {
                   videoElement.play().catch(() => {});
+                  isPlaying = true;
+                } else {
+                  isPlaying = false;
                 }
+                updatePlayPauseIcon();
               } else if (adToPlay.music) {
                 hideVideoFromPlayer();
                 if (fullCover) fullCover.src = adSong.url;
                 audio.src = adToPlay.music;
                 savedAdTime = saved.currentTime || 0;
                 audio.currentTime = savedAdTime;
-                // Intentar reproducir, si falla se reanuda con clic
                 audio.play().catch(e => {
                   console.log('Autoplay de anuncio bloqueado, se reanudará con clic');
                   resumeAdPending = true;
@@ -2020,23 +2059,23 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
                 audio.removeEventListener('ended', onAdEnd);
                 audio.addEventListener('ended', onAdEnd);
                 if (progressArea) progressArea.style.display = 'none';
+                updatePlayPauseIcon();
               } else {
-                // Anuncio sin audio ni video: temporizador
                 if (progressArea) progressArea.style.display = 'none';
-                if (fullPlayPause) fullPlayPause.style.display = 'none';
-                if (miniPlayPause) miniPlayPause.style.display = 'none';
+                if (fullPlayPause) fullPlayPause.style.display = 'flex';
+                if (miniPlayPause) miniPlayPause.style.display = 'flex';
                 if (window._adTimer) clearTimeout(window._adTimer);
                 window._adTimer = setTimeout(() => onAdEnd(), 5000);
+                isPlaying = false;
+                updatePlayPauseIcon();
               }
 
-              // Actualizar UI
               if (fullSongTitle) fullSongTitle.innerText = adSong.title;
               if (fullSongCategory) fullSongCategory.innerHTML = `ANUNCIO <span class="ad-badge">AD ${currentAdIndex + 1}/${adPlaylist.length}</span>`;
               if (miniCover) miniCover.src = adSong.url;
               if (miniTitle) miniTitle.innerText = adSong.title;
               if (fullPlayer) fullPlayer.classList.add('show');
               if (miniPlayerDiv) miniPlayerDiv.classList.add('show');
-              updatePlayPauseIcon();
               triggerBackgroundRefresh();
 
               updateMediaSession(adSong, 'playing');
@@ -2046,7 +2085,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           }
         }
 
-        // ===== RESTAURAR CANCIÓN NORMAL =====
         if (restoredSong) {
           currentSong = restoredSong;
           const savedTime = saved.currentTime || 0;
@@ -2059,7 +2097,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
             }
             audio.currentTime = savedTime;
             if (saved.isPlaying) {
-              // Intentar reproducir, si falla se reanuda con clic
               audio.play().catch(e => {
                 console.log('Autoplay bloqueado, se reanudará con clic');
                 resumePending = true;
@@ -2107,20 +2144,16 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ===== REANUDACIÓN CON CLIC GLOBAL =====
     function setupResumeListeners() {
       const resumeFn = () => {
-        // Reanudar canción normal
         if (resumePending && audio.paused && currentSong && !isAdPlaying) {
           audio.play().catch(e => {});
           resumePending = false;
         }
-        // Reanudar anuncio con audio
         if (resumeAdPending && isAdPlaying && audio.paused && currentSong && currentSong.isAd && currentSong.music) {
           audio.play().catch(e => {});
           resumeAdPending = false;
         }
-        // Reanudar video (si está pausado)
         if (isAdPlaying && isVideoAd && videoElement && videoElement.paused) {
           videoElement.play().catch(e => {});
         }
@@ -2128,7 +2161,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
       document.addEventListener('click', resumeFn);
       document.addEventListener('touchstart', resumeFn);
-      // También cuando se acepta el modal
       const acceptBtn = document.getElementById('acceptWelcomeBtn');
       if (acceptBtn) {
         acceptBtn.addEventListener('click', () => {
@@ -2185,7 +2217,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       });
     });
 
-    // ==================== AUDIO EVENTOS (MEJORADOS) ====================
+    // ==================== AUDIO EVENTOS ====================
     let audioUpdateFrame = null;
 
     audio.addEventListener('timeupdate', () => {
@@ -2302,7 +2334,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         acceptBtn.addEventListener('click', () => { 
           localStorage.setItem('kerim_welcome_accepted', 'true'); 
           if (welcomeModal) welcomeModal.classList.add('hidden'); 
-          // Reintentar reproducción después de aceptar
           setTimeout(() => {
             if (resumePending) {
               audio.play().catch(() => {});
@@ -2449,13 +2480,10 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     searchContainer.style.display = 'none';
     searchToggleBtn.style.display = 'inline-block';
     
-    // Configurar listeners de reanudación
     setupResumeListeners();
 
-    // Intentar restaurar estado primero
     const restored = restorePlayerState();
 
-    // Si no se restauró o falló, hacer inicialización normal
     if (!restored) {
       renderContent().then(() => {
         renderSuggestions(); 
@@ -2508,7 +2536,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     console.log('🎵 Kerim Music+ Optimizado con precarga y caché');
     console.log('♻️ Persistencia de estado activada - la página se restaura al recargar');
     console.log('📢 Anuncios se restauran y continúan automáticamente');
-    console.log('🔄 Si el autoplay es bloqueado, se reanuda con el primer clic');
+    console.log('🔄 El botón de pausa/reproducción funciona en anuncios y canciones');
     console.log('⚡ Reproducción ultra fluida sin cortes');
     console.log('👆 Arrastra el reproductor hacia abajo para minimizar');
     console.log('🔍 Buscador con cambio de vista (Lista / Cuadrícula)');
