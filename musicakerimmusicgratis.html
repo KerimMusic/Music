@@ -2048,8 +2048,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if ('mediaSession' in navigator) {
         navigator.mediaSession.playbackState = 'playing';
       }
-      // 🔥 Refrescar metadata al reanudar
-      updateMediaSession(currentSong);
     });
     
     audio.addEventListener('pause', () => { 
@@ -2058,8 +2056,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if ('mediaSession' in navigator) {
         navigator.mediaSession.playbackState = 'paused';
       }
-      // 🔥 Mantener metadata actualizada incluso en pausa
-      updateMediaSession(currentSong);
     });
 
     audio.addEventListener('ended', () => {
@@ -2129,7 +2125,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== GESTO DE ARRASTRE ====================
+    // ==================== GESTO DE ARRASTRE (MODIFICADO) ====================
     let dragState = {
       isDragging: false,
       startY: 0,
@@ -2216,7 +2212,8 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       fullPlayer.classList.remove('dragging');
 
       const thresholdPx = window.innerHeight * THRESHOLD;
-      if (dragState.deltaY > thresholdPx) {
+      // SOLUCIÓN: Solo permitir cerrar si NO está reproduciendo (pausado)
+      if (dragState.deltaY > thresholdPx && !isPlaying) {
         closePlayer();
       } else {
         resetPlayerPosition();
@@ -2288,7 +2285,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
     console.log('🎵 Kerim Music+ Optimizado con precarga y caché');
     console.log('⚡ Reproducción ultra fluida sin cortes');
-    console.log('👆 Arrastra el reproductor hacia abajo para minimizar');
+    console.log('👆 Arrastra el reproductor hacia abajo para minimizar (solo en pausa)');
     console.log('🔍 Buscador con cambio de vista (Lista / Cuadrícula)');
     console.log('🎮 Controles del navegador (Media Session API) activados');
     console.log('📱 Reproducción en segundo plano con pantalla bloqueada activada');
