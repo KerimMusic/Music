@@ -1592,7 +1592,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       
       currentSong = song;
       
-      // 🔥 ACTUALIZAR NOTIFICACIÓN - PRIMERO
+      // 🔥 ACTUALIZAR NOTIFICACIÓN
       updateMediaSession(song);
       
       hideVideoFromPlayer();
@@ -1663,9 +1663,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       triggerBackgroundRefresh();
       renderPlayerSuggestions();
       renderContent();
-      
-      // 🔥 FORZAR ACTUALIZACIÓN DE NOTIFICACIÓN PARA MODO SEGUNDO PLANO
-      setTimeout(() => updateMediaSession(song), 100);
     }
 
     function updateUIWithSong(song){ 
@@ -1704,30 +1701,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if (!currentPlayQueue.length) return; 
       let newIdx = (currentQueueIndex + 1) % currentPlayQueue.length; 
       currentQueueIndex = newIdx; 
-      const nextSong = currentPlayQueue[newIdx];
-      // 🔥 Actualizar notificación ANTES de reproducir para que el sistema operativo sepa
-      if (nextSong) {
-        // Creamos un objeto temporal para la notificación
-        const tempSong = {
-          title: nextSong.title || 'Sin título',
-          artist: nextSong.artist || 'Artista desconocido',
-          album: nextSong.album || 'Kerim Music',
-          url: nextSong.url || 'https://i.postimg.cc/XNP1xdB2/IMG-20260207-WA0000.jpg'
-        };
-        // Actualizar la notificación
-        if ('mediaSession' in navigator) {
-          try {
-            navigator.mediaSession.metadata = new MediaMetadata({
-              title: tempSong.title,
-              artist: tempSong.artist,
-              album: tempSong.album,
-              artwork: [{ src: tempSong.url, sizes: '512x512' }]
-            });
-            navigator.mediaSession.playbackState = 'playing';
-          } catch(e) {}
-        }
-      }
-      playSong(nextSong); 
+      playSong(currentPlayQueue[newIdx]); 
     }
 
     function prevTrack(){ 
@@ -1735,27 +1709,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if (!currentPlayQueue.length) return; 
       let newIdx = (currentQueueIndex - 1 + currentPlayQueue.length) % currentPlayQueue.length; 
       currentQueueIndex = newIdx; 
-      const prevSong = currentPlayQueue[newIdx];
-      if (prevSong) {
-        const tempSong = {
-          title: prevSong.title || 'Sin título',
-          artist: prevSong.artist || 'Artista desconocido',
-          album: prevSong.album || 'Kerim Music',
-          url: prevSong.url || 'https://i.postimg.cc/XNP1xdB2/IMG-20260207-WA0000.jpg'
-        };
-        if ('mediaSession' in navigator) {
-          try {
-            navigator.mediaSession.metadata = new MediaMetadata({
-              title: tempSong.title,
-              artist: tempSong.artist,
-              album: tempSong.album,
-              artwork: [{ src: tempSong.url, sizes: '512x512' }]
-            });
-            navigator.mediaSession.playbackState = 'playing';
-          } catch(e) {}
-        }
-      }
-      playSong(prevSong); 
+      playSong(currentPlayQueue[newIdx]); 
     }
 
     function togglePlayPause(){ 
@@ -2125,8 +2079,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         pendingSongId = null;
       }
       
-      // 🔥 La siguiente canción se reproduce automáticamente
-      // nextTrack() ya actualiza la notificación
       nextTrack();
     });
 
@@ -2173,7 +2125,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== GESTO DE ARRASTRE ====================
+    // ==================== GESTO DE ARRASTRE (MODIFICADO) ====================
     let dragState = {
       isDragging: false,
       startY: 0,
@@ -2260,7 +2212,8 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       fullPlayer.classList.remove('dragging');
 
       const thresholdPx = window.innerHeight * THRESHOLD;
-      if (dragState.deltaY > thresholdPx) {
+      // SOLUCIÓN: Solo permitir cerrar si NO está reproduciendo (pausado)
+      if (dragState.deltaY > thresholdPx && !isPlaying) {
         closePlayer();
       } else {
         resetPlayerPosition();
@@ -2332,11 +2285,10 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
     console.log('🎵 Kerim Music+ Optimizado con precarga y caché');
     console.log('⚡ Reproducción ultra fluida sin cortes');
-    console.log('👆 Arrastra el reproductor hacia abajo para minimizar');
+    console.log('👆 Arrastra el reproductor hacia abajo para minimizar (solo en pausa)');
     console.log('🔍 Buscador con cambio de vista (Lista / Cuadrícula)');
     console.log('🎮 Controles del navegador (Media Session API) activados');
     console.log('📱 Reproducción en segundo plano con pantalla bloqueada activada');
-    console.log('🔄 Cambio automático de canción actualiza la notificación en segundo plano');
     
   })();
 </script>
