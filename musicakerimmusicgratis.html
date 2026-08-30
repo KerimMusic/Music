@@ -2125,7 +2125,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
     }
 
-    // ==================== GESTO DE ARRASTRE (MODIFICADO) ====================
+    // ==================== GESTO DE ARRASTRE ====================
     let dragState = {
       isDragging: false,
       startY: 0,
@@ -2212,8 +2212,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       fullPlayer.classList.remove('dragging');
 
       const thresholdPx = window.innerHeight * THRESHOLD;
-      // SOLUCIÓN: Solo permitir cerrar si NO está reproduciendo (pausado)
-      if (dragState.deltaY > thresholdPx && !isPlaying) {
+      if (dragState.deltaY > thresholdPx) {
         closePlayer();
       } else {
         resetPlayerPosition();
@@ -2285,7 +2284,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
     console.log('🎵 Kerim Music+ Optimizado con precarga y caché');
     console.log('⚡ Reproducción ultra fluida sin cortes');
-    console.log('👆 Arrastra el reproductor hacia abajo para minimizar (solo en pausa)');
+    console.log('👆 Arrastra el reproductor hacia abajo para minimizar');
     console.log('🔍 Buscador con cambio de vista (Lista / Cuadrícula)');
     console.log('🎮 Controles del navegador (Media Session API) activados');
     console.log('📱 Reproducción en segundo plano con pantalla bloqueada activada');
