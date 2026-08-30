@@ -1171,6 +1171,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       schedulePreloadNext();
       // Actualizar notificación con la nueva cola
       if (currentSong) updateMediaSession(currentSong, 'playing');
+      savePlayerState();
     }
 
     // ==================== FUNCIONES DE COLA ====================
@@ -1226,6 +1227,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         } 
       } 
       if(currentPlayQueue.length && !currentSong) currentSong = currentPlayQueue[0]; 
+      savePlayerState();
     }
 
     // ==================== FUNCIÓN PARA MOSTRAR VIDEO ====================
@@ -1668,6 +1670,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       triggerBackgroundRefresh();
       renderPlayerSuggestions();
       renderContent();
+      savePlayerState();
     }
 
     function updateUIWithSong(song){ 
@@ -1707,6 +1710,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       let newIdx = (currentQueueIndex + 1) % currentPlayQueue.length; 
       currentQueueIndex = newIdx; 
       playSong(currentPlayQueue[newIdx]); 
+      savePlayerState();
     }
 
     function prevTrack(){ 
@@ -1715,6 +1719,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       let newIdx = (currentQueueIndex - 1 + currentPlayQueue.length) % currentPlayQueue.length; 
       currentQueueIndex = newIdx; 
       playSong(currentPlayQueue[newIdx]); 
+      savePlayerState();
     }
 
     function togglePlayPause(){ 
@@ -1726,6 +1731,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         return;
       }
       isPlaying ? audio.pause() : audio.play(); 
+      savePlayerState();
     }
 
     // ==================== SUGERENCIAS ====================
@@ -2016,6 +2022,85 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       });
     });
 
+    // ==================== PERSISTENCIA DE ESTADO ====================
+    function savePlayerState() {
+      try {
+        const state = {
+          songId: currentSong ? currentSong.id : null,
+          currentTime: audio.currentTime || 0,
+          isPlaying: isPlaying,
+          queueIds: currentPlayQueue.map(s => s.id),
+          queueIndex: currentQueueIndex,
+          shuffleActive: shuffleActive,
+          originalQueueIds: originalQueue.map(s => s.id)
+        };
+        localStorage.setItem('kerim_player_state', JSON.stringify(state));
+      } catch(e) {}
+    }
+
+    function restorePlayerState() {
+      try {
+        const raw = localStorage.getItem('kerim_player_state');
+        if (!raw) return false;
+        const state = JSON.parse(raw);
+        if (!state.songId) return false;
+        // Buscar la canción en masterSongs
+        const song = masterSongs.find(s => s.id === state.songId) || allSongs.find(s => s.id === state.songId);
+        if (!song) return false;
+        // Restaurar cola
+        const queueIds = state.queueIds || [];
+        const restoredQueue = queueIds.map(id => masterSongs.find(s => s.id === id) || allSongs.find(s => s.id === id)).filter(Boolean);
+        if (restoredQueue.length === 0) return false;
+        // Restaurar shuffle
+        const shuffle = state.shuffleActive || false;
+        let originalQueueIds = state.originalQueueIds || [];
+        const restoredOriginal = originalQueueIds.map(id => masterSongs.find(s => s.id === id) || allSongs.find(s => s.id === id)).filter(Boolean);
+        // Asignar
+        currentSong = song;
+        currentPlayQueue = restoredQueue;
+        currentQueueIndex = Math.min(state.queueIndex, restoredQueue.length - 1);
+        shuffleActive = shuffle;
+        if (shuffleActive && restoredOriginal.length > 0) {
+          originalQueue = restoredOriginal;
+        } else {
+          originalQueue = [];
+        }
+        // Actualizar UI
+        updateUIWithSong(song);
+        // Configurar audio
+        audio.src = song.music;
+        audio.currentTime = state.currentTime || 0;
+        if (state.isPlaying) {
+          audio.play().catch(e => console.log('Error al reanudar:', e));
+          isPlaying = true;
+        } else {
+          isPlaying = false;
+        }
+        updatePlayPauseIcon();
+        // Actualizar notificación
+        if (currentSong) updateMediaSession(currentSong, state.isPlaying ? 'playing' : 'paused');
+        // Mostrar player
+        if (fullPlayer) fullPlayer.classList.add('show');
+        if (miniPlayerDiv) miniPlayerDiv.classList.add('show');
+        renderPlayerSuggestions();
+        renderContent();
+        // Sincronizar shuffle button
+        if (shuffleActive) {
+          shuffleBtnPlayer.classList.add('active');
+        } else {
+          shuffleBtnPlayer.classList.remove('active');
+        }
+        return true;
+      } catch(e) {
+        console.warn('Error restaurando estado:', e);
+        return false;
+      }
+    }
+
+    // Guardar estado periódicamente
+    setInterval(savePlayerState, 10000);
+    window.addEventListener('beforeunload', savePlayerState);
+
     // ==================== AUDIO EVENTOS (MEJORADOS) ====================
     let audioUpdateFrame = null;
 
@@ -2052,6 +2137,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       updatePlayPauseIcon(); 
       // Forzar estado playing en la notificación
       if (currentSong) updateMediaSession(currentSong, 'playing');
+      savePlayerState();
     });
     
     audio.addEventListener('pause', () => { 
@@ -2059,6 +2145,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       updatePlayPauseIcon(); 
       // Actualizar estado paused en la notificación
       if (currentSong) updateMediaSession(currentSong, 'paused');
+      savePlayerState();
     });
 
     audio.addEventListener('ended', () => {
@@ -2089,6 +2176,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       }
       
       nextTrack();
+      savePlayerState();
     });
 
     // ==================== PROGRESS BAR ====================
@@ -2098,6 +2186,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           let rect = progressBarBg.getBoundingClientRect(); 
           let perc = (e.clientX - rect.left)/rect.width; 
           audio.currentTime = perc * audio.duration; 
+          savePlayerState();
         } 
       });
     }
@@ -2262,19 +2351,35 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
     searchContainer.style.display = 'none';
     searchToggleBtn.style.display = 'inline-block';
-    
-    renderContent().then(() => {
-      renderSuggestions(); 
-      updateQueueAndMode(); 
-      renderTopArtists();
-      if(masterSongs.length) currentSong = masterSongs[0];
+
+    // Intentar restaurar estado guardado
+    const stateRestored = restorePlayerState();
+
+    if (!stateRestored) {
+      // Inicialización por defecto si no hay estado guardado
+      renderContent().then(() => {
+        renderSuggestions(); 
+        updateQueueAndMode(); 
+        renderTopArtists();
+        if(masterSongs.length) currentSong = masterSongs[0];
+        audio.volume = 0.9;
+        if (currentSong && currentSong.music) {
+          precargarAudio(currentSong);
+          updateMediaSession(currentSong, 'playing');
+        }
+      });
+    } else {
+      // El estado ya fue restaurado, solo aseguramos volumen y precarga
       audio.volume = 0.9;
-      if (currentSong && currentSong.music) {
+      if (currentSong) {
         precargarAudio(currentSong);
-        // Actualizar notificación al iniciar
-        updateMediaSession(currentSong, 'playing');
+        // Asegurar que la sesión media está actualizada
+        updateMediaSession(currentSong, isPlaying ? 'playing' : 'paused');
+        // Renderizar sugerencias y top artistas (ya se hizo en restore, pero por si acaso)
+        renderSuggestions();
+        renderTopArtists();
       }
-    });
+    }
 
     window.addEventListener('beforeunload', () => {
       if (bgInterval) clearInterval(bgInterval);
@@ -2298,6 +2403,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     console.log('🎮 Controles del navegador (Media Session API) activados');
     console.log('📱 Reproducción en segundo plano con pantalla bloqueada activada');
     console.log('📢 Anuncios cada 6 reproducciones (actualizado)');
+    console.log('💾 Estado del reproductor guardado y restaurado automáticamente');
     
   })();
 </script>
