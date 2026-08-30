@@ -1569,7 +1569,8 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if (isAdPlaying) return;
       if (!song.isAd) {
         adCounter++;
-        if (adCounter >= 3) {
+        // 🔥 CAMBIO: los anuncios se muestran cada 6 reproducciones (antes era >= 3)
+        if (adCounter >= 6) {
           adCounter = 0;
           pendingNextSong = song;
           playAds(function() {
@@ -2296,6 +2297,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     console.log('🔍 Buscador con cambio de vista (Lista / Cuadrícula)');
     console.log('🎮 Controles del navegador (Media Session API) activados');
     console.log('📱 Reproducción en segundo plano con pantalla bloqueada activada');
+    console.log('📢 Anuncios cada 6 reproducciones (actualizado)');
     
   })();
 </script>
