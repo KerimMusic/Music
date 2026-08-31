@@ -11,8 +11,7 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     body{background-color:#000000;color:#ffffff;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,sans-serif;line-height:1.4;overflow-x:hidden;width:100%}
-    .top-bar{background:#000000;padding:.5rem 1rem;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap;border-bottom:1px solid #333333;transition:transform 0.3s ease, opacity 0.3s ease;will-change:transform, opacity}
-    .top-bar-hidden{transform:translateY(-100%);opacity:0;pointer-events:none}
+    .top-bar{background:#000000;padding:.5rem 1rem;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap;border-bottom:1px solid #333333;transition: transform 0.3s ease, margin-bottom 0.3s ease; will-change: transform; }
     .top-bar h1{font-weight:700;font-size:1.5rem;background:linear-gradient(135deg,#ffffff,#888888);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.5px;white-space:nowrap;text-shadow:0 0 20px rgba(255,255,255,.1)}
     .filter-buttons{display:flex;justify-content:center;align-items:center;gap:0.8rem;margin:.5rem auto 1rem;padding:0 1rem;flex-wrap:wrap}
     .filter-main-btn{background:#1a1a1a;border:1px solid #333333;border-radius:500px;padding:.55rem 1.5rem;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s ease;color:#aaaaaa;letter-spacing:.3px;white-space:nowrap}
@@ -267,12 +266,9 @@
 
 <div class="toast-notification" id="toastNotification">Solo disponible en Kerim Music+</div>
 
-<header class="top-bar" id="topBar">
+<header class="top-bar">
   <h1>Kerim Music+ <span class="plan-badge" id="planBadge">FREE</span></h1>
-  <header class="cdrack"> <h1>¿Quieres escuchar el álbum completo sin anuncios?
-Visita CD RACK, donde encontrarás el álbum disponible 
-sin anuncios, con opciones gratuitas y de pago. 
-Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
+  <header class="cdrack"> <h1></h1>
 <button class="filter-main-btn active" data-view="home">Inicio</button>
   <button class="filter-main-btn" id="searchToggleBtn">🔍 Buscar</button>
 </header>
@@ -2770,47 +2766,52 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       document.addEventListener('mouseup', onDragEnd);
     }
 
-    // ==================== OCULTAR/MOSTRAR TOP-BAR AL HACER SCROLL ====================
+    // ==================== OCULTAR BARRA SUPERIOR AL SCROLL (NUEVO) ====================
+    const topBar = document.querySelector('.top-bar');
     let lastScrollY = window.scrollY;
-    let ticking = false;
-    const topBar = document.getElementById('topBar');
+    let isTopBarHidden = false;
+    let topBarHeight = 0;
+    const SCROLL_THRESHOLD = 20;
 
-    function handleScroll() {
-      if (!topBar) return;
-      const currentScrollY = window.scrollY;
-      // Si el scroll está cerca del tope, mostramos siempre
-      if (currentScrollY < 50) {
-        topBar.classList.remove('top-bar-hidden');
-        lastScrollY = currentScrollY;
-        return;
+    function updateTopBarHeight() {
+      if (topBar) {
+        topBarHeight = topBar.offsetHeight;
       }
-      if (currentScrollY > lastScrollY) {
-        // Bajando: ocultar
-        topBar.classList.add('top-bar-hidden');
-      } else {
-        // Subiendo: mostrar
-        topBar.classList.remove('top-bar-hidden');
+    }
+
+    function hideTopBar() {
+      if (topBar && !isTopBarHidden) {
+        isTopBarHidden = true;
+        topBar.style.transform = `translateY(-${topBarHeight}px)`;
+        topBar.style.marginBottom = `-${topBarHeight}px`;
       }
-      lastScrollY = currentScrollY;
+    }
+
+    function showTopBar() {
+      if (topBar && isTopBarHidden) {
+        isTopBarHidden = false;
+        topBar.style.transform = 'translateY(0)';
+        topBar.style.marginBottom = '0';
+      }
     }
 
     window.addEventListener('scroll', () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY && currentScrollY > SCROLL_THRESHOLD) {
+        hideTopBar();
+      } else if (currentScrollY < lastScrollY || currentScrollY <= SCROLL_THRESHOLD) {
+        showTopBar();
       }
+      lastScrollY = currentScrollY;
     });
 
-    // Estado inicial: visible (sin clase)
-    // Si al cargar la página el scroll está abajo, ocultar inmediatamente
-    setTimeout(() => {
-      if (window.scrollY > 50) {
-        topBar?.classList.add('top-bar-hidden');
-      }
-    }, 100);
+    window.addEventListener('resize', updateTopBarHeight);
+    updateTopBarHeight();
+    // Si la página se carga con scroll más allá del umbral, ocultar inmediatamente
+    if (window.scrollY > SCROLL_THRESHOLD) {
+      // Esperar a que la altura esté calculada
+      setTimeout(hideTopBar, 100);
+    }
 
     // ==================== INICIALIZACIÓN FINAL ====================
     updateUIPlan();
@@ -2896,7 +2897,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     console.log('📢 Anuncios cada 6 reproducciones');
     console.log('💾 Estado guardado automáticamente en localStorage');
     console.log('✅ Sistema de conteo de reproducciones mejorado con control de duplicados');
-    console.log('📱 Barra superior oculta/muestra suavemente al hacer scroll');
+    console.log('📱 Barra superior ocultable con scroll suave (nuevo)');
     
   })();
 </script>
