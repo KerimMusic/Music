@@ -1231,14 +1231,12 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         videoElement = videoEl;
         isVideoAd = true;
         videoEl.addEventListener('ended', onVideoAdEnd);
-        if (fullPlayPause) fullPlayPause.style.display = 'none';
-        if (miniPlayPause) miniPlayPause.style.display = 'none';
-        if (progressArea) progressArea.style.display = 'none';
+        // Los anuncios de video mantienen su comportamiento original
+        // No ocultamos el botón play, se muestra normal
       } else if (iframeEl) {
         isVideoAd = true;
-        if (fullPlayPause) fullPlayPause.style.display = 'none';
-        if (miniPlayPause) miniPlayPause.style.display = 'none';
-        if (progressArea) progressArea.style.display = 'none';
+        // Los anuncios de video mantienen su comportamiento original
+        // No ocultamos el botón play, se muestra normal
         const adDuration = 30000;
         if (window._adTimer) clearTimeout(window._adTimer);
         window._adTimer = setTimeout(() => onVideoAdEnd(), adDuration);
@@ -1246,7 +1244,8 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         isVideoAd = false;
       }
       
-      if (progressArea) progressArea.style.display = 'none';
+      // NO ocultamos progressArea en anuncios de video
+      // NO ocultamos los botones de play/pause
     }
 
     function hideVideoFromPlayer() {
@@ -1255,6 +1254,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       videoContainer.innerHTML = '';
       if (fullCover) fullCover.style.display = 'block';
       if (progressArea) progressArea.style.display = 'block';
+      // Aseguramos que los botones estén visibles
       if (fullPlayPause) fullPlayPause.style.display = 'flex';
       if (miniPlayPause) miniPlayPause.style.display = 'flex';
       if (videoElement) {
@@ -1357,10 +1357,11 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           hideVideoFromPlayer();
           if (fullCover) fullCover.src = adSong.url;
         }
-        if (!videoHtml) {
-          if (fullPlayPause) fullPlayPause.style.display = 'flex';
-          if (miniPlayPause) miniPlayPause.style.display = 'flex';
-        }
+        // Los anuncios de video mantienen el botón play visible
+        if (fullPlayPause) fullPlayPause.style.display = 'flex';
+        if (miniPlayPause) miniPlayPause.style.display = 'flex';
+        if (progressArea) progressArea.style.display = 'block';
+        
         if (videoElement) {
           videoElement.addEventListener('play', () => {
             isPlaying = true;
@@ -1379,6 +1380,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       } else {
         hideVideoFromPlayer();
         if (fullCover) fullCover.src = adSong.url;
+        // Para anuncios de audio, ocultamos progressArea
         if (progressArea) progressArea.style.display = 'none';
         if (fullPlayPause) fullPlayPause.style.display = 'flex';
         if (miniPlayPause) miniPlayPause.style.display = 'flex';
@@ -1408,6 +1410,14 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         updatePlayPauseIcon();
       } else if (ad.video) {
         audio.pause();
+        // Los anuncios de video se reproducen automáticamente
+        if (videoElement) {
+          videoElement.play().catch(() => {});
+          isPlaying = true;
+        } else if (videoContainer.querySelector('iframe')) {
+          isPlaying = true;
+        }
+        updatePlayPauseIcon();
       } else {
         audio.pause();
         isPlaying = false;
@@ -1728,6 +1738,15 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
     function togglePlayPause(){ 
       if (isAdPlaying && isVideoAd && videoElement) {
+        // Los anuncios de video permiten pausar/reproducir manualmente
+        if (videoElement.paused) {
+          videoElement.play().catch(() => {});
+          isPlaying = true;
+        } else {
+          videoElement.pause();
+          isPlaying = false;
+        }
+        updatePlayPauseIcon();
         return;
       }
       if (isAdPlaying && !isVideoAd) {
@@ -2212,20 +2231,25 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
                   hideVideoFromPlayer();
                   if (fullCover) fullCover.src = adSong.url;
                 }
-                if (fullPlayPause) fullPlayPause.style.display = 'none';
-                if (miniPlayPause) miniPlayPause.style.display = 'none';
+                // Los anuncios de video restauran el botón play visible
+                if (fullPlayPause) fullPlayPause.style.display = 'flex';
+                if (miniPlayPause) miniPlayPause.style.display = 'flex';
+                if (progressArea) progressArea.style.display = 'block';
+                // Los anuncios de video se reproducen automáticamente
                 if (videoElement) {
                   videoElement.play().catch(() => {});
                   isPlaying = true;
-                } else {
-                  isPlaying = false;
+                } else if (videoContainer.querySelector('iframe')) {
+                  isPlaying = true;
                 }
+                updatePlayPauseIcon();
               } else if (adToPlay.music) {
                 hideVideoFromPlayer();
                 if (fullCover) fullCover.src = adSong.url;
                 audio.src = adToPlay.music;
                 savedAdTime = saved.currentTime || 0;
                 audio.currentTime = savedAdTime;
+                // Los anuncios de audio se restauran en pausa
                 audio.pause();
                 isPlaying = false;
                 if (fullPlayPause) fullPlayPause.style.display = 'flex';
@@ -2443,7 +2467,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
             .then(nuevoValor => {
               if (nuevoValor !== null) {
                 firestorePlays.set(String(songId), nuevoValor);
-                // 🔥 ACTUALIZACIÓN EN TIEMPO REAL: renderizar de nuevo para mostrar el nuevo conteo
                 renderContent();
                 renderSuggestions();
                 renderTopArtists();
@@ -2699,6 +2722,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     console.log('🎵 Kerim Music+ Optimizado con precarga y caché');
     console.log('♻️ Persistencia de estado activada - la página se restaura al recargar');
     console.log('📢 Anuncios de audio se restauran en pausa (Play manual)');
+    console.log('📢 Anuncios de video mantienen su comportamiento original (reproducción automática)');
     console.log('🔍 Búsqueda de artista con vista de álbum y contador de reproducciones');
     console.log('🎵 Botón "Escuchar álbum" reproduce todas las canciones del artista');
     console.log('🔄 Botones de control ocultos durante anuncios de video');
