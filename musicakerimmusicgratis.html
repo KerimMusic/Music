@@ -512,6 +512,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
         resultado = currentPlays;
         playCache.set(songId, resultado);
+        console.log(`✅ Reproducción actualizada: ${songId} → ${resultado}`);
       });
 
       return resultado;
@@ -532,6 +533,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       playCache.set(songId, count);
       return count;
     } catch (error) {
+      console.error("Error al obtener reproducciones:", error);
       return 0;
     }
   };
@@ -630,7 +632,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         album: 'Kerim Music',
         title: 'Sigo Vivo Aicber',
         music: 'https://www.dropbox.com/scl/fi/0y977tgyjp66og2ze36uh/SIgoVivoIazberMp3.wav?rlkey=6vdswfh8f3wtqa66seeugc480&st=rj9g6llz&raw=1',
-        artist: 'Aiciber'
+        artist: 'Aicber'
       },
       { 
         id: "Recuerdos Aizber",
@@ -639,7 +641,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         album: 'Kerim Music',
         title: 'Recuerdos Aicber',
         music: 'https://www.dropbox.com/scl/fi/bozqu6d4xdeydcx7dl03i/Recuedos-Aizber-Kerim-Music.mp3?rlkey=t8npubztez45kt79vbt3fidst&st=dbx2f1a4&raw=1',
-        artist: 'Aiciber'
+        artist: 'Aicber'
       },
       //======================Emsek=======================
       { id: "Entre tus redes Emsek", title: "Entre tus redes", artist: "Emsek", category: "Rap", url: 'https://www.dropbox.com/scl/fi/hu6726a9yx9z9c5w2ns0w/Emsek.jpg?rlkey=llo70vmyjg4u9jfhnq6g9tvr8&st=dqvk5v66&raw=1', music: 'https://www.dropbox.com/scl/fi/thmc7o0uftl3hhvig4lc6/Entre_tus_Redes_-msek__HM___462__Casero_Records_MP3_256kbps_128k.mp3?rlkey=6raowpgc6b5j5a0h21qyo6p34&st=5jws1foy&raw=1' },
@@ -1035,6 +1037,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     // ==================== REPRODUCCIÓN ====================
     let currentPlayQueue = [], currentQueueIndex = 0, currentSong = null, audio = new Audio(), isPlaying = false, currentSearch = '', shuffleActive = false, originalQueue = [], isPlaylistsMode = false;
     let adCounter = 0, isAdPlaying = false, previousSong = null, pendingNextSong = null, adPlaylist = [], currentAdIndex = 0, adCallback = null, videoElement = null, isVideoAd = false;
+    let reproductionCounted = false; // Nuevo flag para evitar duplicados
 
     // ===== ELEMENTOS DOM =====
     const contentContainer = document.getElementById('contentContainer');
@@ -1231,21 +1234,14 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         videoElement = videoEl;
         isVideoAd = true;
         videoEl.addEventListener('ended', onVideoAdEnd);
-        // Los anuncios de video mantienen su comportamiento original
-        // No ocultamos el botón play, se muestra normal
       } else if (iframeEl) {
         isVideoAd = true;
-        // Los anuncios de video mantienen su comportamiento original
-        // No ocultamos el botón play, se muestra normal
         const adDuration = 30000;
         if (window._adTimer) clearTimeout(window._adTimer);
         window._adTimer = setTimeout(() => onVideoAdEnd(), adDuration);
       } else {
         isVideoAd = false;
       }
-      
-      // NO ocultamos progressArea en anuncios de video
-      // NO ocultamos los botones de play/pause
     }
 
     function hideVideoFromPlayer() {
@@ -1254,7 +1250,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       videoContainer.innerHTML = '';
       if (fullCover) fullCover.style.display = 'block';
       if (progressArea) progressArea.style.display = 'block';
-      // Aseguramos que los botones estén visibles
       if (fullPlayPause) fullPlayPause.style.display = 'flex';
       if (miniPlayPause) miniPlayPause.style.display = 'flex';
       if (videoElement) {
@@ -1357,7 +1352,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
           hideVideoFromPlayer();
           if (fullCover) fullCover.src = adSong.url;
         }
-        // Los anuncios de video mantienen el botón play visible
         if (fullPlayPause) fullPlayPause.style.display = 'flex';
         if (miniPlayPause) miniPlayPause.style.display = 'flex';
         if (progressArea) progressArea.style.display = 'block';
@@ -1380,7 +1374,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       } else {
         hideVideoFromPlayer();
         if (fullCover) fullCover.src = adSong.url;
-        // Para anuncios de audio, ocultamos progressArea
         if (progressArea) progressArea.style.display = 'none';
         if (fullPlayPause) fullPlayPause.style.display = 'flex';
         if (miniPlayPause) miniPlayPause.style.display = 'flex';
@@ -1410,7 +1403,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         updatePlayPauseIcon();
       } else if (ad.video) {
         audio.pause();
-        // Los anuncios de video se reproducen automáticamente
         if (videoElement) {
           videoElement.play().catch(() => {});
           isPlaying = true;
@@ -1612,6 +1604,9 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       if (!song) return;
       if (isAdPlaying) return;
       
+      // Resetear flag de conteo para la nueva canción
+      reproductionCounted = false;
+      
       if (pendingCount) {
         pendingCount = false;
         pendingSongId = null;
@@ -1738,7 +1733,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
 
     function togglePlayPause(){ 
       if (isAdPlaying && isVideoAd && videoElement) {
-        // Los anuncios de video permiten pausar/reproducir manualmente
         if (videoElement.paused) {
           videoElement.play().catch(() => {});
           isPlaying = true;
@@ -2047,9 +2041,12 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
         if (window.obtenerReproducciones) {
           const count = await window.obtenerReproducciones(songId);
           return count || 0;
+        } else {
+          console.warn('⚠️ window.obtenerReproducciones no está definido');
+          return 0;
         }
-        return 0;
       } catch (e) {
+        console.error('Error al obtener reproducciones:', e);
         return 0;
       }
     }
@@ -2231,11 +2228,9 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
                   hideVideoFromPlayer();
                   if (fullCover) fullCover.src = adSong.url;
                 }
-                // Los anuncios de video restauran el botón play visible
                 if (fullPlayPause) fullPlayPause.style.display = 'flex';
                 if (miniPlayPause) miniPlayPause.style.display = 'flex';
                 if (progressArea) progressArea.style.display = 'block';
-                // Los anuncios de video se reproducen automáticamente
                 if (videoElement) {
                   videoElement.play().catch(() => {});
                   isPlaying = true;
@@ -2249,7 +2244,6 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
                 audio.src = adToPlay.music;
                 savedAdTime = saved.currentTime || 0;
                 audio.currentTime = savedAdTime;
-                // Los anuncios de audio se restauran en pausa
                 audio.pause();
                 isPlaying = false;
                 if (fullPlayPause) fullPlayPause.style.display = 'flex';
@@ -2456,33 +2450,61 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
       scheduleSave(300);
     });
 
-    audio.addEventListener('ended', () => {
+    // ========== EVENTO ENDED - MEJORADO ==========
+    audio.addEventListener('ended', async () => {
+      // Si estamos en un anuncio, no hacer nada (el anuncio maneja su propio fin)
       if (isAdPlaying) return;
       
-      if (pendingCount && pendingSongId === currentSong?.id && !currentSong?.isAd) {
-        const songId = pendingSongId;
+      // Evitar contar dos veces la misma canción
+      if (reproductionCounted) {
+        console.log('🔄 Reproducción ya contada, ignorando evento ended duplicado');
+        return;
+      }
+
+      // Solo contar si tenemos una canción válida y no es un anuncio
+      if (currentSong && !currentSong.isAd && pendingCount && pendingSongId === currentSong.id) {
+        const songId = currentSong.id;
+        console.log(`🎵 Canción terminada: ${currentSong.title} (${songId})`);
+
+        // Marcar como contado para evitar duplicados
+        reproductionCounted = true;
+
+        // Incrementar el contador local (para artistas, etc.)
         incrementPlayCount(songId);
+
+        // Incrementar en Firebase
         if (window.incrementarReproduccion) {
-          window.incrementarReproduccion(songId)
-            .then(nuevoValor => {
-              if (nuevoValor !== null) {
-                firestorePlays.set(String(songId), nuevoValor);
-                renderContent();
-                renderSuggestions();
-                renderTopArtists();
-              }
-            })
-            .catch(e => console.error('Error al incrementar reproducción:', e));
+          try {
+            const nuevoValor = await window.incrementarReproduccion(songId);
+            if (nuevoValor !== null) {
+              firestorePlays.set(String(songId), nuevoValor);
+              console.log(`✅ Nuevo valor de reproducciones para ${songId}: ${nuevoValor}`);
+              // Refrescar toda la UI para mostrar los números actualizados
+              renderContent();
+              renderSuggestions();
+              renderTopArtists();
+            } else {
+              console.warn('⚠️ No se pudo obtener el nuevo valor de reproducciones');
+            }
+          } catch (error) {
+            console.error('❌ Error al incrementar reproducción:', error);
+          }
+        } else {
+          console.warn('⚠️ window.incrementarReproduccion no está definido');
         }
+
+        // Resetear el flag de pendiente
         pendingCount = false;
         pendingSongId = null;
+      } else {
+        console.log('⏭️ No se contará reproducción (condición no cumplida)');
       }
-      
+
+      // Pasar a la siguiente canción
       const nextSong = getNextSongInQueue();
       if (nextSong) {
         updateMediaSession(nextSong, 'playing');
       }
-      
       nextTrack();
       scheduleSave(300);
     });
@@ -2733,6 +2755,7 @@ Elige la que prefieras y disfruta de la mejor experiencia de reproducción.</h1>
     console.log('📱 Reproducción en segundo plano con pantalla bloqueada activada');
     console.log('📢 Anuncios cada 6 reproducciones');
     console.log('💾 Estado guardado automáticamente en localStorage');
+    console.log('✅ Sistema de conteo de reproducciones mejorado con control de duplicados');
     
   })();
 </script>
