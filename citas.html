@@ -4,18 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KERIM MUSIC</title>
-    <!-- FAVICON - Imagen circular -->
     <link rel="icon" type="image/png" sizes="32x32" href="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl-C2FWUPqhXScoTAnIi5KiqCJy93JtmYMytb1J4I9wt0DiIgz1r8eFwN2kEnX1SIUI_HBxEpUX2w1M7sL94vE8LV_NeTpuOP0hvURBnW4_-VDHUFmKQPCA_USZqeRYqTAoYcr6Af4uOi9l=s680-w680-h510-rw">
     <link rel="icon" type="image/png" sizes="16x16" href="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl-C2FWUPqhXScoTAnIi5KiqCJy93JtmYMytb1J4I9wt0DiIgz1r8eFwN2kEnX1SIUI_HBxEpUX2w1M7sL94vE8LV_NeTpuOP0hvURBnW4_-VDHUFmKQPCA_USZqeRYqTAoYcr6Af4uOi9l=s680-w680-h510-rw">
     <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl-C2FWUPqhXScoTAnIi5KiqCJy93JtmYMytb1J4I9wt0DiIgz1r8eFwN2kEnX1SIUI_HBxEpUX2w1M7sL94vE8LV_NeTpuOP0hvURBnW4_-VDHUFmKQPCA_USZqeRYqTAoYcr6Af4uOi9l=s680-w680-h510-rw">
-    <!-- Font Awesome (íconos) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- jsPDF desde CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        /* ============================================================
-           DISEÑO MODERNO BLANCO Y NEGRO
-           ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -32,12 +26,140 @@
             padding: 2rem 1rem;
         }
 
+        /* ========== PANTALLA DE ANUNCIO (FULLSCREEN) ========== */
+        #adFullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        #adFullscreen.oculto {
+            opacity: 0;
+            transform: scale(1.05);
+            pointer-events: none;
+        }
+
+        #adFullscreen .ad-content {
+            max-width: 800px;
+            width: 100%;
+            background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+            border: 1px solid #2a2a2a;
+            text-align: center;
+        }
+
+        #adFullscreen video {
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+            border: 1px solid #333;
+            background: #000;
+            max-height: 60vh;
+        }
+
+        #adFullscreen img {
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+            border: 1px solid #333;
+            max-height: 60vh;
+            object-fit: contain;
+        }
+
+        #adFullscreen audio {
+            width: 100%;
+            margin-top: 1rem;
+            background: #1a1a1a;
+            border-radius: 40px;
+            padding: 0.4rem 0.6rem;
+            border: 1px solid #333333;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        #adFullscreen .ad-title-full {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #e0c080;
+            margin-top: 1rem;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 8px rgba(224, 192, 128, 0.15);
+        }
+
+        #adFullscreen .btn-activar-audio-full {
+            margin-top: 1rem;
+            background: rgba(255,255,255,0.9);
+            color: #000;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        #adFullscreen .btn-activar-audio-full:hover {
+            transform: scale(1.05);
+            background: #ffffff;
+        }
+
+        #adFullscreen .btn-activar-audio-full i {
+            font-size: 1.2rem;
+        }
+
+        /* Logo de carga mientras se muestra el anuncio */
+        #adFullscreen .loading-logo {
+            margin-bottom: 1.5rem;
+        }
+
+        #adFullscreen .loading-logo img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid #ffffff;
+            box-shadow: 0 8px 30px rgba(255, 255, 255, 0.15);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* ========== CONTENIDO PRINCIPAL (oculto al inicio) ========== */
+        #mainContent {
+            opacity: 0;
+            transition: opacity 1s ease;
+            width: 100%;
+        }
+
+        #mainContent.visible {
+            opacity: 1;
+        }
+
         .card {
             max-width: 860px;
             width: 100%;
             color: #ffffff;
             position: relative;
             z-index: 1;
+            margin: 0 auto;
         }
 
         .logo-container {
@@ -113,8 +235,6 @@
             font-weight: 900;
             letter-spacing: -0.02em;
             color: #ffffff;
-            -webkit-text-fill-color: #ffffff;
-            background: none;
         }
 
         .brand-right {
@@ -122,14 +242,6 @@
             align-items: center;
             gap: 0.8rem;
             flex-wrap: wrap;
-        }
-
-        .brand .sub {
-            color: #999999;
-            font-weight: 500;
-            letter-spacing: 1px;
-            font-size: 0.85rem;
-            padding: 0.2rem 1rem;
         }
 
         .btn-compartir {
@@ -193,9 +305,7 @@
             margin: 0.5rem 0;
         }
 
-        .crea-tu-paquete,
-        .btn-ver-anuncio,
-        .btn-descargar {
+        .crea-tu-paquete {
             background: #ffffff;
             color: #000000;
             border: none;
@@ -212,46 +322,16 @@
             user-select: none;
             box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
         }
-        .crea-tu-paquete:hover,
-        .btn-ver-anuncio:hover,
-        .btn-descargar:hover {
+        .crea-tu-paquete:hover {
             background: #e0e0e0;
             transform: scale(1.02);
             box-shadow: 0 8px 28px rgba(255, 255, 255, 0.25);
         }
-        .crea-tu-paquete:active,
-        .btn-ver-anuncio:active,
-        .btn-descargar:active {
+        .crea-tu-paquete:active {
             transform: scale(0.97);
         }
-        .crea-tu-paquete i,
-        .btn-ver-anuncio i,
-        .btn-descargar i {
+        .crea-tu-paquete i {
             margin-right: 10px;
-        }
-
-        .btn-descargar {
-            background: #2a2a2a;
-            color: #ffffff;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
-        .btn-descargar:hover {
-            background: #3d3d3d;
-            box-shadow: 0 8px 28px rgba(0,0,0,0.4);
-        }
-
-        .btn-ver-anuncio {
-            background: #2a2a2a;
-            color: #ffffff;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-            margin-top: 0;
-        }
-        .btn-ver-anuncio:hover {
-            background: #3d3d3d;
-            box-shadow: 0 8px 28px rgba(0,0,0,0.4);
-        }
-        .btn-ver-anuncio.oculto {
-            display: none;
         }
 
         .servicios-wrapper {
@@ -676,7 +756,6 @@
             display: block;
         }
 
-        /* ---- MENSAJE DE BIENVENIDA ---- */
         .mensaje-bienvenida {
             text-align: left;
             color: #cccccc;
@@ -714,108 +793,90 @@
             margin-bottom: 0.3rem;
         }
 
-        .mensaje-bienvenida.modo-anuncio .texto-descriptivo {
-            display: none;
-        }
-
-        .mensaje-bienvenida .media-container {
+        #adContainer {
             display: flex;
-            justify-content: center;
-            margin: 0.5rem 0 1rem 0;
-            position: relative;
-            min-height: 200px;
-        }
-        .mensaje-bienvenida .media-container video {
-            max-width: 100%;
-            width: 100%;
-            height: auto;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-            border: 1px solid #333333;
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-        .mensaje-bienvenida .media-container .portada-container {
-            max-width: 60%;
-            width: 60%;
-            height: auto;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-            border: 1px solid #333333;
-            opacity: 0;
-            transform: scale(0.9);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-            display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            background: #111;
-            overflow: hidden;
+            width: 100%;
+            background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+            border-radius: 24px;
+            padding: 1.5rem 1.2rem;
+            margin: 0.5rem 0 1.5rem 0;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
+            border: 1px solid #2a2a2a;
             position: relative;
-            margin: 0 auto;
         }
-        .mensaje-bienvenida .media-container .portada-container img {
+
+        #adContainer img {
             width: 100%;
             height: auto;
-            display: block;
             border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            border: 1px solid #333333;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .mensaje-bienvenida .media-container .portada-container.visible {
-            opacity: 1;
-            transform: scale(1);
-            animation: portadaEntrada 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-        .mensaje-bienvenida .media-container video.oculto {
-            opacity: 0;
-            transform: scale(0.95);
-            pointer-events: none;
-            position: absolute;
+        #adContainer img:hover {
+            transform: scale(1.01);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
         }
 
-        @keyframes portadaEntrada {
-            0% { opacity: 0; transform: scale(0.85) rotate(-2deg); }
-            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        #adContainer video {
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            border: 1px solid #333333;
+            background: #000;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        #adContainer video:hover {
+            transform: scale(1.01);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
         }
 
-        .btn-escucha-container {
+        #adContainer audio {
+            width: 100%;
+            margin-top: 0.8rem;
+            background: #1a1a1a;
+            border-radius: 40px;
+            padding: 0.4rem 0.6rem;
+            border: 1px solid #333333;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+            filter: brightness(0.9);
+            transition: filter 0.3s ease;
+        }
+        #adContainer audio:hover {
+            filter: brightness(1);
+        }
+
+        #adContainer .placeholder-audio {
+            background: #1a1a1a;
+            padding: 2rem 1.5rem;
+            border-radius: 16px;
             text-align: center;
-            margin-top: 0.5rem;
-            opacity: 0;
-            transition: opacity 0.6s ease;
+            color: #888;
+            border: 1px solid #333;
+            width: 100%;
+            font-size: 1rem;
+            letter-spacing: 0.3px;
         }
-        .btn-escucha-container.visible {
-            opacity: 1;
-        }
-        .btn-escucha {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            background: #ffffff;
-            color: #000000;
-            font-weight: 700;
+
+        .ad-title {
             font-size: 1.1rem;
-            padding: 0.7rem 2.2rem;
-            border-radius: 60px;
-            text-decoration: none;
-            transition: background 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
-            border: 1px solid #ffffff;
-        }
-        .btn-escucha:hover {
-            background: #e0e0e0;
-            transform: scale(1.03);
-        }
-        .btn-escucha:active {
-            transform: scale(0.97);
-        }
-        .btn-escucha i {
-            font-size: 1.3rem;
+            font-weight: 600;
+            color: #e0c080;
+            margin-top: 0.8rem;
+            text-align: center;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 8px rgba(224, 192, 128, 0.15);
+            border-top: 1px solid #2a2a2a;
+            padding-top: 0.8rem;
+            width: 100%;
         }
 
         body.info-mode .brand h1,
         body.info-mode .brand .sub,
         body.info-mode .btn-compartir,
         body.info-mode .crea-tu-paquete,
-        body.info-mode .btn-ver-anuncio,
-        body.info-mode .btn-descargar,
         body.info-mode .servicios-wrapper,
         body.info-mode .total-section,
         body.info-mode .btn-whatsapp-wrapper,
@@ -836,7 +897,6 @@
             text-align: center;
         }
 
-        /* --- ANIMACIONES --- */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -844,10 +904,6 @@
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-30px) scale(0.9); }
             to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         @keyframes fadeInLeft {
             from { opacity: 0; transform: translateX(-20px); }
@@ -860,10 +916,6 @@
         @keyframes popIn {
             0% { transform: scale(0.7); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
         }
 
         @media (max-width: 650px) {
@@ -879,14 +931,16 @@
             .switch { width: 46px; height: 26px; }
             .switch .thumb { width: 20px; height: 20px; top: 3px; left: 3px; }
             .switch.active .thumb { left: 23px; }
-            .crea-tu-paquete, .btn-ver-anuncio, .btn-descargar { font-size: 1.1rem; padding: 0.6rem 1.5rem; }
+            .crea-tu-paquete { font-size: 1.1rem; padding: 0.6rem 1.5rem; }
             .gracias-modal { padding: 2rem 1.5rem; }
             .gracias-modal h2 { font-size: 1.7rem; }
             .total-bajo-logo { font-size: 1rem; padding: 0.2rem 1rem; }
             .servicios-wrapper.abierto { max-height: 1200px; }
             .btn-compartir, .info-toggle { font-size: 0.8rem; }
             .mensaje-bienvenida { font-size: 0.85rem; }
-            .mensaje-bienvenida .media-container .portada-container { max-width: 70%; }
+            #adContainer { padding: 1rem; }
+            #adFullscreen .ad-content { padding: 1rem; }
+            #adFullscreen .ad-title-full { font-size: 1.2rem; }
         }
 
         @media (max-width: 480px) {
@@ -894,204 +948,197 @@
             .servicio-info i { font-size: 1.2rem; width: 1.6rem; }
             .servicio-info .precio { font-size: 0.75rem; padding: 0.1rem 0.7rem; }
             .estado-texto { font-size: 0.65rem; min-width: 48px; padding: 0.1rem 0.4rem; }
-            .crea-tu-paquete, .btn-ver-anuncio, .btn-descargar { font-size: 0.9rem; padding: 0.5rem 1.2rem; }
+            .crea-tu-paquete { font-size: 0.9rem; padding: 0.5rem 1.2rem; }
             .servicios-wrapper.abierto { max-height: 1400px; }
             .brand h1 { font-size: 1.6rem; }
             .btn-compartir, .info-toggle { font-size: 0.7rem; }
             .btn-compartir i, .info-toggle i { font-size: 0.7rem; }
             .beat-notes-wrapper textarea { font-size: 0.8rem; min-height: 60px; padding: 0.6rem 1rem; }
             .mensaje-bienvenida { font-size: 0.8rem; }
-            .btn-escucha { font-size: 0.85rem; padding: 0.5rem 1.2rem; gap: 0.5rem; }
-            .btn-escucha i { font-size: 1rem; }
-            .mensaje-bienvenida .media-container .portada-container { max-width: 80%; }
+            #adContainer { padding: 0.8rem; }
+            #adFullscreen .ad-content { padding: 0.8rem; }
+            #adFullscreen .ad-title-full { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="logo-container">
-            <div class="logo-circle">
-                <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl-C2FWUPqhXScoTAnIi5KiqCJy93JtmYMytb1J4I9wt0DiIgz1r8eFwN2kEnX1SIUI_HBxEpUX2w1M7sL94vE8LV_NeTpuOP0hvURBnW4_-VDHUFmKQPCA_USZqeRYqTAoYcr6Af4uOi9l=s680-w680-h510-rw" alt="KERIM MUSIC Logo">
+    <!-- ====== PANTALLA DE ANUNCIO FULLSCREEN ====== -->
+    <div id="adFullscreen">
+        <div class="ad-content" id="adFullscreenContent">
+            <!-- Logo mientras carga -->
+            <div class="loading-logo">
+                <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl-C2FWUPqhXScoTAnIi5KiqCJy93JtmYMytb1J4I9wt0DiIgz1r8eFwN2kEnX1SIUI_HBxEpUX2w1M7sL94vE8LV_NeTpuOP0hvURBnW4_-VDHUFmKQPCA_USZqeRYqTAoYcr6Af4uOi9l=s680-w680-h510-rw" alt="KERIM MUSIC">
             </div>
-            <div class="total-bajo-logo" id="totalBajoLogo">
-                <i class="fas fa-coins"></i> TOTAL: <span id="totalBajoNumero">$0</span>
-            </div>
-            <!-- MENSAJE DE BIENVENIDA (oculto inicialmente) -->
-            <div class="mensaje-bienvenida" id="mensajeBienvenida">
-                <div class="media-container" id="mediaContainer">
-                    <video id="infoVideo" playsinline>
-                        <source src="https://www.dropbox.com/scl/fi/fozpdad1tujwuaiiie1gb/Anuncio-placoso-de-la-L.mp4?rlkey=q8wvxc8a6odvs3uwj2sxh1vkk&st=4rvkysbl&raw=1" type="video/mp4">
-                        Tu navegador no soporta videos.
-                    </video>
-                    <div class="portada-container" id="portadaContainer">
-                        <img src="https://www.dropbox.com/scl/fi/otojz7yc0de3xqyb9t6yh/783588703_1047085541468353_6915517615099943137_n.jpg?rlkey=paxdkveuyztjmzbusfupn7sge&st=o9gyqzwe&raw=1" alt="Portada de música">
+            <!-- Aquí se renderiza el anuncio -->
+            <div id="fullscreenAdContainer"></div>
+        </div>
+    </div>
+
+    <!-- ====== CONTENIDO PRINCIPAL ====== -->
+    <div id="mainContent">
+        <div class="card">
+            <div class="logo-container">
+                <div class="logo-circle">
+                    <img src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl-C2FWUPqhXScoTAnIi5KiqCJy93JtmYMytb1J4I9wt0DiIgz1r8eFwN2kEnX1SIUI_HBxEpUX2w1M7sL94vE8LV_NeTpuOP0hvURBnW4_-VDHUFmKQPCA_USZqeRYqTAoYcr6Af4uOi9l=s680-w680-h510-rw" alt="KERIM MUSIC Logo">
+                </div>
+                <div class="total-bajo-logo" id="totalBajoLogo">
+                    <i class="fas fa-coins"></i> TOTAL: <span id="totalBajoNumero">$0</span>
+                </div>
+                <div class="mensaje-bienvenida" id="mensajeBienvenida">
+                    <div id="adContainer"></div>
+                    <div class="texto-descriptivo">
+                        <p style="font-size:1.1rem; font-weight:bold; text-align:center; color:#ffffff;">🎵 Crea tu proyecto a tu manera</p>
+                        <p>En nuestro servicio tienes la libertad de <strong>crear tu propio proyecto de la manera que tú quieras</strong>. Tú decides qué deseas realizar, cómo quieres llevarlo a cabo y qué detalles quieres incluir en tu proyecto.</p>
+                        <p>Una vez que hayas definido lo que necesitas, podrás <strong>realizar tu pedido directamente por WhatsApp</strong>, donde podremos atenderte, resolver tus dudas y confirmar contigo todos los detalles antes de comenzar.</p>
+                        <p>Después de realizar tu pedido, recibirás un <strong>comprobante descargable</strong> como respaldo de tu solicitud. Este comprobante te permitirá tener constancia de que tu pedido fue realizado y conservar la información correspondiente a tu proyecto.</p>
+                        <p style="font-weight:bold; color:#ffffff;">📲 ¿Cómo funciona?</p>
+                        <ol>
+                            <li><strong>Crea tu proyecto:</strong> Decide qué quieres realizar y prepara los detalles de tu idea.</li>
+                            <li><strong>Realiza tu pedido:</strong> Envíanos tu solicitud directamente por <strong>WhatsApp</strong>.</li>
+                            <li><strong>Confirma los detalles:</strong> Revisaremos contigo la información de tu proyecto para asegurarnos de que todo esté correcto.</li>
+                            <li><strong>Recibe tu comprobante:</strong> Una vez realizado el pedido, tendrás disponible un <strong>comprobante descargable</strong> para que puedas guardarlo.</li>
+                            <li><strong>Dale seguimiento:</strong> Mantendremos la comunicación contigo por WhatsApp para que puedas estar informado sobre tu proyecto.</li>
+                        </ol>
+                        <p>Queremos que tengas una experiencia sencilla, clara y segura. <strong>Tu proyecto comienza con tu idea, tú decides cómo quieres crearlo y nosotros te ayudamos a llevarlo a cabo.</strong></p>
+                        <p style="font-weight:bold; text-align:center; color:#ffffff;">📱 <strong>Haz tu pedido por WhatsApp y comienza a crear tu proyecto.</strong></p>
                     </div>
                 </div>
+            </div>
 
-                <div class="btn-escucha-container" id="btnEscuchaContainer">
-                    <a href="https://distrokid.com/hyperfollow/elplacosodelal/lo-que-me-toco-vivir" target="_blank" class="btn-escucha">
-                        <i class="fas fa-music"></i> Escucha su música
-                    </a>
-                </div>
-
-                <div class="texto-descriptivo">
-                    <p style="font-size:1.1rem; font-weight:bold; text-align:center; color:#ffffff;">🎵 Crea tu proyecto a tu manera</p>
-                    <p>En nuestro servicio tienes la libertad de <strong>crear tu propio proyecto de la manera que tú quieras</strong>. Tú decides qué deseas realizar, cómo quieres llevarlo a cabo y qué detalles quieres incluir en tu proyecto.</p>
-                    <p>Una vez que hayas definido lo que necesitas, podrás <strong>realizar tu pedido directamente por WhatsApp</strong>, donde podremos atenderte, resolver tus dudas y confirmar contigo todos los detalles antes de comenzar.</p>
-                    <p>Después de realizar tu pedido, recibirás un <strong>comprobante descargable</strong> como respaldo de tu solicitud. Este comprobante te permitirá tener constancia de que tu pedido fue realizado y conservar la información correspondiente a tu proyecto.</p>
-                    <p style="font-weight:bold; color:#ffffff;">📲 ¿Cómo funciona?</p>
-                    <ol>
-                        <li><strong>Crea tu proyecto:</strong> Decide qué quieres realizar y prepara los detalles de tu idea.</li>
-                        <li><strong>Realiza tu pedido:</strong> Envíanos tu solicitud directamente por <strong>WhatsApp</strong>.</li>
-                        <li><strong>Confirma los detalles:</strong> Revisaremos contigo la información de tu proyecto para asegurarnos de que todo esté correcto.</li>
-                        <li><strong>Recibe tu comprobante:</strong> Una vez realizado el pedido, tendrás disponible un <strong>comprobante descargable</strong> para que puedas guardarlo.</li>
-                        <li><strong>Dale seguimiento:</strong> Mantendremos la comunicación contigo por WhatsApp para que puedas estar informado sobre tu proyecto.</li>
-                    </ol>
-                    <p>Queremos que tengas una experiencia sencilla, clara y segura. <strong>Tu proyecto comienza con tu idea, tú decides cómo quieres crearlo y nosotros te ayudamos a llevarlo a cabo.</strong></p>
-                    <p style="font-weight:bold; text-align:center; color:#ffffff;">📱 <strong>Haz tu pedido por WhatsApp y comienza a crear tu proyecto.</strong></p>
+            <div class="brand">
+                <h1>KERIM MUSIC</h1>
+                <div class="brand-right">
+                    <button class="btn-compartir" id="btnCompartir" title="Compartir esta página">
+                        <i class="fas fa-share-alt"></i> Compartir
+                    </button>
+                    <span class="info-toggle" id="btnInformacion">
+                        <i class="fas fa-info-circle"></i> Información
+                    </span>
                 </div>
             </div>
-        </div>
 
-        <div class="brand">
-            <h1>KERIM MUSIC</h1>
-            <div class="brand-right">
-                <button class="btn-compartir" id="btnCompartir" title="Compartir esta página">
-                    <i class="fas fa-share-alt"></i> Compartir
+            <div class="botones-container">
+                <button class="crea-tu-paquete" id="btnMostrarOpciones">
+                    <i class="fas fa-plus-circle"></i> Crea tu paquete de grabación
                 </button>
-                <span class="info-toggle" id="btnInformacion">
-                    <i class="fas fa-info-circle"></i> Información
-                </span>
             </div>
-        </div>
 
-        <div class="botones-container">
-            <!-- Botón: Crea tu paquete de grabación -->
-            <button class="crea-tu-paquete" id="btnMostrarOpciones">
-                <i class="fas fa-plus-circle"></i> Crea tu paquete de grabación
-            </button>
-
-            <!-- Botón: Ver Anuncio -->
-            <button class="btn-ver-anuncio" id="btnVerAnuncio">
-                <i class="fas fa-play-circle"></i> Ver Anuncio
-            </button>
-        </div>
-
-        <div class="servicios-wrapper" id="serviciosWrapper">
-            <div class="servicios" id="serviciosContainer">
-                <div class="servicio-item" data-servicio="beat" data-precio="600">
-                    <div class="servicio-info">
-                        <i class="fas fa-drum"></i>
-                        <span class="nombre">BEAT</span>
-                        <span class="precio">$600 MXN</span>
-                    </div>
-                    <div class="toggle-wrapper">
-                        <div class="switch" data-servicio="beat" onclick="toggleServicio(this)">
-                            <div class="thumb"></div>
+            <div class="servicios-wrapper" id="serviciosWrapper">
+                <div class="servicios" id="serviciosContainer">
+                    <div class="servicio-item" data-servicio="beat" data-precio="600">
+                        <div class="servicio-info">
+                            <i class="fas fa-drum"></i>
+                            <span class="nombre">BEAT</span>
+                            <span class="precio">$600 MXN</span>
                         </div>
-                        <span class="estado-texto" id="estado-beat">agregar</span>
-                    </div>
-                </div>
-                <div class="beat-notes-wrapper" id="beatNotesWrapper">
-                    <label for="beatNotes"><i class="fas fa-pencil-alt"></i> Describe cómo quieres tu beat:</label>
-                    <textarea id="beatNotes" placeholder="Ej: estilo trap, tempo 140 BPM, con 808s, atmósfera oscura..." rows="2"></textarea>
-                </div>
-
-                <div class="servicio-item" data-servicio="voz" data-precio="900">
-                    <div class="servicio-info">
-                        <i class="fas fa-microphone"></i>
-                        <span class="nombre">GRABACIÓN DE VOZ</span>
-                        <span class="precio">$900 MXN</span>
-                    </div>
-                    <div class="toggle-wrapper">
-                        <div class="switch" data-servicio="voz" onclick="toggleServicio(this)">
-                            <div class="thumb"></div>
+                        <div class="toggle-wrapper">
+                            <div class="switch" data-servicio="beat" onclick="toggleServicio(this)">
+                                <div class="thumb"></div>
+                            </div>
+                            <span class="estado-texto" id="estado-beat">agregar</span>
                         </div>
-                        <span class="estado-texto" id="estado-voz">agregar</span>
                     </div>
-                </div>
+                    <div class="beat-notes-wrapper" id="beatNotesWrapper">
+                        <label for="beatNotes"><i class="fas fa-pencil-alt"></i> Describe cómo quieres tu beat:</label>
+                        <textarea id="beatNotes" placeholder="Ej: estilo trap, tempo 140 BPM, con 808s, atmósfera oscura..." rows="2"></textarea>
+                    </div>
 
-                <div class="servicio-item" data-servicio="master" data-precio="400">
-                    <div class="servicio-info">
-                        <i class="fas fa-sliders-h"></i>
-                        <span class="nombre">MASTERIZACIÓN</span>
-                        <span class="precio">$400 MXN</span>
-                    </div>
-                    <div class="toggle-wrapper">
-                        <div class="switch" data-servicio="master" onclick="toggleServicio(this)">
-                            <div class="thumb"></div>
+                    <div class="servicio-item" data-servicio="voz" data-precio="900">
+                        <div class="servicio-info">
+                            <i class="fas fa-microphone"></i>
+                            <span class="nombre">GRABACIÓN DE VOZ</span>
+                            <span class="precio">$900 MXN</span>
                         </div>
-                        <span class="estado-texto" id="estado-master">agregar</span>
+                        <div class="toggle-wrapper">
+                            <div class="switch" data-servicio="voz" onclick="toggleServicio(this)">
+                                <div class="thumb"></div>
+                            </div>
+                            <span class="estado-texto" id="estado-voz">agregar</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="servicio-item" data-servicio="portada" data-precio="600">
-                    <div class="servicio-info">
-                        <i class="fas fa-paint-brush"></i>
-                        <span class="nombre">DISEÑO DE PORTADA</span>
-                        <span class="precio">$600 MXN</span>
-                    </div>
-                    <div class="toggle-wrapper">
-                        <div class="switch" data-servicio="portada" onclick="toggleServicio(this)">
-                            <div class="thumb"></div>
+                    <div class="servicio-item" data-servicio="master" data-precio="400">
+                        <div class="servicio-info">
+                            <i class="fas fa-sliders-h"></i>
+                            <span class="nombre">MASTERIZACIÓN</span>
+                            <span class="precio">$400 MXN</span>
                         </div>
-                        <span class="estado-texto" id="estado-portada">agregar</span>
+                        <div class="toggle-wrapper">
+                            <div class="switch" data-servicio="master" onclick="toggleServicio(this)">
+                                <div class="thumb"></div>
+                            </div>
+                            <span class="estado-texto" id="estado-master">agregar</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="servicio-item" data-servicio="artistas" data-precio="800">
-                    <div class="servicio-info">
-                        <i class="fas fa-users"></i>
-                        <span class="nombre">MANEJO DE ARTISTAS</span>
-                        <span class="precio">$800 MXN</span>
-                        <span class="detalle">3 meses · publicidad</span>
-                    </div>
-                    <div class="toggle-wrapper">
-                        <div class="switch" data-servicio="artistas" onclick="toggleServicio(this)">
-                            <div class="thumb"></div>
+                    <div class="servicio-item" data-servicio="portada" data-precio="600">
+                        <div class="servicio-info">
+                            <i class="fas fa-paint-brush"></i>
+                            <span class="nombre">DISEÑO DE PORTADA</span>
+                            <span class="precio">$600 MXN</span>
                         </div>
-                        <span class="estado-texto" id="estado-artistas">agregar</span>
+                        <div class="toggle-wrapper">
+                            <div class="switch" data-servicio="portada" onclick="toggleServicio(this)">
+                                <div class="thumb"></div>
+                            </div>
+                            <span class="estado-texto" id="estado-portada">agregar</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="servicio-item" data-servicio="kerimplus" data-precio="2000">
-                    <div class="servicio-info">
-                        <i class="fas fa-star"></i>
-                        <span class="nombre">KERIM MUSIC+</span>
-                        <span class="precio">$2,000 MXN</span>
-                        <span class="detalle">2 grabaciones · paquete completo</span>
-                    </div>
-                    <div class="toggle-wrapper">
-                        <div class="switch" data-servicio="kerimplus" onclick="toggleServicio(this)">
-                            <div class="thumb"></div>
+                    <div class="servicio-item" data-servicio="artistas" data-precio="800">
+                        <div class="servicio-info">
+                            <i class="fas fa-users"></i>
+                            <span class="nombre">MANEJO DE ARTISTAS</span>
+                            <span class="precio">$800 MXN</span>
+                            <span class="detalle">3 meses · publicidad</span>
                         </div>
-                        <span class="estado-texto" id="estado-kerimplus">agregar</span>
+                        <div class="toggle-wrapper">
+                            <div class="switch" data-servicio="artistas" onclick="toggleServicio(this)">
+                                <div class="thumb"></div>
+                            </div>
+                            <span class="estado-texto" id="estado-artistas">agregar</span>
+                        </div>
+                    </div>
+
+                    <div class="servicio-item" data-servicio="kerimplus" data-precio="2000">
+                        <div class="servicio-info">
+                            <i class="fas fa-star"></i>
+                            <span class="nombre">KERIM MUSIC+</span>
+                            <span class="precio">$2,000 MXN</span>
+                            <span class="detalle">2 grabaciones · paquete completo</span>
+                        </div>
+                        <div class="toggle-wrapper">
+                            <div class="switch" data-servicio="kerimplus" onclick="toggleServicio(this)">
+                                <div class="thumb"></div>
+                            </div>
+                            <span class="estado-texto" id="estado-kerimplus">agregar</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="total-section" id="totalSection">
-            <div class="total-label">
-                <i class="fas fa-coins"></i> TOTAL
-                <span class="total-number" id="totalDisplay">$0</span>
+            <div class="total-section" id="totalSection">
+                <div class="total-label">
+                    <i class="fas fa-coins"></i> TOTAL
+                    <span class="total-number" id="totalDisplay">$0</span>
+                </div>
             </div>
-        </div>
 
-        <div class="btn-whatsapp-wrapper" id="btnWhatsAppWrapper">
-            <button class="btn-whatsapp" id="whatsappBtn">
-                <i class="fab fa-whatsapp"></i> Enviar pedido
-            </button>
-        </div>
+            <div class="btn-whatsapp-wrapper" id="btnWhatsAppWrapper">
+                <button class="btn-whatsapp" id="whatsappBtn">
+                    <i class="fab fa-whatsapp"></i> Enviar pedido
+                </button>
+            </div>
 
-        <div class="btn-pdf-wrapper" id="btnPDFWrapper">
-            <button class="btn-pdf" id="pdfBtn">
-                <i class="fas fa-file-pdf"></i> Descargar Recivo
-            </button>
-        </div>
+            <div class="btn-pdf-wrapper" id="btnPDFWrapper">
+                <button class="btn-pdf" id="pdfBtn">
+                    <i class="fas fa-file-pdf"></i> Descargar Recivo
+                </button>
+            </div>
 
-        <div class="footer-kerim">
-            <span>KERIM MUSIC</span> · Producción · Grabación · Masterización · Diseño · Management
+            <div class="footer-kerim">
+                <span>KERIM MUSIC</span> · Producción · Grabación · Masterización · Diseño · Management
+            </div>
         </div>
     </div>
 
@@ -1110,6 +1157,182 @@
     <canvas id="fireworksCanvas"></canvas>
 
     <script>
+        // ==================== CONFIGURACIÓN DE ANUNCIOS ====================
+        const ADS = [
+            { id: 'ad9', url: 'https://www.dropbox.com/scl/fi/l41bs2ooxh6ccnewgnvd1/1785466259517.png?rlkey=czf0bcn58v0irh5qdfeg9tnef&st=pbd0d7v5&raw=1', title: 'Anuncio 8', category: 'ANUNCIO', music: 'https://www.dropbox.com/scl/fi/9tsc6vvge3ukcao3w8hiy/elimina-basura-spotyfi.mp3?rlkey=pogumn7wjmhepbtocb16km25w&st=3oh3m9tu&raw=1', isAd: true },
+            { id: 'ad8', url: 'https://www.dropbox.com/scl/fi/zstw4ykjmjh3ljzejuwk5/Anuncio.png?rlkey=pumuamhvcw40nas5biyyrizvo&st=ku13lu66&raw=1', title: 'Anuncio 8', category: 'ANUNCIO', music: 'https://www.dropbox.com/scl/fi/63czt3npjdkz54trajxdf/Presentacion-de-isco-Dany-Zm.wav?rlkey=q7caesruijhiuiil7map3oecn&st=326tvf8c&raw=1', isAd: true },
+            { id: 'ad5', url: 'https://www.dropbox.com/scl/fi/zstw4ykjmjh3ljzejuwk5/Anuncio.png?rlkey=pumuamhvcw40nas5biyyrizvo&st=ku13lu66&raw=1', title: 'Anuncio 5', category: 'ANUNCIO', music: 'https://www.dropbox.com/scl/fi/ymz00x4bk0arik8vapgnd/11-de-abril-de-2026.mp3?rlkey=hafgkwkgt6tgyrryodqz2c6fy&st=p5vsj82t&raw=1', isAd: true },
+            { id: 'ad7', url: 'https://www.dropbox.com/scl/fi/7myjpayd9cocf2of9srrj/Cris-Znchez.jpg?rlkey=eqarykexb089abzkacqgbarsl&st=l7cxp9cf&raw=1', title: 'Anuncio 7', category: 'ANUNCIO', music: 'https://www.dropbox.com/scl/fi/w8ynapsg34o119wnye6el/Auncio-cris-sanches_.mp3?rlkey=pr73mrdydh12tzu1jyreb4pqo&st=u5ewfxwg&raw=1', isAd: true },
+            { id: 'ad1', url: 'https://www.dropbox.com/scl/fi/zstw4ykjmjh3ljzejuwk5/Anuncio.png?rlkey=pumuamhvcw40nas5biyyrizvo&st=ku13lu66&raw=1', title: 'Anuncio 1', category: 'ANUNCIO', music: 'https://www.dropbox.com/scl/fi/z3fbqqzthhvvqt9275lc7/2-tema-grabados_1783188240865.mp3?rlkey=7v6ha18uxps052z43rty0d5jr&st=sam7gv97&raw=1', isAd: true },
+            { id: 'ad2', url: 'https://www.dropbox.com/scl/fi/zstw4ykjmjh3ljzejuwk5/Anuncio.png?rlkey=pumuamhvcw40nas5biyyrizvo&st=ku13lu66&raw=1', title: 'Anuncio 2', category: 'ANUNCIO', music: 'https://www.dropbox.com/scl/fi/xgl19r2bd49n5cdup93f4/Escucha-sin-anusios_1783188103278.mp3?rlkey=00usrx9c68td9pkqw6o2x1qct&st=4ck7wlz8&raw=1', isAd: true },
+            { id: 'ad3', url: '', title: 'Anuncio 3', category: 'ANUNCIO', music: '', video: 'https://www.dropbox.com/scl/fi/5hvqucrjyjotpjge1wpei/AQPEGQdoqPKVT4eHsCxScmq2Pgjwlze7l6aPYix_phWROLbabx1WiKmXH3GA8eDVa8AyecSArdrF9I_wbvUT5XaZ9cJVWSAHpGXci6nOD_T-Eg.mp4?rlkey=29tg1m9o3zgvlrgz1bskg7dzj&st=pmeqma9m&raw=1', isAd: true },
+            { id: 'ad6', url: '', title: 'Anuncio 6', category: 'ANUNCIO', music: '', video: 'https://www.dropbox.com/scl/fi/n4nhc00dzenwsoj0t0mud/El-placoso-de-la-L.mp4?rlkey=tde69aczhy3rhxit16xyu3ewx&st=sf47qwl2&raw=1', isAd: true },
+            { id: 'ad4', url: 'https://www.dropbox.com/scl/fi/zstw4ykjmjh3ljzejuwk5/Anuncio.png?rlkey=pumuamhvcw40nas5biyyrizvo&st=ku13lu66&raw=1', title: 'Anuncio 4', category: 'ANUNCIO', music: 'https://www.dropbox.com/scl/fi/vl4d6mwau9frvxmjm6wwn/Baner.mp3?rlkey=z8jezojlzlyt0i3qp16jrvid9&st=tdb7ne0h&raw=1', isAd: true }
+        ];
+
+        // ============================================================
+        // PANTALLA FULLSCREEN DEL ANUNCIO
+        // ============================================================
+        const adFullscreen = document.getElementById('adFullscreen');
+        const mainContent = document.getElementById('mainContent');
+        const fullscreenContainer = document.getElementById('fullscreenAdContainer');
+        let adVideo = null;
+        let adAudio = null;
+        let anuncioMostrado = false;
+        let temporizadorCierre = null;
+
+        function mostrarAnuncioFullscreen() {
+            const ad = ADS[Math.floor(Math.random() * ADS.length)];
+            if (!ad) return;
+
+            // Ocultar el logo de carga
+            const loadingLogo = document.querySelector('.loading-logo');
+            if (loadingLogo) loadingLogo.style.display = 'none';
+
+            fullscreenContainer.innerHTML = '';
+
+            if (ad.video) {
+                const video = document.createElement('video');
+                video.src = ad.video;
+                video.autoplay = true;
+                video.muted = true;
+                video.loop = false;
+                video.playsInline = true;
+                video.style.width = '100%';
+                video.style.borderRadius = '16px';
+                video.style.maxHeight = '60vh';
+                fullscreenContainer.appendChild(video);
+                adVideo = video;
+
+                // Botón para activar audio
+                const btnAudio = document.createElement('button');
+                btnAudio.className = 'btn-activar-audio-full';
+                btnAudio.innerHTML = '<i class="fas fa-volume-up"></i> Activar audio';
+                btnAudio.style.marginTop = '0.5rem';
+                btnAudio.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (video.muted) {
+                        video.muted = false;
+                        video.play().catch(() => {});
+                    }
+                    this.style.display = 'none';
+                });
+                fullscreenContainer.appendChild(btnAudio);
+
+                video.play().catch(() => {});
+
+                video.addEventListener('playing', function() {
+                    if (!this.muted) {
+                        btnAudio.style.display = 'none';
+                    }
+                });
+
+                // Cuando el video termina, mostrar la página
+                video.addEventListener('ended', function() {
+                    cerrarFullscreen();
+                });
+
+                // Fallback: si el video no termina en 15 segundos, cerrar igual
+                temporizadorCierre = setTimeout(function() {
+                    if (!anuncioMostrado) {
+                        cerrarFullscreen();
+                    }
+                }, 15000);
+
+            } else if (ad.url) {
+                const img = document.createElement('img');
+                img.src = ad.url;
+                img.alt = ad.title || 'Anuncio';
+                img.style.width = '100%';
+                img.style.borderRadius = '16px';
+                img.style.maxHeight = '60vh';
+                img.style.objectFit = 'contain';
+                fullscreenContainer.appendChild(img);
+
+                if (ad.music) {
+                    const audio = document.createElement('audio');
+                    audio.src = ad.music;
+                    audio.autoplay = true;
+                    audio.style.width = '100%';
+                    audio.style.marginTop = '0.8rem';
+                    fullscreenContainer.appendChild(audio);
+                    adAudio = audio;
+                    audio.play().catch(() => {});
+                }
+
+                // Cerrar después de 10 segundos para imágenes
+                temporizadorCierre = setTimeout(function() {
+                    if (!anuncioMostrado) {
+                        cerrarFullscreen();
+                    }
+                }, 10000);
+
+            } else if (ad.music) {
+                const audio = document.createElement('audio');
+                audio.src = ad.music;
+                audio.autoplay = true;
+                audio.style.width = '100%';
+                fullscreenContainer.appendChild(audio);
+                adAudio = audio;
+                audio.play().catch(() => {});
+
+                // Cerrar después de 10 segundos para solo audio
+                temporizadorCierre = setTimeout(function() {
+                    if (!anuncioMostrado) {
+                        cerrarFullscreen();
+                    }
+                }, 10000);
+            } else {
+                const placeholder = document.createElement('div');
+                placeholder.className = 'placeholder-audio';
+                placeholder.textContent = 'Anuncio sin contenido multimedia';
+                fullscreenContainer.appendChild(placeholder);
+
+                // Cerrar después de 5 segundos si no hay contenido
+                temporizadorCierre = setTimeout(function() {
+                    if (!anuncioMostrado) {
+                        cerrarFullscreen();
+                    }
+                }, 5000);
+            }
+
+            if (ad.title) {
+                const titulo = document.createElement('div');
+                titulo.className = 'ad-title-full';
+                titulo.textContent = ad.title;
+                fullscreenContainer.appendChild(titulo);
+            }
+        }
+
+        function cerrarFullscreen() {
+            if (anuncioMostrado) return;
+            anuncioMostrado = true;
+
+            // Limpiar temporizador
+            if (temporizadorCierre) {
+                clearTimeout(temporizadorCierre);
+                temporizadorCierre = null;
+            }
+
+            // Detener audio/video
+            if (adVideo) {
+                adVideo.pause();
+                adVideo.currentTime = 0;
+            }
+            if (adAudio) {
+                adAudio.pause();
+                adAudio.currentTime = 0;
+            }
+
+            adFullscreen.classList.add('oculto');
+            mainContent.classList.add('visible');
+
+            // Eliminar del DOM después de la animación
+            setTimeout(function() {
+                adFullscreen.style.display = 'none';
+            }, 800);
+        }
+
         // ============================================================
         // COMPARTIR PÁGINA
         // ============================================================
@@ -1147,14 +1370,11 @@
         // MOSTRAR/OCULTAR OPCIONES (Crea tu paquete)
         // ============================================================
         const btnMostrar = document.getElementById('btnMostrarOpciones');
-        const btnVerAnuncio = document.getElementById('btnVerAnuncio');
         const wrapper = document.getElementById('serviciosWrapper');
         let opcionesVisibles = false;
 
         btnMostrar.addEventListener('click', function() {
             reproducirClick();
-            // Ocultar siempre el botón de anuncio al abrir el paquete
-            btnVerAnuncio.classList.add('oculto');
 
             opcionesVisibles = !opcionesVisibles;
             if (opcionesVisibles) {
@@ -1170,24 +1390,19 @@
             } else {
                 wrapper.classList.remove('abierto');
                 btnMostrar.innerHTML = '<i class="fas fa-plus-circle"></i> Crea tu paquete de grabación';
-                // Si no hay selección, mostrar el botón de anuncio
                 const haySeleccion = Object.values(estado).some(val => val === true);
                 if (!haySeleccion) {
-                    btnVerAnuncio.classList.remove('oculto');
                     totalBajoLogo.classList.remove('visible');
                     document.getElementById('totalSection').classList.remove('visible');
                     btnWhatsAppWrapper.classList.remove('visible');
                     btnPDFWrapper.classList.remove('visible');
-                } else {
-                    // Si hay selección, mantener oculto el botón de anuncio
-                    btnVerAnuncio.classList.add('oculto');
                 }
             }
             actualizarVisibilidadTotales();
         });
 
         // ============================================================
-        // SONIDOS (corregidos con raw=1)
+        // SONIDOS
         // ============================================================
         const CLICK_SOUND_URL = 'https://www.dropbox.com/scl/fi/dbkqe6yb8t1j73n3dpd2w/click-sound-effect_yChMMh7e.mp3?rlkey=2rsja9ti4m2eexp8sumu5ngue&st=zsfvyu29&raw=1';
         const clickAudio = new Audio();
@@ -1434,16 +1649,11 @@
                 totalBajoLogo.classList.add('visible');
                 btnWhatsAppWrapper.classList.add('visible');
                 btnPDFWrapper.classList.add('visible');
-                btnVerAnuncio.classList.add('oculto'); // ocultar siempre que haya selección
             } else {
                 totalSection.classList.remove('visible');
                 totalBajoLogo.classList.remove('visible');
                 btnWhatsAppWrapper.classList.remove('visible');
                 btnPDFWrapper.classList.remove('visible');
-                // Si no hay selección y el paquete está cerrado, mostrar el botón de anuncio
-                if (!opcionesVisibles && !haySeleccion) {
-                    btnVerAnuncio.classList.remove('oculto');
-                }
             }
         }
 
@@ -1494,9 +1704,6 @@
             detenerSonidoKerim();
         }
 
-        // ============================================================
-        // RESETEO COMPLETO
-        // ============================================================
         function resetearTodo() {
             for (let key in estado) {
                 estado[key] = false;
@@ -1512,8 +1719,7 @@
             wrapper.classList.remove('abierto');
             btnMostrar.innerHTML = '<i class="fas fa-plus-circle"></i> Crea tu paquete de grabación';
             opcionesVisibles = false;
-            // Mostrar el botón de anuncio al resetear
-            btnVerAnuncio.classList.remove('oculto');
+            btnMostrar.classList.remove('oculto');
             if (graciasOverlay.classList.contains('mostrar')) {
                 cerrarGracias();
             }
@@ -1527,9 +1733,6 @@
             });
         }
 
-        // ============================================================
-        // ENVIAR PEDIDO (WhatsApp) + RESET + PDF
-        // ============================================================
         function enviarPedidoWhatsApp() {
             reproducirClick();
 
@@ -1579,9 +1782,6 @@
             }, 500);
         }
 
-        // ============================================================
-        // GENERAR PDF (con opción silenciosa)
-        // ============================================================
         function descargarPDF(silent = false) {
             reproducirClick();
 
@@ -1703,7 +1903,7 @@
             btnPDFWrapper.classList.remove('visible');
             beatNotesWrapper.classList.remove('visible');
             opcionesVisibles = false;
-            btnVerAnuncio.classList.remove('oculto');
+            btnMostrar.classList.remove('oculto');
         }
 
         document.getElementById('whatsappBtn').addEventListener('click', enviarPedidoWhatsApp);
@@ -1718,62 +1918,17 @@
         });
 
         // ============================================================
-        // TOGGLE INFORMACIÓN + CONTROL DE VIDEO + PORTADA + BOTÓN ESCUCHA
+        // TOGGLE INFORMACIÓN
         // ============================================================
         const btnInfo = document.getElementById('btnInformacion');
         const mensajeInfo = document.getElementById('mensajeBienvenida');
-        const video = document.getElementById('infoVideo');
-        const portadaContainer = document.getElementById('portadaContainer');
-        const btnEscuchaContainer = document.getElementById('btnEscuchaContainer');
         let infoVisible = false;
-        let videoEnded = false;
 
-        function mostrarPortada() {
-            video.classList.add('oculto');
-            portadaContainer.classList.add('visible');
-            btnEscuchaContainer.classList.add('visible');
-            videoEnded = true;
-        }
-
-        function ocultarPortada() {
-            video.classList.remove('oculto');
-            portadaContainer.classList.remove('visible');
-            btnEscuchaContainer.classList.remove('visible');
-            videoEnded = false;
-        }
-
-        video.addEventListener('ended', function() {
-            if (infoVisible) {
-                mostrarPortada();
-            }
-        });
-
-        function reiniciarVideo() {
-            video.pause();
-            video.currentTime = 0;
-            video.classList.remove('oculto');
-            ocultarPortada();
-        }
-
-        function abrirInformacion(modoAnuncio = false) {
+        function abrirInformacion() {
             infoVisible = true;
             mensajeInfo.classList.add('visible');
             document.body.classList.add('info-mode');
             btnInfo.innerHTML = '<i class="fas fa-info-circle"></i> Ocultar';
-
-            if (modoAnuncio) {
-                mensajeInfo.classList.add('modo-anuncio');
-            } else {
-                mensajeInfo.classList.remove('modo-anuncio');
-            }
-
-            reiniciarVideo();
-            video.play().catch(function(e) {});
-            if (video.ended) {
-                mostrarPortada();
-            } else {
-                ocultarPortada();
-            }
         }
 
         function cerrarInformacion() {
@@ -1781,31 +1936,18 @@
             mensajeInfo.classList.remove('visible');
             document.body.classList.remove('info-mode');
             btnInfo.innerHTML = '<i class="fas fa-info-circle"></i> Información';
-            reiniciarVideo();
-            ocultarPortada();
         }
 
         btnInfo.addEventListener('click', function() {
             if (infoVisible) {
                 cerrarInformacion();
             } else {
-                abrirInformacion(false);
-            }
-        });
-
-        btnVerAnuncio.addEventListener('click', function() {
-            reproducirClick();
-            if (infoVisible) {
-                if (!mensajeInfo.classList.contains('modo-anuncio')) {
-                    mensajeInfo.classList.add('modo-anuncio');
-                }
-            } else {
-                abrirInformacion(true);
+                abrirInformacion();
             }
         });
 
         document.addEventListener('click', function(e) {
-            if (infoVisible && !mensajeInfo.contains(e.target) && e.target !== btnInfo && e.target !== btnVerAnuncio) {
+            if (infoVisible && !mensajeInfo.contains(e.target) && e.target !== btnInfo) {
                 cerrarInformacion();
             }
         });
@@ -1814,6 +1956,15 @@
         window.cerrarGracias = cerrarGracias;
 
         inicializarSwitches();
+
+        // ============================================================
+        // 🚀 INICIAR CON EL ANUNCIO FULLSCREEN
+        // ============================================================
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                mostrarAnuncioFullscreen();
+            }, 500);
+        });
     </script>
 </body>
 </html>
